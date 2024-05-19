@@ -80,7 +80,7 @@ export default function Example() {
   };
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [modalIsOpen, setIsOpen] = useState(false);
-
+  const name = "12312";
   const session = useSession();
   const router = useRouter();
   function closeModal() {
