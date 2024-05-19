@@ -10,19 +10,20 @@ module.exports = {
       nike: ["Anton", "sans-serif"],
       gothic: ["Gothic A1", "sans-serif"],
     },
-    colors: {
-      "bubble-gum": "#ff77e9",
-      bermuda: "#78dcca",
-      textDark: "#fafafa",
-      textLight: "",
-      bgDark: "#0c0c0c",
-      bgLight: "",
-    },
+
     extend: {
       backgroundImage: {
         "gradient-radial": "radial-gradient(var(--tw-gradient-stops))",
         "gradient-conic":
           "conic-gradient(from 180deg at 50% 50%, var(--tw-gradient-stops))",
+      },
+      colors: {
+        "bubble-gum": "#ff77e9",
+        bermuda: "#78dcca",
+        textDark: "#fafafa",
+        textLight: "",
+        bgDark: "#0c0c0c",
+        bgLight: "",
       },
     },
   },

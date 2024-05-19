@@ -15,8 +15,10 @@ import {
   PhoneIcon,
   PlayCircleIcon,
 } from "@heroicons/react/20/solid";
+import Link from "next/link";
 import { classNames } from "@/utils/classNames";
 import MiddayLogo from "@/assets/svg/midday";
+
 const products = [
   {
     name: "Analytics",
@@ -50,8 +52,8 @@ const products = [
   },
 ];
 const callsToAction = [
-  { name: "Watch demo", href: "#", icon: PlayCircleIcon },
-  { name: "Contact sales", href: "#", icon: PhoneIcon },
+  { name: "Shop all categories", href: "#", icon: PlayCircleIcon },
+  { name: "Auction community", href: "#", icon: PhoneIcon },
 ];
 
 export default function Header() {
@@ -79,34 +81,29 @@ export default function Header() {
           </button>
         </div>
         <Popover.Group className="hidden lg:flex lg:gap-x-6 border border-border p-3 rounded-2xl items-center backdrop-filter backdrop-blur-xl border-[#2b2b2b] bg-[#121212] bg-opacity-70 py-1.5">
-          <MiddayLogo />
-          <a
+          <Link
+            href="/"
+            className="text-sm font-semibold leading-6 text-[#FAFAFA]"
+          >
+            <MiddayLogo />
+          </Link>
+
+          <Link
             href="#"
             className="text-sm font-semibold leading-6 text-[#FAFAFA]"
           >
-            Pricing
-          </a>
-          <a
+            SNKRS
+          </Link>
+
+          <Link
             href="#"
             className="text-sm font-semibold leading-6 text-[#FAFAFA]"
           >
-            Updates
-          </a>
-          <a
-            href="#"
-            className="text-sm font-semibold leading-6 text-[#FAFAFA]"
-          >
-            Story
-          </a>
-          <a
-            href="#"
-            className="text-sm font-semibold leading-6 text-[#FAFAFA]"
-          >
-            Download
-          </a>
+            About us
+          </Link>
           <Popover className="relative">
             <Popover.Button className="flex items-center gap-x-1 text-sm font-semibold leading-6 text-[#FAFAFA]">
-              Developers
+              Marketplace
               <ChevronDownIcon
                 className="h-5 w-5 flex-none text-gray-400"
                 aria-hidden="true"
@@ -128,7 +125,7 @@ export default function Header() {
                     <a
                       key={item.name}
                       href={item.href}
-                      className="flex items-center justify-center gap-x-2.5 p-3 text-sm font-semibold leading-6 text-gray-900 hover:bg-gray-100"
+                      className="text-textDark flex items-center justify-center gap-x-2.5 p-3 text-sm font-semibold leading-6 text-gray-900 hover:bg-gray-100"
                     >
                       <item.icon
                         className="h-5 w-5 flex-none text-gray-400"
@@ -141,13 +138,18 @@ export default function Header() {
               </Popover.Panel>
             </Transition>
           </Popover>
-
-          <a
+          <Link
+            href="/admin/Dashboard"
+            className="text-sm font-semibold leading-6 text-textDark"
+          >
+            Admin
+          </Link>
+          <Link
             href="#"
-            className="text-sm font-semibold leading-6 text-[#18181B] bg-[#FAFAFA] px-2.5 py-1.5 rounded-lg "
+            className="text-sm font-semibold leading-6 text-[#18181B] bg-textDark px-2.5 py-1.5 rounded-lg "
           >
             Sign in
-          </a>
+          </Link>
         </Popover.Group>
         <div className="hidden lg:flex lg:flex-1 lg:justify-end"></div>
       </div>
@@ -158,12 +160,12 @@ export default function Header() {
         onClose={setMobileMenuOpen}
       >
         <div className="fixed inset-0 z-10" />
-        <Dialog.Panel className="fixed inset-y-0 right-0 z-10 w-full overflow-y-auto bg-[#121212] px-6 py-6 sm:max-w-sm sm:ring-1 sm:ring-gray-900/10">
+        <Dialog.Panel className="fixed inset-y-0 right-0 z-10 w-full overflow-y-auto bg-[#1A222C] px-6 py-6 sm:max-w-sm sm:ring-1 sm:ring-gray-900/10">
           <div className="flex items-center justify-between">
-            <a href="#" className="-m-1.5 p-1.5">
+            <Link href="#" className="-m-1.5 p-1.5">
               <span className="sr-only">Your Company</span>
               <MiddayLogo></MiddayLogo>
-            </a>
+            </Link>
             <button
               type="button"
               className="-m-2.5 rounded-md p-2.5 text-white"
