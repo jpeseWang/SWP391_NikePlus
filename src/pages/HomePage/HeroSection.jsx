@@ -21,13 +21,13 @@ export default function HeroSection() {
           <div className="mt-10 flex items-center justify-center gap-x-6">
             <a
               href="#"
-              className="rounded-md dark:text-textDark hover:bg-[#1C1C1C] px-3.5 py-2.5 text-sm font-semibold text-white shadow-sm ring-1 ring-[#FAFAFA] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
+              className="rounded-md dark:text-textDark hover:bg-[#1C1C1C] px-3.5 py-2.5 text-sm font-semibold shadow-sm ring-1 dark:ring-[#FAFAFA] ring-gray-200 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
             >
               Talk to us
             </a>
             <a
               href="#"
-              className="rounded-md hover:bg-[#c2c0c0] px-3.5 py-2.5 text-sm font-semibold text-[#18181B] shadow-sm ring-1 bg-[#FAFAFA] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
+              className="rounded-md dark:bg-[#c2c0c0] px-3.5 py-2.5 text-sm font-semibold bg-[#18181B] light:text-textDark dark:text-[#18181B] shadow-sm ring-1 text-[#FAFAFA] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
             >
               Get Early Access
             </a>
