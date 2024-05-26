@@ -145,7 +145,7 @@ export default function Header() {
             Admin
           </Link>
           <Link
-            href="#"
+            href="/auth/login/"
             className="text-sm font-semibold leading-6 text-[#18181B] bg-textDark px-2.5 py-1.5 rounded-lg "
           >
             Sign in
