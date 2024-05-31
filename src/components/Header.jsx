@@ -52,7 +52,7 @@ const products = [
   },
 ];
 const callsToAction = [
-  { name: "Shop all categories", href: "#", icon: PlayCircleIcon },
+  { name: "Shop all categories", href: "/marketplace", icon: PlayCircleIcon },
   { name: "Auction community", href: "#", icon: PhoneIcon },
 ];
 
@@ -125,7 +125,7 @@ export default function Header() {
                     <a
                       key={item.name}
                       href={item.href}
-                      className="text-textDark flex items-center justify-center gap-x-2.5 p-3 text-sm font-semibold leading-6 text-gray-900 hover:bg-gray-100"
+                      className="dark:text-textDark flex items-center justify-center gap-x-2.5 p-3 text-sm font-semibold leading-6 text-gray-900 hover:bg-gray-100"
                     >
                       <item.icon
                         className="h-5 w-5 flex-none text-gray-400"

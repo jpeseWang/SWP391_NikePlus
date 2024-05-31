@@ -1,3 +1,6 @@
+import useSWR from "swr";
+import { fetcher } from "@/utils/fetcher";
+
 // function to post data
 export async function postData(url = "", data = {}) {
   const response = await fetch(url, {
@@ -15,4 +18,14 @@ export async function postData(url = "", data = {}) {
   return response.json();
 }
 
-export async function getAllProduct() {}
+
+
+export function GetAllProduct() {
+  const { data, error, isLoading } = useSWR(`/api/product/getAll`, fetcher);
+  return { productData: data, isLoading, isError: error }
+}
+
+export function GetProductById(id: string) {
+  const { data, error, isLoading } = useSWR(`/api/product/getById/${id}`, fetcher);
+  return { productData: data, isLoading, isError: error }
+}
