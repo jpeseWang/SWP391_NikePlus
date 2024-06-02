@@ -8,7 +8,7 @@ import { HeartIcon, MinusIcon, PlusIcon } from "@heroicons/react/24/outline";
 import { StarIcon } from "@heroicons/react/20/solid";
 import { useRouter, useSearchParams } from "next/navigation";
 import LoadingComponent from "@/app/loading";
-
+import CommonUtil from "@/common/commonUtils";
 // import { CartContext } from "@/contexts/CartContext";
 import { classNames } from "@/utils/classNames";
 import { GetProductById } from "@/services/productService";
@@ -32,7 +32,7 @@ const relatedProducts = [
 
 export default function ProductOverview({ params }) {
   // const { addProduct } = useContext(CartContext);
-  const [selectedColor, setSelectedColor] = useState(0)
+  const [selectedColor, setSelectedColor] = useState(0);
   const searchParams = useSearchParams();
   // const selectedColor = searchParams.get("color");
   const selectedSize = searchParams.get("size");
@@ -40,7 +40,7 @@ export default function ProductOverview({ params }) {
 
   const { productData, isLoading, isError } = GetProductById(params.id);
 
-  console.log(productData)
+  console.log(productData);
 
   // const addFeaturedToCart = () => {
   //   addProduct(data._id, data.price);
@@ -50,7 +50,7 @@ export default function ProductOverview({ params }) {
     <div className="bg-white">
       <main className="mx-auto max-w-7xl sm:px-6 sm:pt-16 lg:px-8">
         <button
-          class="text-base font-semibold text-indigo-600 hover:text-indigo-500 my-6 ml-2"
+          class="my-6 ml-2 text-base font-semibold text-indigo-600 hover:text-indigo-500"
           onClick={() => {
             router.push("/marketplace");
           }}
@@ -66,38 +66,37 @@ export default function ProductOverview({ params }) {
                 <Tab.Group as="div" className="flex flex-col-reverse">
                   <div className="mx-auto mt-6 hidden w-full max-w-2xl sm:block lg:max-w-none">
                     <Tab.List className="grid grid-cols-4 gap-6">
-
-                      {productData?.specs[selectedColor].imgList?.map((image) => (
-                        <Tab
-                          key={image.id}
-                          className="relative flex h-24 cursor-pointer items-center justify-center rounded-md bg-white text-sm font-medium uppercase text-gray-900 hover:bg-gray-50 focus:outline-none focus:ring focus:ring-opacity-50 focus:ring-offset-4"
-                        >
-
-                          {({ selected }) => (
-                            <>
-                              <span className="sr-only">{image}</span>
-                              <span className="absolute inset-0 overflow-hidden rounded-md">
-                                {/* Main Images */}
-                                <img
-                                  src={image}
-                                  alt=""
-                                  className="h-full w-full object-cover object-center"
+                      {productData?.specs[selectedColor].imgList?.map(
+                        (image) => (
+                          <Tab
+                            key={image.id}
+                            className="relative flex h-24 cursor-pointer items-center justify-center rounded-md bg-white text-sm font-medium uppercase text-gray-900 hover:bg-gray-50 focus:outline-none focus:ring focus:ring-opacity-50 focus:ring-offset-4"
+                          >
+                            {({ selected }) => (
+                              <>
+                                <span className="sr-only">{image}</span>
+                                <span className="absolute inset-0 overflow-hidden rounded-md">
+                                  {/* Main Images */}
+                                  <img
+                                    src={image}
+                                    alt=""
+                                    className="h-full w-full object-cover object-center"
+                                  />
+                                </span>
+                                <span
+                                  className={classNames(
+                                    selected
+                                      ? "ring-indigo-500"
+                                      : "ring-transparent",
+                                    "pointer-events-none absolute inset-0 rounded-md ring-2 ring-offset-2",
+                                  )}
+                                  aria-hidden="true"
                                 />
-
-                              </span>
-                              <span
-                                className={classNames(
-                                  selected
-                                    ? "ring-indigo-500"
-                                    : "ring-transparent",
-                                  "pointer-events-none absolute inset-0 rounded-md ring-2 ring-offset-2"
-                                )}
-                                aria-hidden="true"
-                              />
-                            </>
-                          )}
-                        </Tab>
-                      ))}
+                              </>
+                            )}
+                          </Tab>
+                        ),
+                      )}
                     </Tab.List>
                   </div>
 
@@ -125,7 +124,7 @@ export default function ProductOverview({ params }) {
                   <div className="mt-3">
                     <h2 className="sr-only">Product information</h2>
                     <p className="text-2xl tracking-tight text-gray-900">
-                      ${productData.price}
+                      {CommonUtil.parsePrice(productData.price)}
                     </p>
                   </div>
 
@@ -141,13 +140,15 @@ export default function ProductOverview({ params }) {
                               productData.rating > rating
                                 ? "text-black"
                                 : "text-gray-300",
-                              "h-5 w-5 flex-shrink-0"
+                              "h-5 w-5 flex-shrink-0",
                             )}
                             aria-hidden="true"
                           />
                         ))}
                       </div>
-                      <p className="sr-only">{productData.rating} out of 5 stars</p>
+                      <p className="sr-only">
+                        {productData.rating} out of 5 stars
+                      </p>
                     </div>
                   </div>
 
@@ -156,7 +157,9 @@ export default function ProductOverview({ params }) {
 
                     <div
                       className="space-y-6 text-base text-gray-700"
-                      dangerouslySetInnerHTML={{ __html: productData.description }}
+                      dangerouslySetInnerHTML={{
+                        __html: productData.description,
+                      }}
                     />
                   </div>
 
@@ -181,7 +184,9 @@ export default function ProductOverview({ params }) {
                                         src={image.imgList[0]}
                                         alt=""
                                         className="h-full w-full object-cover object-center"
-                                        onClick={() => { setSelectedColor(index) }}
+                                        onClick={() => {
+                                          setSelectedColor(index);
+                                        }}
                                       />
                                     </span>
                                     <span
@@ -189,7 +194,7 @@ export default function ProductOverview({ params }) {
                                         selected
                                           ? "ring-indigo-500"
                                           : "ring-transparent",
-                                        "pointer-events-none absolute inset-0 rounded-md ring-2 ring-offset-2"
+                                        "pointer-events-none absolute inset-0 rounded-md ring-2 ring-offset-2",
                                       )}
                                       aria-hidden="true"
                                     />
@@ -209,15 +214,16 @@ export default function ProductOverview({ params }) {
                         <RadioGroup.Label className="sr-only">
                           Choose a color
                         </RadioGroup.Label>
-                        <div className="grid items-center grid-cols-3 gap-3">
+                        <div className="grid grid-cols-3 items-center gap-3">
                           {sizeVariants.map((size, index) => (
                             <Link
                               key={index}
                               href={`?color=${selectedColor}&size=${size}`}
-                              className={`bg-gray-50 px-2 py-1.5 rounded border-2 text-center ${selectedSize === size
-                                ? "border-blue-500"
-                                : "border-gray-200"
-                                } `}
+                              className={`rounded border-2 bg-gray-50 px-2 py-1.5 text-center ${
+                                selectedSize === size
+                                  ? "border-blue-500"
+                                  : "border-gray-200"
+                              } `}
                             >
                               EU {size}
                             </Link>
@@ -236,7 +242,7 @@ export default function ProductOverview({ params }) {
 
                       <button
                         type="button"
-                        className="flex flex-1 items-center justify-center rounded-full text-gray-900 hover:bg-gray-100 hover:text-gray-500 border-2 px-5 py-3 text-base font-medium"
+                        className="flex flex-1 items-center justify-center rounded-full border-2 px-5 py-3 text-base font-medium text-gray-900 hover:bg-gray-100 hover:text-gray-500"
                       >
                         {" "}
                         Favourite&nbsp;&nbsp;
@@ -349,7 +355,7 @@ export default function ProductOverview({ params }) {
                   <div className="mt-6">
                     <button
                       className="relative flex items-center justify-center rounded-md border border-transparent bg-gray-100 px-8 py-2 text-sm font-medium text-gray-900 hover:bg-gray-200"
-                    // onClick={addFeaturedToCart}
+                      // onClick={addFeaturedToCart}
                     >
                       Add to bag
                       <span className="sr-only">, {product.name}</span>

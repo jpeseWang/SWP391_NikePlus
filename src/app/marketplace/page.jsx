@@ -1,9 +1,7 @@
 "use client";
 import { Fragment, useState } from "react";
 import { Dialog, Disclosure, Menu, Transition } from "@headlessui/react";
-import {
-  XMarkIcon,
-} from "@heroicons/react/24/outline";
+import { XMarkIcon } from "@heroicons/react/24/outline";
 import {
   ChevronDownIcon,
   FunnelIcon,
@@ -16,7 +14,7 @@ import LoadingComponent from "../loading";
 import { classNames } from "@/utils/classNames";
 import { GetAllProduct } from "@/services/productService";
 import { Entry } from "@/common/entry";
-
+import CommonUtil from "@/common/commonUtils";
 
 export default function MarketplacePage() {
   const [mobileFiltersOpen, setMobileFiltersOpen] = useState(false);
@@ -191,7 +189,7 @@ export default function MarketplacePage() {
                                     ? "font-medium text-gray-900"
                                     : "text-gray-500",
                                   active ? "bg-gray-100" : "",
-                                  "block px-4 py-2 text-sm"
+                                  "block px-4 py-2 text-sm",
                                 )}
                               >
                                 {option.name}
@@ -229,7 +227,7 @@ export default function MarketplacePage() {
 
               <div className="grid grid-cols-1 gap-x-8 gap-y-10 lg:grid-cols-5">
                 {/* Filters */}
-                <form className="hidden lg:block col-span-1 lg:col-span-1">
+                <form className="col-span-1 hidden lg:col-span-1 lg:block">
                   <h3 className="sr-only">Categories</h3>
                   <ul
                     role="list"
@@ -309,7 +307,7 @@ export default function MarketplacePage() {
                         <a
                           key={product._id}
                           href={`/marketplace/product-overviews/${product._id}`}
-                          className="group text-sm my-4"
+                          className="group my-4 text-sm"
                         >
                           <div className="aspect-h-1 aspect-w-1 w-full overflow-hidden rounded-lg bg-gray-100 group-hover:opacity-75">
                             <img
@@ -318,14 +316,14 @@ export default function MarketplacePage() {
                               className="h-full w-full object-cover object-center"
                             />
                           </div>
-                          <h3 className="mt-4 font-medium text-base text-gray-900">
+                          <h3 className="mt-4 text-base font-medium text-gray-900">
                             {product.name}
                           </h3>
-                          <p className=" text-gray-500 text-base font-light">
+                          <p className=" text-base font-light text-gray-500">
                             {product.type}
                           </p>
-                          <p className="mt-2 text-medium font-medium text-base text-gray-900">
-                            ${product.price}
+                          <p className="text-medium mt-2 text-base font-medium text-gray-900">
+                            {CommonUtil.parsePrice(product.price)}
                           </p>
                         </a>
                       ))}

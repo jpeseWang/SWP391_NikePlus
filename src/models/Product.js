@@ -22,12 +22,11 @@ const productSchema = new Schema(
     },
     rating: {
       type: String,
-      require: true,
     },
     specs: [
       {
         colorId: Number,
-        title: String, 
+        title: String,
         imgList: [
           {
             type: String,
@@ -38,6 +37,7 @@ const productSchema = new Schema(
   },
   {
     timestamps: true,
-  }
+  },
 );
-export default mongoose.models.Product || mongoose.model("Product", productSchema);
+export default mongoose.models.Product ||
+  mongoose.model("Product", productSchema);

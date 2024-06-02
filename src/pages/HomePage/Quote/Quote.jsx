@@ -1,5 +1,5 @@
 "use client"
-import { gsap, Linear } from "gsap";
+// import { gsap, Linear } from "gsap";
 import React, { MutableRefObject, useEffect, useRef, useState } from "react";
 import { ScrollTrigger } from "gsap/dist/ScrollTrigger";
 import { motion } from "framer-motion";
