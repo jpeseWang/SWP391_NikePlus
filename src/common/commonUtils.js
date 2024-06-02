@@ -1,10 +1,10 @@
-import { entry } from "./entry";
+import { Entry } from "./entry";
 import mongoose from "mongoose";
 
 export default class CommonUtil {
   static validateNum(num) {
     if (parseInt(num).toString() !== num.trim() || parseInt(num) <= 0) {
-      return entry.ErrorMessage_InputNumber;
+      return Entry.ErrorMessage_InputNumber;
     }
     return "";
   }
