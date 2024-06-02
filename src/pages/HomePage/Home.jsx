@@ -2,13 +2,13 @@ import React from "react";
 import HeroSection from "./HeroSection";
 import Dock from "./Dock";
 import Feature from "./Feature";
-import ReviewGallery from "./ReviewGallery";
-import InfinitiveScroll from "./InfinitiveScroll/page";
+
 import InfinitiveCarousel from "./InfinitiveCarousel/page";
 import ZoomParallaxPage from "./ZoomParralax/page";
 import QuoteSection from "./Quote/Quote";
 import TextOpacityScrollSection from "./TextOpacityScroll/page";
 import CardLink from "@/components/CardLink";
+
 export default function HomePage() {
   return (
     <div>
