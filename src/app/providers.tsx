@@ -3,6 +3,7 @@
 import React, { createContext, useEffect, useRef } from "react";
 import { usePathname } from "next/navigation";
 import AuthProvider from "../context/Provider/AuthProvider";
+import { Toaster } from "react-hot-toast";
 
 function usePrevious<T>(value: T) {
   let ref = useRef<T>();
@@ -22,7 +23,10 @@ export function Providers({ children }: { children: React.ReactNode }) {
 
   return (
     <AppContext.Provider value={{ previousPathname }}>
-      <AuthProvider>{children}</AuthProvider>
+      <AuthProvider>
+        <Toaster position="top-center" reverseOrder={false} />
+        {children}
+      </AuthProvider>
     </AppContext.Provider>
   );
 }

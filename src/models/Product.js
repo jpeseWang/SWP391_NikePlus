@@ -20,21 +20,12 @@ const productSchema = new Schema(
       type: String,
       require: true,
     },
-    imageSrc: {
-      type: String,
-      require: true,
-    },
     rating: {
       type: String,
-      require: true,
     },
-    defaultImg: [
+    specs: [
       {
-        type: String,
-      },
-    ],
-    colors: [
-      {
+        colorId: Number,
         title: String,
         imgList: [
           {
@@ -46,7 +37,7 @@ const productSchema = new Schema(
   },
   {
     timestamps: true,
-  }
+  },
 );
 export default mongoose.models.Product ||
   mongoose.model("Product", productSchema);

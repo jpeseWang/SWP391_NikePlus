@@ -38,10 +38,10 @@ export default function PageDetails({ params }) {
   const paramUrl = useSearchParams().get("title");
 
   const matchedNavigationItem = navigation.find(
-    (item) => item.name === paramUrl
+    (item) => item.name === paramUrl,
   );
   return (
-    <div>
+    <div className="h-screen">
       {matchedNavigationItem ? (
         matchedNavigationItem.component
       ) : (

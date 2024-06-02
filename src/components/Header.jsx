@@ -17,7 +17,7 @@ import {
 } from "@heroicons/react/20/solid";
 import Link from "next/link";
 import { classNames } from "@/utils/classNames";
-import MiddayLogo from "@/assets/svg/midday";
+import { NikePlusLogoLight, NikePlusLogoDark } from "@/assets/svg/NikePlusLogo";
 
 const products = [
   {
@@ -52,7 +52,7 @@ const products = [
   },
 ];
 const callsToAction = [
-  { name: "Shop all categories", href: "#", icon: PlayCircleIcon },
+  { name: "Shop all categories", href: "/marketplace", icon: PlayCircleIcon },
   { name: "Auction community", href: "#", icon: PhoneIcon },
 ];
 
@@ -67,25 +67,25 @@ export default function Header() {
       >
         <div className="flex lg:flex-1">
           <div className="-m-1.5 p-1.5 lg:hidden">
-            <MiddayLogo />
+            <NikePlusLogoDark />
           </div>
         </div>
         <div className="flex lg:hidden">
           <button
             type="button"
-            className="-m-2.5 inline-flex items-center justify-center rounded-md p-2.5 text-white"
+            className="-m-2.5 inline-flex items-center justify-center rounded-md p-2.5 dark:text-white"
             onClick={() => setMobileMenuOpen(true)}
           >
             <span className="sr-only">Open main menu</span>
             <Bars3Icon className="h-6 w-6" aria-hidden="true" />
           </button>
         </div>
-        <Popover.Group className="hidden lg:flex lg:gap-x-6 border border-border p-3 rounded-2xl items-center backdrop-filter backdrop-blur-xl border-[#2b2b2b] bg-[#121212] bg-opacity-70 py-1.5">
+        <Popover.Group className="border-border hidden items-center rounded-2xl border border-[#2b2b2b] bg-[#121212] bg-opacity-70 p-3 py-1.5 backdrop-blur-xl backdrop-filter lg:flex lg:gap-x-6">
           <Link
             href="/"
             className="text-sm font-semibold leading-6 text-[#FAFAFA]"
           >
-            <MiddayLogo />
+            <NikePlusLogoLight />
           </Link>
 
           <Link
@@ -125,7 +125,7 @@ export default function Header() {
                     <a
                       key={item.name}
                       href={item.href}
-                      className="text-textDark flex items-center justify-center gap-x-2.5 p-3 text-sm font-semibold leading-6 text-gray-900 hover:bg-gray-100"
+                      className="flex items-center justify-center gap-x-2.5 p-3 text-sm font-semibold leading-6 text-gray-900 hover:bg-gray-100 dark:text-textDark"
                     >
                       <item.icon
                         className="h-5 w-5 flex-none text-gray-400"
@@ -145,8 +145,8 @@ export default function Header() {
             Admin
           </Link>
           <Link
-            href="/auth/login/"
-            className="text-sm font-semibold leading-6 text-[#18181B] bg-textDark px-2.5 py-1.5 rounded-lg "
+            href="/auth/login"
+            className="rounded-lg bg-textDark px-2.5 py-1.5 text-sm font-semibold leading-6 text-[#18181B] "
           >
             Sign in
           </Link>
@@ -164,7 +164,7 @@ export default function Header() {
           <div className="flex items-center justify-between">
             <Link href="#" className="-m-1.5 p-1.5">
               <span className="sr-only">Your Company</span>
-              <MiddayLogo></MiddayLogo>
+              <NikePlusLogoDark></NikePlusLogoDark>
             </Link>
             <button
               type="button"
@@ -186,7 +186,7 @@ export default function Header() {
                         <ChevronDownIcon
                           className={classNames(
                             open ? "rotate-180" : "",
-                            "h-5 w-5 flex-none"
+                            "h-5 w-5 flex-none",
                           )}
                           aria-hidden="true"
                         />
@@ -227,7 +227,7 @@ export default function Header() {
               </div>
               <div className="py-6">
                 <a
-                  href="#"
+                  href="/auth/login"
                   className="-mx-3 block rounded-lg px-3 py-2.5 text-base font-semibold leading-7 text-[#878787] hover:bg-gray-50"
                 >
                   Sign in
