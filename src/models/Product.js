@@ -25,7 +25,7 @@ const productSchema = new Schema(
     },
     specs: [
       {
-        colorId: Number,
+        colorId: String,
         title: String,
         imgList: [
           {
