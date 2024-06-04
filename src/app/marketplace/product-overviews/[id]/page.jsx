@@ -1,7 +1,6 @@
 /* eslint-disable @next/next/no-img-element */
 "use client";
 import Link from "next/link";
-import useSWR from "swr";
 import { useState, useEffect, useContext } from "react";
 import { Disclosure, RadioGroup, Tab } from "@headlessui/react";
 import { HeartIcon, MinusIcon, PlusIcon } from "@heroicons/react/24/outline";
@@ -12,9 +11,12 @@ import CommonUtil from "@/common/commonUtils";
 // import { CartContext } from "@/contexts/CartContext";
 import { classNames } from "@/utils/classNames";
 import { GetProductById } from "@/services/productService";
+import { productsSizes } from "@/utils/data/products-sizes";
 
 const colorVariants = ["Black", "White", "Blue"];
 const sizeVariants = ["37", "38", "39", "40", "41", "42", "43", "44", "45"];
+
+
 const relatedProducts = [
   {
     id: 1,
@@ -39,7 +41,7 @@ export default function ProductOverview({ params }) {
   const router = useRouter();
 
   const { productData, isLoading, isError } = GetProductById(params.id);
-
+  const productVariants = productsSizes.find(product => product.name === productData?.category);
   console.log(productData);
 
   // const addFeaturedToCart = () => {
@@ -120,10 +122,13 @@ export default function ProductOverview({ params }) {
                   <h1 className="text-3xl font-semibold tracking-tight text-gray-900">
                     {productData.name}
                   </h1>
+                  <h2 className="text-xl tracking-tight text-gray-900">
+                    {productData?.subCategory}
+                  </h2>
 
                   <div className="mt-3">
                     <h2 className="sr-only">Product information</h2>
-                    <p className="text-2xl tracking-tight text-gray-900">
+                    <p className="text-xl font-medium tracking-tight text-gray-900">
                       {CommonUtil.parsePrice(productData.price)}
                     </p>
                   </div>
@@ -152,16 +157,7 @@ export default function ProductOverview({ params }) {
                     </div>
                   </div>
 
-                  <div className="mt-6">
-                    <h3 className="sr-only">Description</h3>
 
-                    <div
-                      className="space-y-6 text-base text-gray-700"
-                      dangerouslySetInnerHTML={{
-                        __html: productData.description,
-                      }}
-                    />
-                  </div>
 
                   <div className="mt-6">
                     {/* Colors */}
@@ -192,9 +188,9 @@ export default function ProductOverview({ params }) {
                                     <span
                                       className={classNames(
                                         selected
-                                          ? "ring-indigo-500"
+                                          ? "ring-black"
                                           : "ring-transparent",
-                                        "pointer-events-none absolute inset-0 rounded-md ring-2 ring-offset-2",
+                                        "pointer-events-none absolute inset-0 rounded-md ring-1 ring-offset-2",
                                       )}
                                       aria-hidden="true"
                                     />
@@ -215,19 +211,22 @@ export default function ProductOverview({ params }) {
                           Choose a color
                         </RadioGroup.Label>
                         <div className="grid grid-cols-3 items-center gap-3">
-                          {sizeVariants.map((size, index) => (
+
+
+                          {productVariants?.sizes.map((size, index) => (
                             <Link
                               key={index}
                               href={`?color=${selectedColor}&size=${size}`}
-                              className={`rounded border-2 bg-gray-50 px-2 py-1.5 text-center ${
-                                selectedSize === size
-                                  ? "border-blue-500"
-                                  : "border-gray-200"
-                              } `}
+                              className={`rounded border-2 bg-gray-50 px-2 py-1.5 text-center ${selectedSize === size
+                                ? "border-black"
+                                : "border-gray-100"
+                                } `}
                             >
                               EU {size}
                             </Link>
                           ))}
+
+
                         </div>
                       </RadioGroup>
                     </div>
@@ -258,6 +257,16 @@ export default function ProductOverview({ params }) {
                     <h2 id="details-heading" className="sr-only">
                       Additional details
                     </h2>
+                    <div className="mt-6">
+                      <h3 className="sr-only">Description</h3>
+
+                      <div
+                        className="space-y-6 text-base text-gray-700"
+                        dangerouslySetInnerHTML={{
+                          __html: productData.description,
+                        }}
+                      />
+                    </div>
 
                     {/* <div className="divide-y divide-gray-200 border-t">
                       {product.details.map((detail) => (
@@ -355,7 +364,7 @@ export default function ProductOverview({ params }) {
                   <div className="mt-6">
                     <button
                       className="relative flex items-center justify-center rounded-md border border-transparent bg-gray-100 px-8 py-2 text-sm font-medium text-gray-900 hover:bg-gray-200"
-                      // onClick={addFeaturedToCart}
+                    // onClick={addFeaturedToCart}
                     >
                       Add to bag
                       <span className="sr-only">, {product.name}</span>

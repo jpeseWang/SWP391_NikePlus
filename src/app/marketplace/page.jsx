@@ -313,7 +313,7 @@ export default function MarketplacePage() {
                             <img
                               src={product.specs[0]?.imgList[0]}
                               alt={product.imageAlt}
-                              className="h-full w-full object-cover object-center"
+                              className="h-full w-full aspect-square object-cover object-center"
                             />
                           </div>
                           <h3 className="mt-4 text-base font-medium text-gray-900">

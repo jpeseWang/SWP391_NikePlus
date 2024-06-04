@@ -92,7 +92,7 @@ export default function Layout({ children }) {
         />
         <div className="xl:pl-72">
           {/* Sticky search header */}
-          <div className="sticky top-0 flex h-16 shrink-0 items-center gap-x-6 border-b border-white/5 px-4 shadow-sm sm:px-6 lg:px-8 dark:bg-gray-900">
+          <div className="bg-white sticky top-0 flex h-16 shrink-0 items-center gap-x-6 border-b border-white/5 px-4 shadow-sm sm:px-6 lg:px-8 dark:bg-gray-900">
             <button
               type="button"
               className="-m-2.5 p-2.5 xl:hidden dark:text-white"

@@ -1,4 +1,4 @@
-export type ReviewType = {
+export type IReviewType = {
     name: string;
     avatar: string;
     description: string;
@@ -16,10 +16,10 @@ export type ReviewType = {
     images: string[];
     discount?: string;
     currentPrice: number;
-    reviews: ReviewType[];
+    reviews: IReviewType[];
   }
   
-  export type ProductTypeList = {
+  export type IProductTypeList = {
     id: string;
     name: string;
     price: string;
@@ -29,7 +29,7 @@ export type ReviewType = {
     currentPrice?: number;
   }
   
-  export type ProductStoreType = {
+  export type IProductStoreType = {
     id: string;
     name: string;
     thumb: string;

@@ -1,10 +1,23 @@
-import { GetAllProduct } from "@/services/productService";
+import { GetAllProduct, DeleteProduct } from "@/services/productService";
 import CommonUtil from "@/common/commonUtils";
 import Link from "next/link";
 import LoadingComponent from "@/app/loading";
+import toast from "react-hot-toast";
 
 export default function ListAllProduct() {
-  const { productData, isLoading, isError } = GetAllProduct();
+  const { productData, isLoading, isError, mutate } = GetAllProduct();
+
+  const handleDeleteProduct = async (id) => {
+    try {
+      await DeleteProduct(id);
+      toast('Deleted task!', {
+        icon: '🗑️',
+      });
+      mutate();
+    } catch (err) {
+      toast.error("Something went wrong!");
+    }
+  };
   return (
     <div className="sm:px-2 lg:px-4">
       <div className="sm:flex sm:items-center">
@@ -40,7 +53,7 @@ export default function ListAllProduct() {
                   <tr>
                     <th
                       scope="col"
-                      className="py-3.5 pl-4 pr-3 text-left text-sm font-semibold text-gray-900 sm:pl-0"
+                      className="py-3.5 pl-4 pr-3 text-left text-sm font-semibold text-gray-900 sm:pl-0 w-26"
                     >
                       Product
                     </th>
@@ -106,12 +119,20 @@ export default function ListAllProduct() {
                         {CommonUtil.parsePrice(product.price)}
                       </td>
                       <td className="relative whitespace-nowrap py-5 pl-3 pr-4 text-right text-sm font-medium sm:pr-0">
-                        <a
-                          href="#"
+                        <Link
+                          href={`/admin/components/Product/${product._id}`}
                           className="text-indigo-600 hover:text-indigo-900"
                         >
-                          Edit<span className="sr-only">, {product.name}</span>
-                        </a>
+                          Edit
+                        </Link>
+                      </td>
+                      <td className="relative whitespace-nowrap py-5 pl-3 pr-4 text-right text-sm font-medium sm:pr-0">
+                        <button
+                          onClick={() => { handleDeleteProduct(product._id) }}
+                          className="text-red-600 hover:text-red-900"
+                        >
+                          Deltete
+                        </button>
                       </td>
                     </tr>
                   ))}
