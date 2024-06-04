@@ -1,6 +1,8 @@
 "use client";
 import { Fragment, useState } from "react";
 import { Dialog, Disclosure, Popover, Transition } from "@headlessui/react";
+import { CiShoppingCart } from "react-icons/ci";
+import { CiHeart } from "react-icons/ci";
 import {
   ArrowPathIcon,
   Bars3Icon,
@@ -151,6 +153,20 @@ export default function Header() {
             Sign in
           </Link>
         </Popover.Group>
+        {/* wishlist icon*/}
+        <div className="relative flex h-1 w-8 cursor-pointer items-center justify-center rounded-full hover:bg-black/[0.05] md:h-12 md:w-12">
+          <CiHeart className="text-[15px] md:text-[20px]" />
+          <div className="absolute left-5 top-1 flex h-[14px] min-w-[14px] items-center justify-center rounded-full bg-red-600 px-[2px] text-[10px] text-white md:left-7 md:h-[18px] md:min-w-[18px] md:px-[5px] md:text-[12px]">
+            10
+          </div>
+        </div>
+        {/*cart icon*/}
+        <div className="relative flex h-1 w-8 cursor-pointer items-center justify-center rounded-full hover:bg-black/[0.05] md:h-12 md:w-12">
+          <CiShoppingCart className="text-[15px] md:text-[20px]" />
+          <div className="absolute left-5 top-1 flex h-[14px] min-w-[14px] items-center justify-center rounded-full bg-red-600 px-[2px] text-[10px] text-white md:left-7 md:h-[18px] md:min-w-[18px] md:px-[5px] md:text-[12px]">
+            5
+          </div>
+        </div>
         <div className="hidden lg:flex lg:flex-1 lg:justify-end"></div>
       </div>
       <Dialog
