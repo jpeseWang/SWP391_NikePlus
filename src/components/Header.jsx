@@ -154,19 +154,24 @@ export default function Header() {
           </Link>
         </Popover.Group>
         {/* wishlist icon*/}
-        <div className="relative flex h-1 w-8 cursor-pointer items-center justify-center rounded-full hover:bg-black/[0.05] md:h-12 md:w-12">
+        <Link href="/">
+        <div  className="relative flex h-1 w-8 cursor-pointer items-center justify-center rounded-full hover:bg-black/[0.05] md:h-12 md:w-12">
           <CiHeart className="text-[15px] md:text-[20px]" />
           <div className="absolute left-5 top-1 flex h-[14px] min-w-[14px] items-center justify-center rounded-full bg-red-600 px-[2px] text-[10px] text-white md:left-7 md:h-[18px] md:min-w-[18px] md:px-[5px] md:text-[12px]">
             10
           </div>
         </div>
+        </Link>
         {/*cart icon*/}
+        <Link href="/order/cart">
         <div className="relative flex h-1 w-8 cursor-pointer items-center justify-center rounded-full hover:bg-black/[0.05] md:h-12 md:w-12">
           <CiShoppingCart className="text-[15px] md:text-[20px]" />
           <div className="absolute left-5 top-1 flex h-[14px] min-w-[14px] items-center justify-center rounded-full bg-red-600 px-[2px] text-[10px] text-white md:left-7 md:h-[18px] md:min-w-[18px] md:px-[5px] md:text-[12px]">
             5
           </div>
         </div>
+        </Link>
+        {/*end 2 icon*/}
         <div className="hidden lg:flex lg:flex-1 lg:justify-end"></div>
       </div>
       <Dialog

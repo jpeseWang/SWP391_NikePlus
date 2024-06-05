@@ -9,7 +9,7 @@ import { StarIcon } from "@heroicons/react/20/solid";
 import { useRouter, useSearchParams } from "next/navigation";
 import LoadingComponent from "@/app/loading";
 import CommonUtil from "@/common/commonUtils";
-// import { CartContext } from "@/contexts/CartContext";
+import { CartContext } from "@/context/Provider/CartContext";
 import { classNames } from "@/utils/classNames";
 import { GetProductById } from "@/services/productService";
 
@@ -31,7 +31,7 @@ const relatedProducts = [
 ];
 
 export default function ProductOverview({ params }) {
-  // const { addProduct } = useContext(CartContext);
+  const { addProduct } = useContext(CartContext);
   const [selectedColor, setSelectedColor] = useState(0);
   const searchParams = useSearchParams();
   // const selectedColor = searchParams.get("color");
@@ -42,9 +42,9 @@ export default function ProductOverview({ params }) {
 
   console.log(productData);
 
-  // const addFeaturedToCart = () => {
-  //   addProduct(data._id, data.price);
-  // };
+   const addFeaturedToCart = () => {
+     addProduct(productData._id, productData.price);
+   };
 
   return (
     <div className="bg-white">
@@ -234,7 +234,7 @@ export default function ProductOverview({ params }) {
 
                     <div className="mt-10 flex">
                       <button
-                        // onClick={addFeaturedToCart}
+                        onClick={addFeaturedToCart}
                         className="mr-4 flex flex-1 items-center justify-center rounded-full border border-transparent bg-black px-5 py-3 text-base font-medium text-white hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 focus:ring-offset-gray-50 sm:w-full"
                       >
                         Add to bag
@@ -355,7 +355,7 @@ export default function ProductOverview({ params }) {
                   <div className="mt-6">
                     <button
                       className="relative flex items-center justify-center rounded-md border border-transparent bg-gray-100 px-8 py-2 text-sm font-medium text-gray-900 hover:bg-gray-200"
-                      // onClick={addFeaturedToCart}
+                      onClick={addFeaturedToCart}
                     >
                       Add to bag
                       <span className="sr-only">, {product.name}</span>
