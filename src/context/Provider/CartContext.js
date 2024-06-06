@@ -1,6 +1,6 @@
 "use client";
 import { createContext, useState, useEffect } from "react";
-import { toast } from "react-toastify";
+import toast from "react-hot-toast";
 
 export const CartContext = createContext({});
 
@@ -46,7 +46,7 @@ export function CartContextProvider({ children }) {
       console.log("New cartProducts:", [
         ...cartProducts,
         { id: productId, price: productPrice, quantity: 1 },
-      ]); // Debugging line
+      ]); 
       toast.success("Product added successfully!");
     } else {
       setCartProducts(updatedCart);
