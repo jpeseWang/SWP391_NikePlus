@@ -40,11 +40,12 @@ export default function ProductOverview({ params }) {
 
   const { productData, isLoading, isError } = GetProductById(params.id);
 
-  console.log(productData);
+  
 
-   const addFeaturedToCart = () => {
-     addProduct(productData._id, productData.price);
-   };
+  const addFeaturedToCart = () => {
+    console.log("Adding to cart:", productData);
+    addProduct(productData._id, productData.price);
+  };
 
   return (
     <div className="bg-white">

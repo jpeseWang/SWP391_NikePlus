@@ -2,6 +2,9 @@ import "./globals.css";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import { Providers } from "./providers";
+import { CartContextProvider } from "@/context/Provider/CartContext";
+import { ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 export const metadata = {
   title: "Nike Plus. Not at all",
@@ -12,11 +15,14 @@ export default function RootLayout({ children }) {
   return (
     <html lang="en" className="dark:bg-[#0C0C0C]">
       <body>
-        <Providers>
-          <Header />
-          {children}
-          {/* <Footer /> */}
-        </Providers>
+        <CartContextProvider>
+          <Providers>
+            <Header />
+            {children}
+            <ToastContainer />
+            {/* <Footer /> */}
+          </Providers>
+        </CartContextProvider>
       </body>
     </html>
   );
