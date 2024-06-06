@@ -3,7 +3,7 @@ import { useEffect, useState } from "react";
 import toast from "react-hot-toast";
 import { PhotoIcon, UserCircleIcon, PlusIcon } from "@heroicons/react/24/solid";
 import { TrashIcon } from "@heroicons/react/24/outline";
-
+import { useRouter } from "next/router";
 import LoadingComponent from "@/app/loading";
 import { GetProductById, UpdateProduct } from "@/services/productService";
 import { productsCategories } from "@/utils/data/products-types";
@@ -11,25 +11,30 @@ import { productsCategories } from "@/utils/data/products-types";
 
 export default function AdminUpdateProduct({ params }) {
 
-  const { productData, isLoading, isError } = GetProductById(params.id);
 
-  const [newProductData, setNewProductData] = useState()
+  const { productData, isLoading, isError } = GetProductById(params.id);
+  const [newProductData, setNewProductData] = useState(productData)
+  const [specs, setSpecs] = useState(productData?.specs);
+
   useEffect(() => {
     setNewProductData(productData);
+    setSpecs(productData?.specs)
+
   }, [productData])
 
-  const [specs, setSpecs] = useState([
-    { colorId: "", title: "", imgList: [""] },
-  ]);
 
   const [uploading, setUploading] = useState(false);
-  const [selectedCategory, setSelectedCategory] = useState(productData?.category || "");
+  const [selectedCategory, setSelectedCategory] = useState(newProductData?.category);
   const [subcategories, setSubcategories] = useState([]);
+
+
   const handleCategoryChange = (event) => {
     const categoryName = event.target.value;
+    onValueChange("category", categoryName)
     setSelectedCategory(categoryName);
     const category = productsCategories.find(cat => cat.name.toString() === categoryName);
     setSubcategories(category ? category.subcategory : []);
+
   };
 
   const handleSpecChange = (index, field, value) => {
@@ -64,7 +69,7 @@ export default function AdminUpdateProduct({ params }) {
 
   const handleRemoveImage = (specIndex, imgIndex) => {
     const newSpecs = [...specs];
-    newSpecs[specIndex].imgList.splice(imgIndex, 1);
+    newSpecs[specIndex]?.imgList.splice(imgIndex, 1);
     setSpecs(newSpecs);
   };
 
@@ -74,9 +79,51 @@ export default function AdminUpdateProduct({ params }) {
     setSpecs(newSpecs);
   };
 
+  const onValueChange = (type, value) => {
+    let obj = newProductData
+    switch (type) {
+      case "SKU":
+        {
+          obj.SKU = value
+        }
+        break;
+      case "name":
+        {
+          obj.name = value
+        }
+        break;
+      case "price":
+        {
+          obj.price = value
+        }
+        break;
+      case "category":
+        {
+          obj.category = value
+        }
+        break;
+      case "subCategory":
+        {
+          obj.subCategory = value
+        }
+        break;
+      case "description":
+        {
+          obj.description = value
+        }
+        break;
+      case "specs":
+        {
+          obj.specs = value
+        }
+        break;
+    }
+    setNewProductData({ ...obj })
+  }
+
   const handleSubmit = async (e) => {
     e.preventDefault();
-    const productData = {
+    const updateProductData = {
       _id: productData._id,
       category: e.target[0].value,
       subCategory: e.target[1].value,
@@ -88,20 +135,22 @@ export default function AdminUpdateProduct({ params }) {
 
     setUploading(true);
 
-    // try {
-    //   await UpdateProduct({ productData });
-    //   setUploading(false);
-    //   e.target.reset();
-    //   setSpecs([]);
-    //   toast.success("Create product successfully!");
-    // } catch (err) {
-    //   console.error("Error creating product:", err);
-    //   setUploading(false);
-    //   toast.error("Something went wrong: " + err.message);
-    // }
+    try {
+      await UpdateProduct(updateProductData);
+      setUploading(false);
+      e.target.reset();
+      setSpecs([]);
+      toast.success("Update product successfully!");
+      // router.push("/admin/page?title=Product%20Management&section=ListAllProducts")
+    } catch (err) {
+      console.error("Error creating product:", err);
+      setUploading(false);
+      toast.error("Something went wrong: " + err.message);
+    }
   };
-  console.log(`"productData >" ${productData}`);
-  console.log(`"newProductData >" ${newProductData}`);
+  console.log("productData >", productData);
+  console.log("newProductData >", newProductData);
+
 
   return (
     <div className="my-9 h-screen mx-12">
@@ -154,11 +203,8 @@ export default function AdminUpdateProduct({ params }) {
                   </label>
                   <div className="mt-2">
                     <select
-                      id="Sub Category"
-                      name="Sub Category"
-                      autoComplete="Sub Category"
+                      onChange={(e) => { onValueChange("subCategory", e.target.value) }}
                       className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:max-w-xs sm:text-sm sm:leading-6"
-
                     >
                       <option value="">Select a subcategory</option>
                       {subcategories.map((subcategory, index) => (
@@ -181,9 +227,10 @@ export default function AdminUpdateProduct({ params }) {
                     <div className="flex rounded-md shadow-sm ring-1 ring-inset ring-gray-300 focus-within:ring-2 focus-within:ring-inset focus-within:ring-indigo-600 sm:max-w-md">
                       <input
                         type="text"
-                        value={productData.SKU}
+                        value={newProductData?.SKU}
                         className="block flex-1 border-0 bg-transparent py-1.5 pl-1 text-gray-900 placeholder:text-gray-400 focus:ring-0 sm:text-sm sm:leading-6"
                         placeholder="Ex: FQ3224-100"
+                        onChange={(e) => { onValueChange("SKU", e.target.value) }}
                       />
                     </div>
                   </div>
@@ -200,7 +247,8 @@ export default function AdminUpdateProduct({ params }) {
                     <div className="flex rounded-md shadow-sm ring-1 ring-inset ring-gray-300 focus-within:ring-2 focus-within:ring-inset focus-within:ring-indigo-600 sm:max-w-md">
                       <input
                         type="text"
-                        value={productData.name}
+                        value={newProductData?.name}
+                        onChange={(e) => { onValueChange("name", e.target.value) }}
                         className="block flex-1 border-0 bg-transparent py-1.5 pl-1 text-gray-900 placeholder:text-gray-400 focus:ring-0 sm:text-sm sm:leading-6"
                         placeholder="Ex: Air Jordan 1 Mid SE Craft"
                       />
@@ -218,7 +266,8 @@ export default function AdminUpdateProduct({ params }) {
                   <div className="mt-2">
                     <input
                       type="text"
-                      value={productData.price}
+                      value={newProductData?.price}
+                      onChange={(e) => { onValueChange("price", e.target.value) }}
                       placeholder="Ex: 2500"
                       className="block w-full rounded-md border-0 px-1.5 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
                     />
@@ -234,7 +283,8 @@ export default function AdminUpdateProduct({ params }) {
                   </label>
                   <div className="mt-2">
                     <textarea
-                      defaultValue={productData.description}
+                      defaultValue={newProductData?.description}
+                      onChange={(e) => { onValueChange("description", e.target.value) }}
                       rows={3}
                       className="block w-full rounded-md border-0 px-1.5 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
                     />
@@ -259,7 +309,7 @@ export default function AdminUpdateProduct({ params }) {
               <div className="mt-6 grid grid-cols-1 gap-x-6 gap-y-8 sm:grid-cols-6">
                 <div className="col-span-4">
                   <div className="multi-spec-container">
-                    {productData.specs?.map((spec, index) => (
+                    {newProductData?.specs?.map((spec, index) => (
                       <div key={index} className="spec-group mt-12">
                         <label
                           htmlFor="Product variant"
@@ -381,7 +431,7 @@ export default function AdminUpdateProduct({ params }) {
                           </div>
                         </div>
 
-                        {specs.length > 1 && index !== 0 && (
+                        {newProductData?.specs?.length > 1 && index !== 0 && (
                           <button
                             type="button"
                             className="remove-spec-btn mt-2 rounded-md bg-red-200 px-2 py-1 text-red-500 hover:bg-red-300"
@@ -418,7 +468,7 @@ export default function AdminUpdateProduct({ params }) {
               type="submit"
               className="cursor-pointer rounded-md bg-indigo-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
             >
-              Create
+              Update
             </button>
           </div>
         </form>

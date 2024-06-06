@@ -1,5 +1,4 @@
 "use client";
-
 import { CountrySelector } from "@/utils/data/country-options";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
@@ -9,8 +8,10 @@ import { CheckCircleIcon } from "@heroicons/react/16/solid";
 import { classNames } from "@/utils/classNames";
 import LoadingComponent from "../../loading";
 import { useSession } from "next-auth/react";
+import { CreateUser } from "@/services/userService"
+import { mutate } from 'swr';
 
-const mailingLists = [
+const genderOptions = [
   {
     id: 1,
     title: "Male",
@@ -22,39 +23,54 @@ const mailingLists = [
 ];
 
 const SignupPage = () => {
-  const [selectedMailingLists, setSelectedMailingLists] = useState(
-    mailingLists[0],
-  );
+  const [genderOption, setGenderOption] = useState(genderOptions[0]);
   const [inputType, setInputType] = useState("");
   const [err, setErr] = useState(false);
   const router = useRouter();
   const session = useSession();
+
   const handleSubmit = async (e) => {
     e.preventDefault();
-    const name = e.target[2].value;
+
     const email = e.target[0].value;
     const password = e.target[1].value;
+    const name = e.target[2].value;
+    const dob = e.target[3].value;
+    const country = e.target[4].value;
+    const gender = genderOption
     const role = "user";
 
+    const userData = {
+      name,
+      email,
+      password,
+      role,
+      dob,
+      country,
+      gender
+    }
     try {
-      const res = await fetch("/api/auth/register", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          name,
-          email,
-          password,
-          role,
-        }),
+      const res = await toast.promise(
+        CreateUser(userData),
+        {
+          loading: 'Creating...',
+          success: <p>Create account successfully!</p>,
+          error: <p>Could not save.</p>,
+        }
+      ).then(response => {
+        mutate();
+        return response; 
       });
-      toast.success("Create account successfully!");
-      res.status = 201 && router.push("/auth/login");
+
+      if (res.status === 201) {
+        router.push("/auth/login");
+      }
+
     } catch (err) {
       setErr(true);
     }
-  };
+  }
+
 
   if (session.status === "loading") {
     return <LoadingComponent></LoadingComponent>;
@@ -78,38 +94,34 @@ const SignupPage = () => {
           </p>
           <form className="items-center space-y-4" onSubmit={handleSubmit}>
             <div className="mx-auto my-2 w-9/12">
+
+              {/* Email */}
               <input
-                id="email"
-                name="email"
                 type="email"
                 autoComplete="email"
                 placeholder="Email address"
                 required
                 className="my-4 block w-full items-center rounded border-0 px-4 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
-              ></input>{" "}
+              />
+
+              {/* password */}
               <input
-                id="password"
-                name="password"
                 type="password"
                 autoComplete="current-password"
                 placeholder="Password"
                 required
                 className="my-4 block w-full rounded border-0 px-4 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
-              ></input>
+              />
+
+              {/* Full Name */}
               <input
                 type="text"
-                autoComplete="current-password"
-                placeholder="First Name"
+                placeholder="Full Name"
                 required
                 className="my-4 block w-full rounded border-0 px-4 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
-              ></input>
-              <input
-                type="text"
-                autoComplete="current-password"
-                placeholder="Last Name"
-                required
-                className="my-4 block w-full rounded border-0 px-4 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
-              ></input>
+              />
+
+              {/* Birth day */}
               <input
                 type={inputType}
                 onFocus={() => setInputType("date")}
@@ -118,21 +130,26 @@ const SignupPage = () => {
                 placeholder="Date of Birth"
                 required
                 className="my-4 block w-full rounded border-0 px-4 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
-              ></input>
+              />
+
               <p className="-mt-2 px-2 text-xs font-light text-gray-500">
                 Get a Nike Member Reward every year on your Birthday.
               </p>
+
+              {/* country */}
               <CountrySelector></CountrySelector>
+
               <div className="mb-4">
+                {/* Gender */}
                 <RadioGroup
-                  value={selectedMailingLists}
-                  onChange={setSelectedMailingLists}
+                  value={genderOption}
+                  onChange={setGenderOption}
                 >
                   <div className="grid w-full grid-cols-1  gap-y-6 sm:grid-cols-2 sm:gap-x-4">
-                    {mailingLists.map((mailingList) => (
+                    {genderOptions.map((gender) => (
                       <RadioGroup.Option
-                        key={mailingList.id}
-                        value={mailingList}
+                        key={gender.id}
+                        value={gender.title}
                         className={({ active }) =>
                           classNames(
                             active
@@ -157,7 +174,7 @@ const SignupPage = () => {
                                 as="span"
                                 className="block pr-6 text-sm font-medium text-gray-800"
                               >
-                                {mailingList.title}
+                                {gender.title}
                               </RadioGroup.Label>
                             </span>
                             <span

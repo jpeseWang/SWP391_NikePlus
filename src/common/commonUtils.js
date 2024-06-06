@@ -5,6 +5,7 @@ export default class CommonUtil {
   static validateNum(num) {
     if (parseInt(num).toString() !== num.trim() || parseInt(num) <= 0) {
       return Entry.ErrorMessage_InputNumber;
+      return Entry.ErrorMessage_InputNumber;
     }
     return "";
   }

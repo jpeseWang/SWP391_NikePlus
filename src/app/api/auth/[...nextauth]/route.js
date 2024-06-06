@@ -63,6 +63,8 @@ const handler = NextAuth({
       if (token) {
         session.id = token.id;
         session.role = token.role;
+        session.email = token.email;
+        session.gender = token.gender;
       }
       return session;
     },

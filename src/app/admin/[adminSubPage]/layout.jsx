@@ -92,7 +92,7 @@ export default function Layout({ children }) {
         />
         <div className="xl:pl-72">
           {/* Sticky search header */}
-          <div className="bg-white sticky top-0 flex h-16 shrink-0 items-center gap-x-6 border-b border-white/5 px-4 shadow-sm sm:px-6 lg:px-8 dark:bg-gray-900">
+          <div className="sticky top-0 flex h-16 shrink-0 items-center gap-x-6 border-b border-white/5 px-4 shadow-sm sm:px-6 lg:px-8 dark:bg-gray-900">
             <button
               type="button"
               className="-m-2.5 p-2.5 xl:hidden dark:text-white"
@@ -102,7 +102,7 @@ export default function Layout({ children }) {
               <Bars3Icon className="h-5 w-5" aria-hidden="true" />
             </button>
 
-            <div className="my-4 flex flex-1 gap-x-4 self-stretch lg:gap-x-6">
+            {/* <div className="my-4 flex flex-1 gap-x-4 self-stretch lg:gap-x-6">
               <form className="flex flex-1" action="#" method="GET">
                 <label htmlFor="search-field" className="sr-only">
                   Search
@@ -121,7 +121,7 @@ export default function Layout({ children }) {
                   />
                 </div>
               </form>
-            </div>
+            </div> */}
           </div>
 
           <div className="px-9">{children}</div>
