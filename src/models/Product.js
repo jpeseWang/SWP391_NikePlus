@@ -4,6 +4,9 @@ const { Schema } = mongoose;
 
 const productSchema = new Schema(
   {
+    SKU: {
+      type: String,
+    },
     name: {
       type: String,
       require: true,
@@ -12,7 +15,11 @@ const productSchema = new Schema(
       type: String,
       require: true,
     },
-    type: {
+    category: {
+      type: String,
+      require: true,
+    },
+    subCategory: {
       type: String,
       require: true,
     },
@@ -27,6 +34,7 @@ const productSchema = new Schema(
       {
         colorId: String,
         title: String,
+        quantity: Number,
         imgList: [
           {
             type: String,

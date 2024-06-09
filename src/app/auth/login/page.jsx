@@ -4,6 +4,7 @@ import React from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useState, useEffect } from "react";
 import { signIn, useSession } from "next-auth/react";
+import { LoginUser } from "@/services/userService";
 import LoadingComponent from "../../loading";
 
 export default function LoginPage() {
@@ -12,6 +13,7 @@ export default function LoginPage() {
   const params = useSearchParams();
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
+
   const [loading, setLoading] = useState(false);
   useEffect(() => {
     setError(params.get("error"));
@@ -24,7 +26,7 @@ export default function LoginPage() {
     const password = e.target[1].value;
     setLoading(true);
     try {
-      await signIn("credentials", { email, password });
+      await LoginUser(email, password)
     } catch (error) {
       console.error(error);
     } finally {
@@ -33,11 +35,11 @@ export default function LoginPage() {
   };
 
   if (session.status === "loading") {
-    return <LoadingComponent></LoadingComponent>;
+    return <LoadingComponent />;
   }
 
   if (session.status === "authenticated") {
-    router?.push("/auth/dashboard");
+    router?.push("/marketplace");
   }
 
   return (
@@ -73,7 +75,7 @@ export default function LoginPage() {
                   required
                   autoFocus
                   className="block w-full rounded-lg border-0  px-4 py-1.5 text-gray-900 shadow-sm outline outline-offset-0 outline-gray-600 ring-1 ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
-                ></input>
+                />
               </div>
             </div>
 
@@ -87,7 +89,8 @@ export default function LoginPage() {
                   placeholder="Password"
                   required
                   className="block w-full rounded-lg border-0  px-4 py-1.5 text-gray-900 shadow-sm outline outline-offset-0 outline-gray-600 ring-1 ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
-                ></input>
+                />
+
                 <div className="flex items-center justify-between py-4">
                   <div className="flex items-center">
                     <input

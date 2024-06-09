@@ -16,8 +16,11 @@ import {
   PlayCircleIcon,
 } from "@heroicons/react/20/solid";
 import Link from "next/link";
+import { useSession } from "next-auth/react";
+import { signOut } from "next-auth/react";
 import { classNames } from "@/utils/classNames";
 import { NikePlusLogoLight, NikePlusLogoDark } from "@/assets/svg/NikePlusLogo";
+import Banner from "./Banner"
 
 const products = [
   {
@@ -58,6 +61,9 @@ const callsToAction = [
 
 export default function Header() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const session = useSession();
+
+  // console.log(session)
 
   return (
     <div className="">
@@ -67,9 +73,16 @@ export default function Header() {
       >
         <div className="flex lg:flex-1">
           <div className="-m-1.5 p-1.5 lg:hidden">
-            <NikePlusLogoDark />
+            <Link
+              href="/"
+              className="text-sm font-semibold leading-6 text-[#FAFAFA]"
+            >
+              <NikePlusLogoDark />
+            </Link>
           </div>
         </div>
+
+        {/* Mobile toggle button */}
         <div className="flex lg:hidden">
           <button
             type="button"
@@ -138,21 +151,39 @@ export default function Header() {
               </Popover.Panel>
             </Transition>
           </Popover>
-          <Link
-            href="/admin/Dashboard"
-            className="text-sm font-semibold leading-6 text-textDark"
-          >
-            Admin
-          </Link>
-          <Link
-            href="/auth/login"
-            className="rounded-lg bg-textDark px-2.5 py-1.5 text-sm font-semibold leading-6 text-[#18181B] "
-          >
-            Sign in
-          </Link>
+          {session?.data?.role === "admin" &&
+            <Link
+              href="/admin/page?title=Dashboard"
+              className="text-sm font-semibold leading-6 text-textDark"
+            >
+              Admin
+            </Link>}
+
+
+          {session.status === "authenticated" ? (
+            <button
+              onClick={signOut}
+              className="rounded-lg bg-textDark px-2.5 py-1.5 text-sm font-semibold leading-6 text-[#18181B] "
+            >
+              Sign out
+            </button>
+          ) : (
+            <Link
+              href="/auth/login"
+              className="rounded-lg bg-textDark px-2.5 py-1.5 text-sm font-semibold leading-6 text-[#18181B] "
+            >
+              Sign in
+            </Link>
+          )}
+
         </Popover.Group>
+        {/*end 2 icon*/}
         <div className="hidden lg:flex lg:flex-1 lg:justify-end"></div>
       </div>
+      <Banner sessionData={session} />
+
+
+      {/* Mobile nav */}
       <Dialog
         as="div"
         className="lg:hidden"
@@ -206,32 +237,46 @@ export default function Header() {
                     </>
                   )}
                 </Disclosure>
-                <a
+                <Link
                   href="#"
                   className="-mx-3 block rounded-lg px-3 py-2 text-base font-semibold leading-7 text-[#878787] hover:bg-gray-50"
                 >
-                  Features
-                </a>
-                <a
-                  href="#"
+                  SNKRS
+                </Link>
+                <Link
+                  href="/marketplace"
                   className="-mx-3 block rounded-lg px-3 py-2 text-base font-semibold leading-7 text-[#878787] hover:bg-gray-50"
                 >
                   Marketplace
-                </a>
-                <a
-                  href="#"
-                  className="-mx-3 block rounded-lg px-3 py-2 text-base font-semibold leading-7 text-[#878787] hover:bg-gray-50"
-                >
-                  Company
-                </a>
+                </Link>
+                {session?.data?.role === "admin" &&
+                  <Link
+                    href="/admin/page?title=Dashboard"
+                    className="-mx-3 block rounded-lg px-3 py-2 text-base font-semibold leading-7 text-[#878787] hover:bg-gray-50"
+                  >
+                    Admin
+                  </Link>
+                }
               </div>
               <div className="py-6">
-                <a
-                  href="/auth/login"
-                  className="-mx-3 block rounded-lg px-3 py-2.5 text-base font-semibold leading-7 text-[#878787] hover:bg-gray-50"
-                >
-                  Sign in
-                </a>
+
+                {session.status === "authenticated" ? (
+                  <button
+                    onClick={signOut}
+                    className="-mx-3 block rounded-lg px-3 py-2.5 text-base font-semibold leading-7 text-[#878787] hover:bg-gray-50"
+                  >
+                    Sign out
+                  </button>
+                ) : (
+                  <a
+                    href="/auth/login"
+                    className="-mx-3 block rounded-lg px-3 py-2.5 text-base font-semibold leading-7 text-[#878787] hover:bg-gray-50"
+                  >
+                    Sign in
+                  </a>
+                )}
+
+
               </div>
             </div>
           </div>

@@ -1,4 +1,4 @@
-export enum PaymentStatus {
+export enum EPaymentStatus {
     New = "UnPaid",
     PaymentReceived = "Payment received",
     PaymentFailed = "Payment failed",
@@ -9,8 +9,15 @@ export enum PaymentStatus {
     FullyPaid = "Complete",
 }
 
-export enum UserRole {
+export enum EUserRole {
     Customer = "Customer",
     Seller = "Seller",
     Admin = "Admin",
+}
+
+export enum EProductCategory {
+    Shoes = "Shoes",
+    Clothings = "Clothings",
+    Accessories = "Accessories and Equipment"
+
 }

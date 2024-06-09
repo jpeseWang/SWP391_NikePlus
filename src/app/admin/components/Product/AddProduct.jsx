@@ -1,16 +1,27 @@
 "use client";
 import { useState } from "react";
+import toast from "react-hot-toast";
 import { PhotoIcon, UserCircleIcon, PlusIcon } from "@heroicons/react/24/solid";
 import { TrashIcon } from "@heroicons/react/24/outline";
-import { CreateProduct } from "@/services/productService";
-import toast from "react-hot-toast";
+
 import LoadingComponent from "@/app/loading";
+import { CreateProduct } from "@/services/productService";
+import { productsCategories } from "@/utils/data/products-types";
 
 export default function AddProduct() {
   const [specs, setSpecs] = useState([
     { colorId: "", title: "", imgList: [""] },
   ]);
   const [uploading, setUploading] = useState(false);
+  const [selectedCategory, setSelectedCategory] = useState('');
+  const [subcategories, setSubcategories] = useState([]);
+
+  const handleCategoryChange = (event) => {
+    const categoryName = event.target.value;
+    setSelectedCategory(categoryName);
+    const category = productsCategories.find(cat => cat.name.toString() === categoryName);
+    setSubcategories(category ? category.subcategory : []);
+  };
 
   const handleSpecChange = (index, field, value) => {
     const newSpecs = [...specs];
@@ -23,7 +34,7 @@ export default function AddProduct() {
   };
 
   const handleAddSpec = () => {
-    setSpecs([...specs, { colorId: "", title: "", imgList: [""] }]);
+    setSpecs([...specs, { colorId: "", title: "", quantity: "", imgList: [""] }]);
   };
 
   const handleRemoveSpec = (index) => {
@@ -56,24 +67,32 @@ export default function AddProduct() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    const type = e.target[0].value;
-    const name = e.target[1].value;
-    const description = e.target[2].value;
-    const price = e.target[3].value;
-    const quantity = e.target[4].value;
+    const category = e.target[0].value;
+    const subCategory = e.target[1].value;
+    const SKU = e.target[2].value;
+    const name = e.target[3].value;
+    const price = e.target[4].value;
+    const description = e.target[5].value;
     setUploading(true);
 
+    // console.log(`"category >" ${category}`);
+    // console.log(`"subCategory >" ${subCategory}`);
+    // console.log(`"sku >" ${SKU}`);
+    // console.log(`"name >" ${name}`);
+    // console.log(`"price >" ${price}`);
+    // console.log(`"description >" ${description}`);
+    // console.log("specs >", specs);
+    
     try {
-      const result = await CreateProduct({
-        type,
+      await CreateProduct({
+        category,
+        subCategory,
+        SKU,
         name,
-        description,
         price,
-        quantity,
+        description,
         specs,
       });
-      console.log("Product created data >>", result);
-
       setUploading(false);
       e.target.reset();
       setSpecs([]);
@@ -104,26 +123,75 @@ export default function AddProduct() {
               <div className="mt-10 grid grid-cols-1 gap-x-6 gap-y-8 sm:grid-cols-6">
                 <div className="sm:col-span-3">
                   <label
-                    htmlFor="country"
+                    htmlFor="Category"
                     className="block text-sm font-medium leading-6 text-gray-900"
                   >
                     Category
                   </label>
                   <div className="mt-2">
                     <select
-                      id="country"
-                      name="country"
-                      autoComplete="country-name"
+                      name="Category"
                       className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:max-w-xs sm:text-sm sm:leading-6"
+                      value={selectedCategory}
+                      onChange={handleCategoryChange}
                     >
-                      <option>Shoes</option>
-                      <option>Clothing</option>
-                      <option>Accessories</option>
+                      <option value="">Select a category</option>
+                      {productsCategories.map(category => (
+                        <option key={category.id} value={category.name}>
+                          {category.name}
+                        </option>
+                      ))}
                     </select>
                   </div>
                 </div>
 
-                <div className="sm:col-span-4">
+                <div className="sm:col-span-3">
+                  <label
+                    htmlFor="Sub Category"
+                    className="block text-sm font-medium leading-6 text-gray-900"
+                  >
+                    Sub Category
+                  </label>
+                  <div className="mt-2">
+                    <select
+                      id="Sub Category"
+                      name="Sub Category"
+                      autoComplete="Sub Category"
+                      className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:max-w-xs sm:text-sm sm:leading-6"
+
+                    >
+                      <option value="">Select a subcategory</option>
+                      {subcategories.map((subcategory, index) => (
+                        <option key={index} value={subcategory}>
+                          {subcategory}
+                        </option>
+                      ))}
+                    </select>
+                  </div>
+                </div>
+
+                <div className="sm:col-span-2">
+                  <label
+                    htmlFor="SKU"
+                    className="block text-sm font-medium leading-6 text-gray-900"
+                  >
+                    SKU (Stock-Keeping Unit)
+                  </label>
+                  <div className="mt-2">
+                    <div className="flex rounded-md shadow-sm ring-1 ring-inset ring-gray-300 focus-within:ring-2 focus-within:ring-inset focus-within:ring-indigo-600 sm:max-w-md">
+                      <input
+                        type="text"
+                        name="SKU"
+                        id="SKU"
+                        autoComplete="SKU"
+                        className="block flex-1 border-0 bg-transparent py-1.5 pl-1 text-gray-900 placeholder:text-gray-400 focus:ring-0 sm:text-sm sm:leading-6"
+                        placeholder="Ex: FQ3224-100"
+                      />
+                    </div>
+                  </div>
+                </div>
+
+                <div className="sm:col-span-3">
                   <label
                     htmlFor="username"
                     className="block text-sm font-medium leading-6 text-gray-900"
@@ -138,9 +206,27 @@ export default function AddProduct() {
                         id="username"
                         autoComplete="username"
                         className="block flex-1 border-0 bg-transparent py-1.5 pl-1 text-gray-900 placeholder:text-gray-400 focus:ring-0 sm:text-sm sm:leading-6"
-                        placeholder="Ex: Air Jordan"
+                        placeholder="Ex: Air Jordan 1 Mid SE Craft"
                       />
                     </div>
+                  </div>
+                </div>
+
+                <div className="sm:col-span-1">
+                  <label
+                    htmlFor="Price"
+                    className="block text-sm font-medium leading-6 text-gray-900"
+                  >
+                    Price (million ₫)
+                  </label>
+                  <div className="mt-2">
+                    <input
+                      type="text"
+                      name="Price"
+                      id="Price"
+                      placeholder="Ex: 2500"
+                      className="block w-full rounded-md border-0 px-1.5 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+                    />
                   </div>
                 </div>
 
@@ -164,41 +250,8 @@ export default function AddProduct() {
                     Write a few sentences about yourself.
                   </p>
                 </div>
-                <div className="sm:col-span-3">
-                  <label
-                    htmlFor="first-name"
-                    className="block text-sm font-medium leading-6 text-gray-900"
-                  >
-                    Price (million ₫)
-                  </label>
-                  <div className="mt-2">
-                    <input
-                      type="text"
-                      name="price"
-                      id="price"
-                      autoComplete="given-name"
-                      className="block w-full rounded-md border-0 px-1.5 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
-                    />
-                  </div>
-                </div>
 
-                <div className="sm:col-span-3">
-                  <label
-                    htmlFor="last-name"
-                    className="block text-sm font-medium leading-6 text-gray-900"
-                  >
-                    Quantity
-                  </label>
-                  <div className="mt-2">
-                    <input
-                      type="text"
-                      name="last-name"
-                      id="last-name"
-                      autoComplete="family-name"
-                      className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
-                    />
-                  </div>
-                </div>
+
 
                 {/* <div className="col-span-full">
                 <label
@@ -263,7 +316,7 @@ export default function AddProduct() {
                 Specs Information
               </h2>
               <p className="mt-1 text-sm leading-6 text-gray-600">
-                Use a permanent address where you can receive mail.
+                Customize different colours for your product.
               </p>
 
               <div className="mt-6 grid grid-cols-1 gap-x-6 gap-y-8 sm:grid-cols-6">
@@ -272,40 +325,74 @@ export default function AddProduct() {
                     {specs.map((spec, index) => (
                       <div key={index} className="spec-group mt-12">
                         <label
-                          htmlFor="street-address"
-                          className="block font-medium leading-6 text-gray-900"
+                          htmlFor="Product variant"
+                          className="block font-medium text-lg leading-6 text-gray-900"
                         >
                           Product variant {index + 1}
                         </label>
 
-                        <div className="mt-2">
-                          <input
-                            type="text"
-                            value={spec.colorId}
-                            onChange={(event) =>
-                              handleSpecChange(
-                                index,
-                                "colorId",
-                                event.target.value,
-                              )
-                            }
-                            placeholder="Color ID"
-                            className="block w-full rounded-md border-0 px-1.5 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
-                          />
-                          <input
-                            type="text"
-                            value={spec.title}
-                            onChange={(event) =>
-                              handleSpecChange(
-                                index,
-                                "title",
-                                event.target.value,
-                              )
-                            }
-                            placeholder="Title"
-                            className="mt-2 block w-full rounded-md border-0 px-1.5 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
-                          />
-                          <div className="mt-2">
+                        <div className="my-4">
+                          <div className="my-4">
+                            <label className="mb-2 block text-sm font-medium leading-6 text-gray-900">
+                              Color Code
+                            </label>
+                            <input
+                              type="text"
+                              value={spec.colorId}
+                              onChange={(event) =>
+                                handleSpecChange(
+                                  index,
+                                  "colorId",
+                                  event.target.value,
+                                )
+                              }
+                              placeholder="Ex: DZ4475-103"
+                              className="block w-full rounded-md border-0 px-1.5 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+                            />
+                          </div>
+
+                          <div>
+                            <label className="mb-2 block text-sm font-medium leading-6 text-gray-900">
+                              Color Shown
+                            </label>
+                            <input
+                              type="text"
+                              value={spec.title}
+                              onChange={(event) =>
+                                handleSpecChange(
+                                  index,
+                                  "title",
+                                  event.target.value,
+                                )
+                              }
+                              placeholder="Ex: White/Neutral Grey/Industrial Blue"
+                              className="mt-2 block w-full rounded-md border-0 px-1.5 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+                            />
+                          </div>
+
+                          <div className="my-4">
+                            <label className="mb-2 block text-sm font-medium leading-6 text-gray-900">
+                              Quantity
+                            </label>
+                            <input
+                              type="number"
+                              value={spec.quantity}
+                              onChange={(event) =>
+                                handleSpecChange(
+                                  index,
+                                  "quantity",
+                                  event.target.value,
+                                )
+                              }
+                              placeholder="Number of existing products. Ex: 105"
+                              className="mt-2 block w-full rounded-md border-0 px-1.5 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+                            />
+                          </div>
+
+                          <div className="mt-4">
+                            <label className="mb-2 block text-sm font-medium leading-6 text-gray-900">
+                              Images URL
+                            </label>
                             {spec.imgList.map((imgUrl, imgIndex) => (
                               <div
                                 key={imgIndex}
@@ -321,7 +408,7 @@ export default function AddProduct() {
                                       event.target.value,
                                     )
                                   }
-                                  placeholder={`Image URL ${imgIndex + 1}`}
+                                  placeholder={`Product image URL ${imgIndex + 1}`}
                                   className="mb-2 block w-full rounded-md border-0 px-1.5 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 placeholder-shown:italic focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
                                 />
 
