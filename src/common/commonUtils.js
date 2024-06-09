@@ -1,10 +1,11 @@
-import { entry } from "./entry";
+import { Entry } from "./entry";
 import mongoose from "mongoose";
 
 export default class CommonUtil {
   static validateNum(num) {
     if (parseInt(num).toString() !== num.trim() || parseInt(num) <= 0) {
-      return entry.ErrorMessage_InputNumber;
+      return Entry.ErrorMessage_InputNumber;
+      return Entry.ErrorMessage_InputNumber;
     }
     return "";
   }
@@ -16,4 +17,36 @@ export default class CommonUtil {
       throw new Error("Connection failed");
     }
   };
+
+  static parsePrice(input) {
+    let numberStr = input.toString();
+    let reversedStr = numberStr.split("").reverse().join("");
+    let formattedReversedStr = "";
+
+    for (let i = 0; i < reversedStr.length; i++) {
+      if (i > 0 && i % 3 === 0) {
+        formattedReversedStr += ",";
+      }
+      formattedReversedStr += reversedStr[i];
+    }
+
+    let formattedStr = formattedReversedStr.split("").reverse().join("");
+    formattedStr += ",000₫";
+    return formattedStr;
+  }
+
+  static getCountByData(data, attribute) {
+    const typeCount = {};
+
+    data?.forEach(item => {
+      if (typeCount[item[attribute]]) {
+        typeCount[item[attribute]]++;
+      } else {
+        typeCount[item[attribute]] = 1;
+      }
+    });
+
+    // const result = Object.values(typeCount).map(count => count.toString());
+    return Object.values(typeCount)
+  }
 }

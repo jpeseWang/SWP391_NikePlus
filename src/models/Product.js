@@ -4,6 +4,9 @@ const { Schema } = mongoose;
 
 const productSchema = new Schema(
   {
+    SKU: {
+      type: String,
+    },
     name: {
       type: String,
       require: true,
@@ -12,7 +15,11 @@ const productSchema = new Schema(
       type: String,
       require: true,
     },
-    type: {
+    category: {
+      type: String,
+      require: true,
+    },
+    subCategory: {
       type: String,
       require: true,
     },
@@ -20,22 +27,14 @@ const productSchema = new Schema(
       type: String,
       require: true,
     },
-    imageSrc: {
-      type: String,
-      require: true,
-    },
     rating: {
       type: String,
-      require: true,
     },
-    defaultImg: [
+    specs: [
       {
-        type: String,
-      },
-    ],
-    colors: [
-      {
+        colorId: String,
         title: String,
+        quantity: Number,
         imgList: [
           {
             type: String,
@@ -46,7 +45,7 @@ const productSchema = new Schema(
   },
   {
     timestamps: true,
-  }
+  },
 );
 export default mongoose.models.Product ||
   mongoose.model("Product", productSchema);
