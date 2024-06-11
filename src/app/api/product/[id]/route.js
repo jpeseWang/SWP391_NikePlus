@@ -19,11 +19,11 @@ export const GET = async (request, { params }) => {
 // Update Product API
 export const PUT = async (request, { params }) => {
   const { id } = params;
-  const updatedProduct = await request.json();
+  const { productData } = await request.json();
 
   try {
     await CommonUtil.connectDB();
-    const product = await Product.findByIdAndUpdate(id, updatedProduct, { new: true });
+    const product = await Product.findByIdAndUpdate(id, productData, { new: true });
 
     if (!product) {
       return new NextResponse("Product not found", { status: 404 });
@@ -34,6 +34,26 @@ export const PUT = async (request, { params }) => {
     return new NextResponse("Database Error", { status: 500 });
   }
 };
+
+// Patch Product API
+export const PATCH = async (request, { params }) => {
+  const { id } = params;
+  const updatedFields = await request.json();
+
+  try {
+    await CommonUtil.connectDB();
+    const product = await Product.findByIdAndUpdate(id, { $set: updatedFields }, { new: true });
+
+    if (!product) {
+      return new NextResponse("Product not found", { status: 404 });
+    }
+
+    return new NextResponse("Product has been updated", { status: 200 });
+  } catch (err) {
+    return new NextResponse("Database Error", { status: 500 });
+  }
+};
+
 
 // Delete Product API
 export const DELETE = async (request, { params }) => {

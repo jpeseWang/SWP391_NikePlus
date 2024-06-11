@@ -45,7 +45,6 @@ export default class CommonUtil {
         typeCount[item[attribute]] = 1;
       }
     });
-
     // const result = Object.values(typeCount).map(count => count.toString());
     return Object.values(typeCount)
   }

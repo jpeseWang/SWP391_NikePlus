@@ -46,10 +46,13 @@ export const DeleteProduct = async (id) => {
 }
 
 export const UpdateProduct = async (productData) => {
-  const id = productData._id
+  const id = productData._id;
   try {
     const response = await fetch(`/api/product/${id}`, {
       method: "PUT",
+      headers: {
+        'Content-Type': 'application/json',
+      },
       body: JSON.stringify({
         productData
       }),
@@ -59,4 +62,3 @@ export const UpdateProduct = async (productData) => {
     console.error(error);
   }
 };
-
