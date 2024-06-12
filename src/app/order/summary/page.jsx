@@ -1,8 +1,60 @@
 /* eslint-disable react-hooks/rules-of-hooks */
 "use client";
+import { CartContext } from "@/context/Provider/CartContext";
+import { useState, useContext, useEffect } from "react";
 import { useRouter } from "next/navigation";
-export default function OrderSummary(props) {
+import { toast } from "react-toastify";
+import getData from "@/utils/getData";
+import CommonUtil from "@/common/commonUtils";
+
+export default function OrderSummary() {
+  const ls = typeof window !== "undefined" ? window.localStorage : null;
+  const [products, setProducts] = useState([]);
+  const { cartProducts } = useContext(CartContext);
   const router = useRouter();
+
+  useEffect(() => {
+    const fetchProductData = async () => {
+      try {
+        const productData = await Promise.all(
+          cartProducts.map((productId) => getData(productId.id))
+        );
+
+        const updatedProducts = productData.map((product) => {
+          const localProduct = JSON.parse(ls.getItem("cart") || "[]").find(
+            (lp) => lp.id === product._id
+          );
+          return {
+            ...product,
+            quantity: localProduct?.quantity || 1,
+          };
+        });
+
+        setProducts(updatedProducts);
+        toast.success("Checkout successfully!");
+      } catch (error) {
+        console.error(error);
+      }
+    };
+
+    fetchProductData();
+  }, [cartProducts, ls]);
+
+  // Calculate totalPrice using products state
+  const totalPrice = products.reduce((total, product) => {
+    return total + parseInt(product.price) * product.quantity;
+  }, 0);
+
+  const shippingFee = 125;
+  const taxes = (totalPrice * 0.1).toFixed(0);
+  const finalTotal = (parseFloat(totalPrice) + parseFloat(taxes) + shippingFee).toFixed(0);
+
+  if (ls) {
+    ls.removeItem("cart");
+    ls.removeItem("deliveryFee");
+    ls.removeItem("totalPrice");
+  }
+
   return (
     <>
       <main className="relative lg:min-h-full">
@@ -10,7 +62,7 @@ export default function OrderSummary(props) {
           <img
             src="https://images.unsplash.com/photo-1554350747-ec45fd24f51b?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=987&q=80"
             alt="TODO"
-            className="mt-6 h-full w-full object-cover object-center"
+            className="h-full w-full object-cover object-center mt-6"
           />
         </div>
 
@@ -37,49 +89,49 @@ export default function OrderSummary(props) {
                 role="list"
                 className="mt-6 divide-y divide-gray-200 border-t border-gray-200 text-sm font-medium text-gray-500"
               >
-               
-                  <li key="" className="flex space-x-6 py-6">
+                {products.map((product) => (
+                  <li key={product.id} className="flex space-x-6 py-6">
                     <img
-                      src=""
-                      alt=""
+                      src={product?.specs[0]?.imgList[0]}
+                      alt={product.imageAlt}
                       className="h-24 w-24 flex-none rounded-md bg-gray-100 object-cover object-center"
                     />
                     <div className="flex-auto space-y-1">
                       <h3 className="text-gray-900">
-                        <a href="">product name</a>
+                        <a href={product.href}>{product.name}</a>
                       </h3>
-                      <p>product type</p>
-                      <div className="w-fit rounded-md border border-gray-300 px-2 text-left text-base font-medium text-gray-700 shadow-sm focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500 sm:text-sm">
-                        x product quantity
+                      <p>{product.type}</p>
+                      <div className="w-fit rounded-md border border-gray-300 text-left text-base font-medium text-gray-700 shadow-sm focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500 sm:text-sm px-2">
+                        x{product.quantity}
                       </div>
                     </div>
                     <p className="flex-none font-medium text-gray-900">
-                      product price
+                      {CommonUtil.parsePrice(product.price * product.quantity)}
                     </p>
                   </li>
-                
+                ))}
               </ul>
 
               <dl className="space-y-6 border-t border-gray-200 pt-6 text-sm font-medium text-gray-500">
                 <div className="flex justify-between">
                   <dt>Subtotal</dt>
-                  <dd className="text-gray-900">subtotal</dd>
+                  <dd className="text-gray-900">{CommonUtil.parsePrice(totalPrice)}</dd>
                 </div>
 
                 <div className="flex justify-between">
                   <dt>Shipping</dt>
-                  <dd className="text-gray-900">delivery fee</dd>
+                  <dd className="text-gray-900">{CommonUtil.parsePrice(shippingFee)}</dd>
                 </div>
 
                 <div className="flex justify-between">
                   <dt>Taxes</dt>
-                  <dd className="text-gray-900">taxes</dd>
+                  <dd className="text-gray-900">{CommonUtil.parsePrice(taxes)}</dd>
                 </div>
 
                 <div className="flex items-center justify-between border-t border-gray-200 pt-6 text-gray-900">
                   <dt className="text-base">Total</dt>
                   <dd className="text-base">
-                    subtotal + taxes + deliveryFee
+                    {CommonUtil.parsePrice(finalTotal)}
                   </dd>
                 </div>
               </dl>

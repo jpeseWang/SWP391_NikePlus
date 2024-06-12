@@ -36,9 +36,18 @@ export default class CommonUtil {
     // Reverse the string back to the original order
     let formattedStr = formattedReversedStr.split("").reverse().join("");
 
+    // Tìm vị trí của dấu chấm trong chuỗi
+    let decimalIndex = formattedStr.indexOf('.');
+    // Nếu có dấu chấm trong chuỗi
+    if (decimalIndex !== -1) {
+      // Thay thế dấu chấm bằng số 0
+      formattedStr = formattedStr.replace('.', '0');
+    }
+
     // Add '000d' at the end
     formattedStr += ",000₫";
 
     return formattedStr;
-  }
+}
+
 }
