@@ -3,17 +3,14 @@
 import React from "react";
 import { useState, useContext, useEffect, useRef } from "react";
 import { useRouter } from "next/navigation";
-import Head from "next/head";
 import { RadioGroup } from "@headlessui/react";
 import CommonUtil from "@/common/commonUtils";
 import {
   CheckCircleIcon,
-  ChevronDownIcon,
   TrashIcon,
 } from "@heroicons/react/20/solid";
 import { classNames } from "@/utils/classNames";
 import { CartContext } from "@/context/Provider/CartContext";
-import getData from "@/utils/getData";
 import emailjs from "@emailjs/browser";
 
 const deliveryMethods = [
@@ -30,7 +27,7 @@ const paymentMethods = [
   { id: "paypal", title: "Credit Card/ Paypal" },
 ];
 
-export default function Example() {
+export default function CheckOutPage() {
   const ls = typeof window !== "undefined" ? window.localStorage : null;
   const totalPrice = parseInt(ls?.getItem("totalPrice") || "0");
   const [selectedDeliveryMethod, setSelectedDeliveryMethod] = useState(
@@ -38,44 +35,19 @@ export default function Example() {
   );
   const [selectedPaymentMethod, setSelectedPaymentMethod] = useState("cod");
 
-  const { cartProducts, removeProduct, addUserInfo } = useContext(CartContext);
+  const {removeProduct, addUserInfo } = useContext(CartContext);
   const [products, setProducts] = useState([]);
-  const [localProducts, setLocalProducts] = useState([]);
   const [userInfo, setUserInfo] = useState([]);
   const router = useRouter();
   const form = useRef();
 
   useEffect(() => {
-    const lp = JSON.parse(localStorage.getItem("cart"));
+    const lp = CommonUtil.getStorageValue("cartProduct")
     if (lp) {
-      setLocalProducts(lp);
+      setProducts(lp);
     }
   }, []);
-  useEffect(() => {
-    const fetchProductData = async () => {
-      try {
-        const productData = await Promise.all(
-          cartProducts.map((productId) => getData(productId.id))
-        );
 
-        const updatedProducts = productData.map((product) => {
-          const localProduct = localProducts.find(
-            (lp) => lp.id === product._id
-          );
-          return {
-            ...product,
-            quantity: localProduct.quantity,
-          };
-        });
-
-        setProducts(updatedProducts);
-      } catch (error) {
-        console.error(error);
-      }
-    };
-
-    fetchProductData();
-  }, [cartProducts, localProducts]);
 
   const handleSubmit = async (event) => {
     event.preventDefault();
@@ -130,7 +102,7 @@ export default function Example() {
     totalPrice * 0.1
   ).toFixed(2);
 
-  console.log(selectedPaymentMethod.id);
+
   return (
     <div className="bg-gray-50">
       <main className="mx-auto max-w-7xl px-4 pb-24 pt-16 sm:px-6 lg:px-8">
@@ -618,7 +590,7 @@ export default function Example() {
                 <div className="border-t border-gray-200 px-4 py-6 sm:px-6">
                   <button
                     type="submit"
-                    className="w-full rounded-md border border-transparent bg-indigo-600 px-4 py-3 text-base font-medium text-white shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 focus:ring-offset-gray-50"
+                    className="w-full rounded-md border border-transparent bg-black px-4 py-3 text-base font-medium text-white shadow-sm hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 focus:ring-offset-gray-50"
                   >
                     Confirm order
                   </button>

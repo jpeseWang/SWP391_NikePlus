@@ -11,6 +11,8 @@ import {
   XMarkIcon as XMarkIconMini,
 } from "@heroicons/react/20/solid";
 import LoadingComponent from "@/app/loading";
+import emptyCartImg from "@/assets/images/emptyCart.png"
+
 import getData from "@/utils/getData";
 const relatedProducts = [
   {
@@ -26,53 +28,55 @@ const relatedProducts = [
 ];
 
 export default function Example() {
-  
-  const [products, setProducts] = useState([]);
-  const [isLoading, setIsLoading] = useState(true);
-  const [localProducts, setLocalProducts] = useState([]);
-  const router = useRouter();
-  const ls = typeof window !== "undefined" ? window.localStorage : null;
-  const { cartProducts, removeProduct, updateProduct } =
-    useContext(CartContext);
-  useEffect(() => {
-    const lp = JSON.parse(localStorage.getItem("cart"));
-    if (lp) {
-      setLocalProducts(lp);
-    }
-  }, []);
-  useEffect(() => {
-    const fetchProductData = async () => {
-      try {
-        const productData = await Promise.all(
-          cartProducts.map((productId) => getData(productId.id))
-        );
-       
-        const updatedProducts = productData.map((product) => {
-          const localProduct = localProducts.find(
-            (lp) => lp.id === product._id
-          );
-          return {
-            ...product,
-            quantity: localProduct.quantity,
-          };
-        });
 
-        setProducts(updatedProducts);
-        setIsLoading(false);
-      } catch (error) {
-        console.error(error);
-        setIsLoading(false);
+  const [localProducts, setLocalProducts] = useState([]);
+  const [cartProducts, setCartProducts] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
+
+  const { removeProduct, updateProduct } = useContext(CartContext);
+  const router = useRouter();
+
+  useEffect(() => {
+    const loadCartProducts = async () => {
+      const lp = CommonUtil.getStorageValue("cart", " ");
+      console.log("lp", lp)
+      if (lp.length > 0) {
+        setLocalProducts(lp);
+
+        const updateProducts = await Promise.all(lp.map(async (productData) => {
+          try {
+            const response = await fetch(`/api/product/${productData.id}`);
+            const productDetails = await response.json();
+            return {
+              ...productDetails,
+              quantity: productData.quantity
+            };
+          } catch (error) {
+            console.error("Error fetching product data:", error);
+            return null;
+          }
+        }));
+
+        setCartProducts(updateProducts.filter(product => product !== null));
+
       }
+      setIsLoading(false);
     };
 
-    fetchProductData();
-  }, [cartProducts, localProducts]);
+    loadCartProducts();
+  }, [updateProduct]);
 
-  const totalPrice = localProducts.reduce((total, product) => {
-    return total + parseInt(product.price) * product.quantity;
-  }, 0);
-  console.log("Products:", products);
-  
+  let totalPrice
+  if (cartProducts.length > 0) {
+    totalPrice = cartProducts.reduce((total, product) => {
+      const price = parseFloat(product.price) || 0;
+      return total + price * (product.quantity || 0);
+    }, 0);
+  }
+
+
+
+
   return (
     <>
       <div className="bg-white">
@@ -90,18 +94,18 @@ export default function Example() {
           </button>
           {isLoading && <LoadingComponent />}
 
-          {!isLoading && !products.length && (
+          {!isLoading && !cartProducts.length && (
             <div className="mt-6 ">
               <h3 class="mt-2 text-lg font-semibold text-gray-900">
-                {" "}
+
                 Your cart is Empty.
               </h3>
               <p class="mt-1 text-base text-gray-500"> Go shopping now!</p>
 
-              <img
-                className="h-60 w-auto"
-                src="https://assets.materialup.com/uploads/16e7d0ed-140b-4f86-9b7e-d9d1c04edb2b/preview.png"
-              ></img>
+              {/* <img
+                className=""
+                src={emptyCartImg}
+              /> */}
               <button
                 onClick={() => {
                   router.push("/marketplace");
@@ -118,13 +122,13 @@ export default function Example() {
               <h2 id="cart-heading" className="sr-only">
                 Items in your shopping cart
               </h2>
-              {products.length > 0 && (
+              {cartProducts.length > 0 && (
                 <div>
                   <ul
                     role="list"
                     className="divide-y divide-gray-200 border-b border-t border-gray-200"
                   >
-                    {products.map((product, productIdx) => (
+                    {cartProducts.map((product, productIdx) => (
                       <li key={product.id} className="flex py-6 sm:py-10">
                         <div className="flex-shrink-0">
                           <img
@@ -157,7 +161,7 @@ export default function Example() {
                                 ) : null}
                               </div>
                               <p className="mt-1 text-base font-medium text-gray-900">
-                              {CommonUtil.parsePrice(product.price)}
+                                {CommonUtil.parsePrice(product.price)}
                               </p>
                               <p>Quantity: {product.quantity}</p>
                             </div>
@@ -180,15 +184,7 @@ export default function Example() {
                                     10
                                   );
                                   updateProduct(product._id, newQuantity);
-                                  const updatedProducts = products.map((p) =>
-                                    p.id === product.id
-                                      ? { ...p, quantity: newQuantity }
-                                      : p
-                                  );
 
-                                  setLocalProducts(updatedProducts);
-                                  setProducts(updatedProducts);
-                                  window.location.reload();
                                 }}
                               >
                                 <option value={1}>1</option>
@@ -246,7 +242,7 @@ export default function Example() {
               )}
             </section>
             {/* Order summary */}
-            {!!products.length && (
+            {!!cartProducts.length && (
               <section
                 aria-labelledby="summary-heading"
                 className="mt-16 rounded-lg bg-gray-50 px-4 py-6 sm:p-6 lg:col-span-5 lg:mt-0 lg:p-8"
@@ -262,7 +258,7 @@ export default function Example() {
                   <div className="flex items-center justify-between">
                     <dt className="text-sm text-gray-600">Subtotal</dt>
                     <dd className="text-sm font-medium text-gray-900">
-                    {CommonUtil.parsePrice(totalPrice)}
+                      {CommonUtil.parsePrice(totalPrice)}
                     </dd>
                   </div>
                   <div className="flex items-center justify-between border-t border-gray-200 pt-4">
@@ -300,7 +296,7 @@ export default function Example() {
                       </a>
                     </dt>
                     <dd className="text-sm font-medium text-gray-900">
-                    {CommonUtil.parsePrice((totalPrice * 0.1).toFixed(0))}
+                      {CommonUtil.parsePrice((totalPrice * 0.1).toFixed(0))}
                     </dd>
                   </div>
                   <div className="flex items-center justify-between border-t border-gray-200 pt-4">
@@ -308,7 +304,7 @@ export default function Example() {
                       Order total
                     </dt>
                     <dd className="text-base font-medium text-gray-900">
-                    {CommonUtil.parsePrice((totalPrice + totalPrice * 0.1 + 125).toFixed(0))}
+                      {CommonUtil.parsePrice((totalPrice + totalPrice * 0.1 + 125).toFixed(0))}
                     </dd>
                   </div>
                 </dl>
@@ -317,7 +313,8 @@ export default function Example() {
                   <button
                     className="w-full rounded-full border border-transparent bg-black px-4 py-3 text-base font-medium text-white shadow-sm hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 focus:ring-offset-gray-50"
                     onClick={() => {
-                      ls.setItem("totalPrice", totalPrice);
+                      CommonUtil.setStorageValue("totalPrice", totalPrice)
+                      CommonUtil.setStorageValue("cartProduct", cartProducts)
                       router.push("/order/checkout");
                     }}
                   >

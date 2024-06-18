@@ -3,7 +3,7 @@
 import { CartContext } from "@/context/Provider/CartContext";
 import { useState, useContext, useEffect } from "react";
 import { useRouter } from "next/navigation";
-import { toast } from "react-toastify";
+import toast from "react-hot-toast";
 import getData from "@/utils/getData";
 import CommonUtil from "@/common/commonUtils";
 
@@ -13,32 +13,15 @@ export default function OrderSummary() {
   const { cartProducts } = useContext(CartContext);
   const router = useRouter();
 
+
   useEffect(() => {
-    const fetchProductData = async () => {
-      try {
-        const productData = await Promise.all(
-          cartProducts.map((productId) => getData(productId.id))
-        );
+    // const lp = JSON.parse(localStorage.getItem("cart"));
+    const lp = CommonUtil.getStorageValue("cartProduct")
+    if (lp) {
+      setProducts(lp);
+    }
+  }, []);
 
-        const updatedProducts = productData.map((product) => {
-          const localProduct = JSON.parse(ls.getItem("cart") || "[]").find(
-            (lp) => lp.id === product._id
-          );
-          return {
-            ...product,
-            quantity: localProduct?.quantity || 1,
-          };
-        });
-
-        setProducts(updatedProducts);
-        toast.success("Checkout successfully!");
-      } catch (error) {
-        console.error(error);
-      }
-    };
-
-    fetchProductData();
-  }, [cartProducts, ls]);
 
   // Calculate totalPrice using products state
   const totalPrice = products.reduce((total, product) => {

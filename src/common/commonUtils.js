@@ -5,7 +5,6 @@ export default class CommonUtil {
   static validateNum(num) {
     if (parseInt(num).toString() !== num.trim() || parseInt(num) <= 0) {
       return Entry.ErrorMessage_InputNumber;
-      return Entry.ErrorMessage_InputNumber;
     }
     return "";
   }
@@ -45,6 +44,7 @@ export default class CommonUtil {
     return formattedStr;
   }
 
+
   static getCountByData(data, attribute) {
     const typeCount = {};
 
@@ -57,5 +57,19 @@ export default class CommonUtil {
     });
     // const result = Object.values(typeCount).map(count => count.toString());
     return Object.values(typeCount)
+  }
+
+  static getStorageValue(key, defaultValue) {
+    if (typeof window !== "undefined") {
+      const saved = localStorage.getItem(key);
+      const initial = saved !== null ? JSON.parse(saved) : defaultValue;
+      return initial;
+    }
+  }
+
+  static setStorageValue(key, value) {
+    if (typeof window !== "undefined") {
+      localStorage.setItem(key, JSON.stringify(value));
+    }
   }
 }
