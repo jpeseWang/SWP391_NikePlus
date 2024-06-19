@@ -11,7 +11,11 @@ import {
 } from "@heroicons/react/20/solid";
 import { classNames } from "@/utils/classNames";
 import { CartContext } from "@/context/Provider/CartContext";
+import { useSession } from "next-auth/react";
+import { CreateOrder } from "@/services/orderService";
 import emailjs from "@emailjs/browser";
+import toast from "react-hot-toast";
+
 
 const deliveryMethods = [
   {
@@ -22,6 +26,7 @@ const deliveryMethods = [
   },
   { id: 2, title: "Express", turnaround: "2–5 business days", price: 16 },
 ];
+
 const paymentMethods = [
   { id: "cod", title: "Cash on delivery (COD)" },
   { id: "paypal", title: "Credit Card/ Paypal" },
@@ -35,9 +40,11 @@ export default function CheckOutPage() {
   );
   const [selectedPaymentMethod, setSelectedPaymentMethod] = useState("cod");
 
-  const {removeProduct, addUserInfo } = useContext(CartContext);
+  const { removeProduct, addUserInfo } = useContext(CartContext);
   const [products, setProducts] = useState([]);
-  const [userInfo, setUserInfo] = useState([]);
+  const [order, setOrder] = useState({ userInfo: {}, orderInfo: {}, products: [] });
+
+  const session = useSession();
   const router = useRouter();
   const form = useRef();
 
@@ -51,48 +58,123 @@ export default function CheckOutPage() {
 
   const handleSubmit = async (event) => {
     event.preventDefault();
-    const deliveryFee = selectedDeliveryMethod.price;
+
     const email = event.target[0].value;
     const firstName = event.target[1].value;
     const lastName = event.target[2].value;
+    const company = event.target[3].value;
     const address = event.target[4].value;
-    const phone = event.target[10].value;
-    const payment = event.target[6].value;
+    const city = event.target[6].value;
+    const country = event.target[7].value;
+    const state = event.target[8].value;
+    const postalCode = event.target[9].value;
+    const phoneNumber = event.target[10].value;
     const fullName = `${firstName} ${lastName}`;
 
-    await addUserInfo(email, fullName, address, phone, payment);
-    setUserInfo({
-      email: email,
-      name: fullName,
-      address: address,
-      phone: phone,
-      payment: payment,
-    });
-    ls.setItem("totalPrice", totalPrice);
-    ls.setItem("finalPrice", finalPrice);
-    ls.setItem("deliveryFee", deliveryFee);
+    const order = {
+      userInfo: {
+        userId: session?.data?.id,
+        email,
+        firstName,
+        lastName,
+        fullName,
+        company,
+        address,
+        city,
+        country,
+        state,
+        postalCode,
+        phoneNumber,
+      },
+      orderInfo: {
+        deliveryMethod: selectedDeliveryMethod.title,
+        deliveryFee: selectedDeliveryMethod.price,
+        shippingStatus: "Ready",
+        paymentMethod: selectedPaymentMethod.id,
+        paymentStatus: "Unpaid",
+      },
+      products: products,
+    };
 
-    emailjs
-      .sendForm(
+    try {
+      await setOrder(order);
+
+      await submitOrder(order);
+      ls.setItem("totalPrice", totalPrice);
+      ls.setItem("finalPrice", finalPrice);
+      ls.setItem("deliveryFee", selectedDeliveryMethod.price);
+
+    } catch (error) {
+      console.error("Error during form submission:", error);
+      toast.error("An error occurred during form submission: " + error.message);
+    }
+  };
+
+  const submitOrder = async (orderData) => {
+    try {
+      await CreateOrder(orderData);
+      toast.success("Order created successfully!");
+
+      emailjs.sendForm(
         "service_p7v3jef",
         "template_7qldsv1",
         form.current,
         "EgKI2lPX0TVNbzTbs"
-      )
-      .then(
+      ).then(
         (result) => {
-          console.log(result.text);
+          console.log("EmailJS result:", result.text);
         },
         (error) => {
-          console.log(error.text);
+          console.error("EmailJS error:", error.text);
         }
       );
-    if (selectedPaymentMethod.id === "paypal") {
-      router.push("/payment");
-    } else {
       router.push("/order/summary");
+      // Uncomment and modify the following lines if needed
+      // if (selectedPaymentMethod.id === "paypal") {
+      //   router.push("/payment");
+      // } else {
+      //   router.push("/order/summary");
+      // }
+
+    } catch (err) {
+      console.error("Error creating order:", err);
+      toast.error("Something went wrong: " + err.message);
     }
   };
+
+  // const submitOrder = async (orderData) => {
+  //   try {
+  //     await CreateOrder(orderData)
+  //     toast.success("Create product successfully!");
+
+  //     emailjs
+  //       .sendForm(
+  //         "service_p7v3jef",
+  //         "template_7qldsv1",
+  //         form.current,
+  //         "EgKI2lPX0TVNbzTbs"
+  //       )
+  //       .then(
+  //         (result) => {
+  //           console.log(result.text);
+  //         },
+  //         (error) => {
+  //           console.log(error.text);
+  //         }
+  //       );
+  //     // if (selectedPaymentMethod.id === "paypal") {
+  //     //   router.push("/payment");
+  //     // } else {
+  //     //   router.push("/order/summary");
+  //     // }
+
+  //   } catch (err) {
+  //     console.error("Error creating order:", err);
+  //     toast.error("Something went wrong: " + err.message);
+  //   }
+  // }
+
+
   const subTotal = totalPrice;
   const deliveryFee = selectedDeliveryMethod.price;
   const taxes = (totalPrice * 0.1).toFixed(2);
@@ -101,7 +183,7 @@ export default function CheckOutPage() {
     selectedDeliveryMethod.price +
     totalPrice * 0.1
   ).toFixed(2);
-
+  console.log(order)
 
   return (
     <div className="bg-gray-50">
@@ -582,7 +664,7 @@ export default function CheckOutPage() {
                       className="text-base font-medium text-gray-900"
                       name="totalPrice"
                     >
-                       {CommonUtil.parsePrice((totalPrice + totalPrice * 0.1 + 125).toFixed(0))}
+                      {CommonUtil.parsePrice((totalPrice + totalPrice * 0.1 + 125).toFixed(0))}
                     </dd>
                   </div>
                 </dl>

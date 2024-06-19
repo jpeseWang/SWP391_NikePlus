@@ -15,7 +15,6 @@ export default function OrderSummary() {
 
 
   useEffect(() => {
-    // const lp = JSON.parse(localStorage.getItem("cart"));
     const lp = CommonUtil.getStorageValue("cartProduct")
     if (lp) {
       setProducts(lp);
@@ -32,11 +31,15 @@ export default function OrderSummary() {
   const taxes = (totalPrice * 0.1).toFixed(0);
   const finalTotal = (parseFloat(totalPrice) + parseFloat(taxes) + shippingFee).toFixed(0);
 
-  if (ls) {
-    ls.removeItem("cart");
-    ls.removeItem("deliveryFee");
-    ls.removeItem("totalPrice");
+  const handleClearLs = () => {
+    if (ls) {
+      ls.removeItem("cart");
+      ls.removeItem("deliveryFee");
+      ls.removeItem("cartProduct");
+      ls.removeItem("totalPrice");
+    }
   }
+
 
   return (
     <>
@@ -164,7 +167,11 @@ export default function OrderSummary() {
               <div className="mt-16 border-t border-gray-200 py-6 text-right">
                 <button
                   className="text-sm font-medium text-indigo-600 hover:text-indigo-500"
-                  onClick={() => router.push("/marketplace")}
+                  onClick={() => {
+                    handleClearLs()
+                    router.push("/marketplace")
+                  }
+                  }
                 >
                   Continue Shopping
                   <span aria-hidden="true"> &rarr;</span>
