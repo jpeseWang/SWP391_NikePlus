@@ -26,7 +26,8 @@ const orderSchema = new Schema(
       deliveryFee: String,
       shippingStatus: String,
       paymentMethod: String,
-      paymentStatus: String
+      paymentStatus: String,
+      totalPrice: String,
     },
 
     products: Array,

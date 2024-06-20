@@ -18,10 +18,10 @@ export function GetAllOrder() {
 
 export function GetOrderByUserId(userId) {
     const { data, error, isLoading } = useSWR(
-      `/api/product/${userId}`,
+      `/api/order/getByUserId/${userId}`,
       fetcher,
     );
-    return { productData: data, isLoading, isError: error };
+    return { orderData: data, isLoading, isError: error };
   }
 
 export function GetOrderById(id) {

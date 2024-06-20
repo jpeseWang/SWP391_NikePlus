@@ -44,6 +44,12 @@ export default class CommonUtil {
     return formattedStr;
   }
 
+  static parseTimestamp(input) {
+    const res = input.split("T")[0]
+    return res;
+  }
+
+
 
   static getCountByData(data, attribute) {
     const typeCount = {};

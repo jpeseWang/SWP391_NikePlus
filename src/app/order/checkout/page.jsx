@@ -92,6 +92,7 @@ export default function CheckOutPage() {
         shippingStatus: "Ready",
         paymentMethod: selectedPaymentMethod.id,
         paymentStatus: "Unpaid",
+        totalPrice: finalPrice
       },
       products: products,
     };
@@ -664,7 +665,7 @@ export default function CheckOutPage() {
                       className="text-base font-medium text-gray-900"
                       name="totalPrice"
                     >
-                      {CommonUtil.parsePrice((totalPrice + totalPrice * 0.1 + 125).toFixed(0))}
+                      {CommonUtil.parsePrice((parseInt(finalPrice)).toFixed(0))}
                     </dd>
                   </div>
                 </dl>
