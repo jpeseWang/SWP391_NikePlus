@@ -7,21 +7,38 @@ import { useRouter } from "next/router";
 import LoadingComponent from "@/app/loading";
 import { GetProductById, UpdateProduct } from "@/services/productService";
 import { productsCategories } from "@/utils/data/products-types";
+<<<<<<< HEAD
+=======
+import Link from "next/link";
+>>>>>>> 7da93aec6914625fae18d09e55a916c11467f1b9
 
 
 export default function AdminUpdateProduct({ params }) {
 
+<<<<<<< HEAD
 
   const { productData, isLoading, isError } = GetProductById(params.id);
   const [newProductData, setNewProductData] = useState(productData)
   const [specs, setSpecs] = useState(productData?.specs);
 
+=======
+  const { productData, isLoading, isError } = GetProductById(params.id);
+  const [uploading, setUploading] = useState(false);
+
+  const [newProductData, setNewProductData] = useState(productData)
+  const [specs, setSpecs] = useState(productData?.specs);
+
+  const [selectedCategory, setSelectedCategory] = useState(newProductData?.category);
+  const [subcategories, setSubcategories] = useState([]);
+
+>>>>>>> 7da93aec6914625fae18d09e55a916c11467f1b9
   useEffect(() => {
     setNewProductData(productData);
     setSpecs(productData?.specs)
 
   }, [productData])
 
+<<<<<<< HEAD
 
   const [uploading, setUploading] = useState(false);
   const [selectedCategory, setSelectedCategory] = useState(newProductData?.category);
@@ -30,11 +47,27 @@ export default function AdminUpdateProduct({ params }) {
 
   const handleCategoryChange = (event) => {
     const categoryName = event.target.value;
+=======
+  // useEffect to set initial subcategories based on newProductData's category
+  useEffect(() => {
+    if (newProductData?.category) {
+      const initialCategory = productsCategories.find(cat => cat.name.toString() === newProductData.category);
+      setSubcategories(initialCategory ? initialCategory.subcategory : []);
+    }
+  }, [newProductData, productsCategories]);
+
+
+  const handleCategoryChange = (event) => {
+    const categoryName = event.target.value || newProductData?.category;
+>>>>>>> 7da93aec6914625fae18d09e55a916c11467f1b9
     onValueChange("category", categoryName)
     setSelectedCategory(categoryName);
     const category = productsCategories.find(cat => cat.name.toString() === categoryName);
     setSubcategories(category ? category.subcategory : []);
+<<<<<<< HEAD
 
+=======
+>>>>>>> 7da93aec6914625fae18d09e55a916c11467f1b9
   };
 
   const handleSpecChange = (index, field, value) => {
@@ -130,9 +163,17 @@ export default function AdminUpdateProduct({ params }) {
       SKU: e.target[2].value,
       name: e.target[3].value,
       price: e.target[4].value,
+<<<<<<< HEAD
       description: e.target[5].value
     }
 
+=======
+      description: e.target[5].value,
+      specs: newProductData?.specs
+
+    }
+    console.log(updateProductData)
+>>>>>>> 7da93aec6914625fae18d09e55a916c11467f1b9
     setUploading(true);
 
     try {
@@ -148,8 +189,12 @@ export default function AdminUpdateProduct({ params }) {
       toast.error("Something went wrong: " + err.message);
     }
   };
+<<<<<<< HEAD
   console.log("productData >", productData);
   console.log("newProductData >", newProductData);
+=======
+
+>>>>>>> 7da93aec6914625fae18d09e55a916c11467f1b9
 
 
   return (
@@ -180,7 +225,11 @@ export default function AdminUpdateProduct({ params }) {
                     <select
                       name="Category"
                       className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:max-w-xs sm:text-sm sm:leading-6"
+<<<<<<< HEAD
                       value={selectedCategory}
+=======
+                      defaultValue={selectedCategory}
+>>>>>>> 7da93aec6914625fae18d09e55a916c11467f1b9
                       onChange={handleCategoryChange}
 
                     >
@@ -199,14 +248,23 @@ export default function AdminUpdateProduct({ params }) {
                     htmlFor="Sub Category"
                     className="block text-sm font-medium leading-6 text-gray-900"
                   >
+<<<<<<< HEAD
                     Sub Category
+=======
+                    Sub Category: {newProductData?.subCategory}
+>>>>>>> 7da93aec6914625fae18d09e55a916c11467f1b9
                   </label>
                   <div className="mt-2">
                     <select
                       onChange={(e) => { onValueChange("subCategory", e.target.value) }}
                       className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:max-w-xs sm:text-sm sm:leading-6"
+<<<<<<< HEAD
                     >
                       <option value="">Select a subcategory</option>
+=======
+                      value={newProductData?.subCategory}
+                    >
+>>>>>>> 7da93aec6914625fae18d09e55a916c11467f1b9
                       {subcategories.map((subcategory, index) => (
                         <option key={index} value={subcategory}>
                           {subcategory}
@@ -462,7 +520,13 @@ export default function AdminUpdateProduct({ params }) {
               type="button"
               className="text-sm font-semibold leading-6 text-gray-900"
             >
+<<<<<<< HEAD
               Cancel
+=======
+              <Link href="/admin/page?title=Product%20Management&section=ListAllProducts">
+                Cancel
+              </Link>
+>>>>>>> 7da93aec6914625fae18d09e55a916c11467f1b9
             </button>
             <button
               type="submit"

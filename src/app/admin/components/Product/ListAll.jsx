@@ -101,7 +101,7 @@ export default function ListAllProduct() {
                               {product.name}
                             </div>
                             <div className="mt-1 text-gray-500">
-                              {product.type}
+                              {product?.category}
                             </div>
                           </div>
                         </div>

@@ -38,7 +38,6 @@ export default function LoginPage() {
     return <LoadingComponent />;
   }
 
-
   return (
     <>
       <div className="flex min-h-full flex-1 flex-col justify-center px-6 py-12 lg:px-8">
@@ -116,7 +115,6 @@ export default function LoginPage() {
             </div>
             <div>
               <div className="">
-
                 <p className="text-md px-4 py-3 text-center font-light text-gray-500">
                   By clicking continue, you agree to our{" "}
                   <span className="font-medium">Term of Service</span> and

@@ -59,4 +59,3 @@ export const UpdateProduct = async (productData) => {
     console.error(error);
   }
 };
-

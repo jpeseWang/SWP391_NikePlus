@@ -114,6 +114,7 @@ export default function Header() {
           >
             About us
           </Link>
+
           <Popover className="relative">
             <Popover.Button className="flex items-center gap-x-1 text-sm font-semibold leading-6 text-[#FAFAFA]">
               Marketplace
@@ -159,7 +160,7 @@ export default function Header() {
               Admin
             </Link>}
 
-            {session?.status === "authenticated" &&
+          {session?.status === "authenticated" &&
             <Link
               href="/auth/profile"
               className="text-sm font-semibold leading-6 text-textDark"
@@ -182,13 +183,11 @@ export default function Header() {
               Sign in
             </Link>
           )}
-
         </Popover.Group>
         {/*end 2 icon*/}
         <div className="hidden lg:flex lg:flex-1 lg:justify-end"></div>
       </div>
       <Banner sessionData={session} />
-
 
       {/* Mobile nav */}
       <Dialog
@@ -282,8 +281,6 @@ export default function Header() {
                     Sign in
                   </a>
                 )}
-
-
               </div>
             </div>
           </div>

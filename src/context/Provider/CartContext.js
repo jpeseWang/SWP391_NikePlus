@@ -72,7 +72,6 @@ export function CartContextProvider({ children }) {
         ? { ...product, quantity: newQuantity }
         : product
     );
-
     setCartProducts(updatedCart);
   }
 

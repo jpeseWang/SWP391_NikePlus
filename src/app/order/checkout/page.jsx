@@ -1,6 +1,7 @@
 /* eslint-disable @next/next/no-sync-scripts */
 "use client";
 import React from "react";
+<<<<<<< HEAD
 
 import {
   CheckCircleIcon,
@@ -9,6 +10,23 @@ import {
 } from "@heroicons/react/20/solid";
 import { RadioGroup } from "@headlessui/react";
 import { useRouter } from "next/navigation";
+=======
+import { useState, useContext, useEffect, useRef } from "react";
+import { useRouter } from "next/navigation";
+import { RadioGroup } from "@headlessui/react";
+import CommonUtil from "@/common/commonUtils";
+import {
+  CheckCircleIcon,
+  TrashIcon,
+} from "@heroicons/react/20/solid";
+import { classNames } from "@/utils/classNames";
+import { CartContext } from "@/context/Provider/CartContext";
+import { useSession } from "next-auth/react";
+import { CreateOrder } from "@/services/orderService";
+import emailjs from "@emailjs/browser";
+import toast from "react-hot-toast";
+
+>>>>>>> 7da93aec6914625fae18d09e55a916c11467f1b9
 
 const deliveryMethods = [
   {
@@ -19,24 +37,192 @@ const deliveryMethods = [
   },
   { id: 2, title: "Express", turnaround: "2–5 business days", price: 16 },
 ];
+<<<<<<< HEAD
+=======
+
+>>>>>>> 7da93aec6914625fae18d09e55a916c11467f1b9
 const paymentMethods = [
   { id: "cod", title: "Cash on delivery (COD)" },
   { id: "paypal", title: "Credit Card/ Paypal" },
 ];
+<<<<<<< HEAD
 export default function Example() {
   const router = useRouter();
   const handleSubmit = async (event) => {
     event.preventDefault();
     router.push("/order/summary");
   };
+=======
+
+export default function CheckOutPage() {
+  const ls = typeof window !== "undefined" ? window.localStorage : null;
+  const totalPrice = parseInt(ls?.getItem("totalPrice") || "0");
+  const [selectedDeliveryMethod, setSelectedDeliveryMethod] = useState(
+    deliveryMethods[0]
+  );
+  const [selectedPaymentMethod, setSelectedPaymentMethod] = useState("cod");
+
+  const { removeProduct, addUserInfo } = useContext(CartContext);
+  const [products, setProducts] = useState([]);
+  const [order, setOrder] = useState({ userInfo: {}, orderInfo: {}, products: [] });
+
+  const session = useSession();
+  const router = useRouter();
+  const form = useRef();
+
+  useEffect(() => {
+    const lp = CommonUtil.getStorageValue("cartProduct")
+    if (lp) {
+      setProducts(lp);
+    }
+  }, []);
+
+
+  const handleSubmit = async (event) => {
+    event.preventDefault();
+
+    const email = event.target[0].value;
+    const firstName = event.target[1].value;
+    const lastName = event.target[2].value;
+    const company = event.target[3].value;
+    const address = event.target[4].value;
+    const city = event.target[6].value;
+    const country = event.target[7].value;
+    const state = event.target[8].value;
+    const postalCode = event.target[9].value;
+    const phoneNumber = event.target[10].value;
+    const fullName = `${firstName} ${lastName}`;
+
+    const order = {
+      userInfo: {
+        userId: session?.data?.id,
+        email,
+        firstName,
+        lastName,
+        fullName,
+        company,
+        address,
+        city,
+        country,
+        state,
+        postalCode,
+        phoneNumber,
+      },
+      orderInfo: {
+        deliveryMethod: selectedDeliveryMethod.title,
+        deliveryFee: selectedDeliveryMethod.price,
+        shippingStatus: "Ready",
+        paymentMethod: selectedPaymentMethod.id,
+        paymentStatus: "Unpaid",
+        totalPrice: finalPrice
+      },
+      products: products,
+    };
+
+    try {
+      await setOrder(order);
+
+      await submitOrder(order);
+      ls.setItem("totalPrice", totalPrice);
+      ls.setItem("finalPrice", finalPrice);
+      ls.setItem("deliveryFee", selectedDeliveryMethod.price);
+
+    } catch (error) {
+      console.error("Error during form submission:", error);
+      toast.error("An error occurred during form submission: " + error.message);
+    }
+  };
+
+  const submitOrder = async (orderData) => {
+    try {
+      await CreateOrder(orderData);
+      toast.success("Order created successfully!");
+
+      emailjs.sendForm(
+        "service_p7v3jef",
+        "template_7qldsv1",
+        form.current,
+        "EgKI2lPX0TVNbzTbs"
+      ).then(
+        (result) => {
+          console.log("EmailJS result:", result.text);
+        },
+        (error) => {
+          console.error("EmailJS error:", error.text);
+        }
+      );
+      router.push("/order/summary");
+      // Uncomment and modify the following lines if needed
+      // if (selectedPaymentMethod.id === "paypal") {
+      //   router.push("/payment");
+      // } else {
+      //   router.push("/order/summary");
+      // }
+
+    } catch (err) {
+      console.error("Error creating order:", err);
+      toast.error("Something went wrong: " + err.message);
+    }
+  };
+
+  // const submitOrder = async (orderData) => {
+  //   try {
+  //     await CreateOrder(orderData)
+  //     toast.success("Create product successfully!");
+
+  //     emailjs
+  //       .sendForm(
+  //         "service_p7v3jef",
+  //         "template_7qldsv1",
+  //         form.current,
+  //         "EgKI2lPX0TVNbzTbs"
+  //       )
+  //       .then(
+  //         (result) => {
+  //           console.log(result.text);
+  //         },
+  //         (error) => {
+  //           console.log(error.text);
+  //         }
+  //       );
+  //     // if (selectedPaymentMethod.id === "paypal") {
+  //     //   router.push("/payment");
+  //     // } else {
+  //     //   router.push("/order/summary");
+  //     // }
+
+  //   } catch (err) {
+  //     console.error("Error creating order:", err);
+  //     toast.error("Something went wrong: " + err.message);
+  //   }
+  // }
+
+
+  const subTotal = totalPrice;
+  const deliveryFee = selectedDeliveryMethod.price;
+  const taxes = (totalPrice * 0.1).toFixed(2);
+  const finalPrice = (
+    totalPrice +
+    selectedDeliveryMethod.price +
+    totalPrice * 0.1
+  ).toFixed(2);
+  console.log(order)
+
+>>>>>>> 7da93aec6914625fae18d09e55a916c11467f1b9
   return (
     <div className="bg-gray-50">
       <main className="mx-auto max-w-7xl px-4 pb-24 pt-16 sm:px-6 lg:px-8">
         {" "}
         <button
+<<<<<<< HEAD
           class="pb-6 text-base font-semibold text-indigo-600 hover:text-indigo-500"
           onClick={() => {
             router.push("/order/cart");
+=======
+          class="text-base font-semibold text-indigo-600 hover:text-indigo-500 pb-6"
+          onClick={() => {
+            router.push("/marketplace/cart");
+>>>>>>> 7da93aec6914625fae18d09e55a916c11467f1b9
           }}
         >
           &larr; Back to Cart
@@ -45,6 +231,10 @@ export default function Example() {
           <h1 className="sr-only">Checkout</h1>
           <form
             onSubmit={handleSubmit}
+<<<<<<< HEAD
+=======
+            ref={form}
+>>>>>>> 7da93aec6914625fae18d09e55a916c11467f1b9
             className="lg:grid lg:grid-cols-2 lg:gap-x-12 xl:gap-x-16"
           >
             <div>
@@ -66,7 +256,11 @@ export default function Example() {
                       id="email"
                       name="email"
                       autoComplete="email"
+<<<<<<< HEAD
                       className="block w-full rounded-md border-gray-300 px-2 py-2 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
+=======
+                      className="block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm px-2 py-2"
+>>>>>>> 7da93aec6914625fae18d09e55a916c11467f1b9
                     />
                   </div>
                 </div>
@@ -90,7 +284,11 @@ export default function Example() {
                         id="first-name"
                         name="firstName"
                         autoComplete="given-name"
+<<<<<<< HEAD
                         className="block w-full rounded-md border-gray-300 px-2 py-2 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
+=======
+                        className="block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm px-2 py-2"
+>>>>>>> 7da93aec6914625fae18d09e55a916c11467f1b9
                       />
                     </div>
                   </div>
@@ -108,7 +306,11 @@ export default function Example() {
                         id="lastName"
                         name="lastName"
                         autoComplete="family-name"
+<<<<<<< HEAD
                         className="block w-full rounded-md border-gray-300 px-2 py-2 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
+=======
+                        className="block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm px-2 py-2"
+>>>>>>> 7da93aec6914625fae18d09e55a916c11467f1b9
                       />
                     </div>
                   </div>
@@ -125,7 +327,11 @@ export default function Example() {
                         type="text"
                         name="company"
                         id="company"
+<<<<<<< HEAD
                         className="block w-full rounded-md border-gray-300 px-2 py-2 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
+=======
+                        className="block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm px-2 py-2"
+>>>>>>> 7da93aec6914625fae18d09e55a916c11467f1b9
                       />
                     </div>
                   </div>
@@ -143,7 +349,11 @@ export default function Example() {
                         name="address"
                         id="address"
                         autoComplete="street-address"
+<<<<<<< HEAD
                         className="block w-full rounded-md border-gray-300 px-2 py-2 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
+=======
+                        className="block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm px-2 py-2"
+>>>>>>> 7da93aec6914625fae18d09e55a916c11467f1b9
                       />
                     </div>
                   </div>
@@ -160,7 +370,11 @@ export default function Example() {
                         type="text"
                         name="apartment"
                         id="apartment"
+<<<<<<< HEAD
                         className="block w-full rounded-md border-gray-300 px-2 py-2 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
+=======
+                        className="block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm px-2 py-2"
+>>>>>>> 7da93aec6914625fae18d09e55a916c11467f1b9
                       />
                     </div>
                   </div>
@@ -178,7 +392,11 @@ export default function Example() {
                         name="city"
                         id="city"
                         autoComplete="address-level2"
+<<<<<<< HEAD
                         className="block w-full rounded-md border-gray-300 px-2 py-2 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
+=======
+                        className="block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm px-2 py-2"
+>>>>>>> 7da93aec6914625fae18d09e55a916c11467f1b9
                       />
                     </div>
                   </div>
@@ -195,7 +413,11 @@ export default function Example() {
                         id="country"
                         name="country"
                         autoComplete="country-name"
+<<<<<<< HEAD
                         className="block w-full rounded-md border-gray-300 px-2 py-2 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
+=======
+                        className="block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm px-2 py-2"
+>>>>>>> 7da93aec6914625fae18d09e55a916c11467f1b9
                       >
                         <option>United States</option>
                         <option>Canada</option>
@@ -218,7 +440,11 @@ export default function Example() {
                         name="region"
                         id="region"
                         autoComplete="address-level1"
+<<<<<<< HEAD
                         className="block w-full rounded-md border-gray-300 px-2 py-2 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
+=======
+                        className="block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm px-2 py-2"
+>>>>>>> 7da93aec6914625fae18d09e55a916c11467f1b9
                       />
                     </div>
                   </div>
@@ -236,7 +462,11 @@ export default function Example() {
                         name="postal-code"
                         id="postal-code"
                         autoComplete="postal-code"
+<<<<<<< HEAD
                         className="block w-full rounded-md border-gray-300 px-2 py-2 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
+=======
+                        className="block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm px-2 py-2"
+>>>>>>> 7da93aec6914625fae18d09e55a916c11467f1b9
                       />
                     </div>
                   </div>
@@ -254,18 +484,102 @@ export default function Example() {
                         name="phone"
                         id="phone"
                         autoComplete="tel"
+<<<<<<< HEAD
                         className="block w-full rounded-md border-gray-300 px-2 py-2 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
+=======
+                        className="block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm px-2 py-2"
+>>>>>>> 7da93aec6914625fae18d09e55a916c11467f1b9
                       />
                     </div>
                   </div>
                 </div>
               </div>
               {/* Product price */}
+<<<<<<< HEAD
               <input className="hidden" name="subTotal" value="" />
               <input className="hidden" name="deliveryFee" value="" />
               <input className="hidden" name="taxes" value="" />
               <input className="hidden" name="finalPrice" value="" />
               <div className="mt-10 border-t border-gray-200 pt-10"></div>
+=======
+              <input className="hidden" name="subTotal" value={subTotal} />
+              <input
+                className="hidden"
+                name="deliveryFee"
+                value={deliveryFee}
+              />
+              <input className="hidden" name="taxes" value={taxes} />
+              <input className="hidden" name="finalPrice" value={finalPrice} />
+              <div className="mt-10 border-t border-gray-200 pt-10">
+                <RadioGroup
+                  value={selectedDeliveryMethod}
+                  onChange={setSelectedDeliveryMethod}
+                >
+                  <RadioGroup.Label className="text-lg font-medium text-gray-900">
+                    Delivery method
+                  </RadioGroup.Label>
+
+                  <div className="mt-4 grid grid-cols-1 gap-y-6 sm:grid-cols-2 sm:gap-x-4">
+                    {deliveryMethods.map((deliveryMethod) => (
+                      <RadioGroup.Option
+                        key={deliveryMethod.id}
+                        value={deliveryMethod}
+                        className={({ checked, active }) =>
+                          classNames(
+                            checked ? "border-transparent" : "border-gray-300",
+                            active ? "ring-2 ring-indigo-500" : "",
+                            "relative flex cursor-pointer rounded-lg border bg-white p-4 shadow-sm focus:outline-none"
+                          )
+                        }
+                      >
+                        {({ checked, active }) => (
+                          <>
+                            <span className="flex flex-1">
+                              <span className="flex flex-col">
+                                <RadioGroup.Label
+                                  as="span"
+                                  className="block text-sm font-medium text-gray-900"
+                                >
+                                  {deliveryMethod.title}
+                                </RadioGroup.Label>
+                                <RadioGroup.Description
+                                  as="span"
+                                  className="mt-1 flex items-center text-sm text-gray-500"
+                                >
+                                  {deliveryMethod.turnaround}
+                                </RadioGroup.Description>
+                                <RadioGroup.Description
+                                  as="span"
+                                  className="mt-6 text-sm font-medium text-gray-900"
+                                >
+                                  ${deliveryMethod.price}.00
+                                </RadioGroup.Description>
+                              </span>
+                            </span>
+                            {checked ? (
+                              <CheckCircleIcon
+                                className="h-5 w-5 text-indigo-600"
+                                aria-hidden="true"
+                              />
+                            ) : null}
+                            <span
+                              className={classNames(
+                                active ? "border" : "border-2",
+                                checked
+                                  ? "border-indigo-500"
+                                  : "border-transparent",
+                                "pointer-events-none absolute -inset-px rounded-lg"
+                              )}
+                              aria-hidden="true"
+                            />
+                          </>
+                        )}
+                      </RadioGroup.Option>
+                    ))}
+                  </div>
+                </RadioGroup>
+              </div>
+>>>>>>> 7da93aec6914625fae18d09e55a916c11467f1b9
               {/* Payment */}
               <div className="mt-10 border-t border-gray-200 pt-10">
                 <h2 className="text-lg font-medium text-gray-900">Payment</h2>
@@ -277,7 +591,11 @@ export default function Example() {
                       <div
                         key={paymentMethod.id}
                         className="flex items-center"
+<<<<<<< HEAD
                         defaultValue=""
+=======
+                        defaultValue={selectedPaymentMethod}
+>>>>>>> 7da93aec6914625fae18d09e55a916c11467f1b9
                         onClick={() => {
                           setSelectedPaymentMethod(paymentMethod);
                         }}
@@ -286,7 +604,11 @@ export default function Example() {
                           id={paymentMethod.id}
                           name="payment-type"
                           type="radio"
+<<<<<<< HEAD
                           defaultValue=""
+=======
+                          defaultValue={selectedPaymentMethod}
+>>>>>>> 7da93aec6914625fae18d09e55a916c11467f1b9
                           className="h-4 w-4 border-gray-300 text-indigo-600 focus:ring-indigo-500"
                         />
                         <label
@@ -311,6 +633,7 @@ export default function Example() {
               <div className="mt-4 rounded-lg border border-gray-200 bg-white shadow-sm">
                 <h3 className="sr-only">Items in your cart</h3>
                 <ul role="list" className="divide-y divide-gray-200">
+<<<<<<< HEAD
                   <li key="" className="flex px-4 py-6 sm:px-6">
                     <div className="flex-shrink-0">
                       <img id="imageSrc" src="" className="w-20 rounded-md" />
@@ -379,6 +702,94 @@ export default function Example() {
                       </div>
                     </div>
                   </li>
+=======
+                  {products.map((product) => (
+                    <li key={product.id} className="flex px-4 py-6 sm:px-6">
+                      <div className="flex-shrink-0">
+                        <img
+                          id="imageSrc"
+                          src={product?.specs[0]?.imgList[0]}
+                          className="w-20 rounded-md"
+                        />
+                      </div>
+
+                      <div className="ml-6 flex flex-1 flex-col">
+                        <div className="flex">
+                          <div className="min-w-0 flex-1">
+                            <h4 className="text-sm">
+                              <a
+                                href={product.href}
+                                className="font-medium text-gray-700 hover:text-gray-800"
+                              >
+                                {product.name}
+                              </a>
+                            </h4>
+                            <p className="mt-1 text-sm text-gray-500">
+                              {product.type}
+                            </p>
+                            <p className="mt-1 text-sm text-gray-500">
+                              {product.description.slice(0, 70)}...
+                            </p>
+                          </div>
+                          {/* Product information  */}
+                          <input
+                            className="hidden"
+                            name="productImg"
+                            value={product.imageSrc}
+                          />
+                          <input
+                            className="hidden"
+                            name="productName"
+                            value={product.name}
+                          />
+                          <input
+                            className="hidden"
+                            name="productPrice"
+                            value={product.price}
+                          />
+                          <input
+                            className="hidden"
+                            name="productQuantity"
+                            value={product.quantity}
+                          />
+
+                          <div className="ml-4 flow-root flex-shrink-0">
+                            <button
+                              type="button"
+                              className="-m-2.5 flex items-center justify-center bg-white p-2.5 text-gray-400 hover:text-gray-500"
+                            >
+                              <span className="sr-only">Remove</span>
+                              <TrashIcon
+                                className="h-5 w-5"
+                                aria-hidden="true"
+                                onClick={() => removeProduct(product._id)}
+                              />
+                            </button>
+                          </div>
+                        </div>
+
+                        <div className="flex flex-1 items-end justify-between pt-2">
+                          <p className="mt-1 text-sm font-medium text-gray-900">
+                            {CommonUtil.parsePrice(totalPrice)}
+                          </p>
+
+                          <div className="ml-4">
+                            <label htmlFor="quantity" className="sr-only">
+                              Quantity
+                            </label>
+                            <div
+                              id="quantity"
+                              name="quantity"
+                              className="rounded-md border border-gray-300 text-left text-base font-medium text-gray-700 shadow-sm focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500 sm:text-sm px-2"
+                            >
+                              x{product.quantity}
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </li>
+                  ))}
+>>>>>>> 7da93aec6914625fae18d09e55a916c11467f1b9
                 </ul>
 
                 <dl className="space-y-6 border-t border-gray-200 px-4 py-6 sm:px-6">
@@ -388,7 +799,11 @@ export default function Example() {
                       className="text-sm font-medium text-gray-900"
                       name="subTotal"
                     >
+<<<<<<< HEAD
                       subtotal
+=======
+                      {CommonUtil.parsePrice(totalPrice)}
+>>>>>>> 7da93aec6914625fae18d09e55a916c11467f1b9
                     </dd>
                   </div>
                   <div className="flex items-center justify-between">
@@ -397,7 +812,11 @@ export default function Example() {
                       className="text-sm font-medium text-gray-900"
                       name="shippingFee"
                     >
+<<<<<<< HEAD
                       delivery fee
+=======
+                      {CommonUtil.parsePrice(125)}
+>>>>>>> 7da93aec6914625fae18d09e55a916c11467f1b9
                     </dd>
                   </div>
                   <div className="flex items-center justify-between">
@@ -406,7 +825,11 @@ export default function Example() {
                       className="text-sm font-medium text-gray-900"
                       name="taxes"
                     >
+<<<<<<< HEAD
                       taxes
+=======
+                      {CommonUtil.parsePrice((totalPrice * 0.1).toFixed(0))}
+>>>>>>> 7da93aec6914625fae18d09e55a916c11467f1b9
                     </dd>
                   </div>
                   <div className="flex items-center justify-between border-t border-gray-200 pt-6">
@@ -417,7 +840,11 @@ export default function Example() {
                       className="text-base font-medium text-gray-900"
                       name="totalPrice"
                     >
+<<<<<<< HEAD
                       final price
+=======
+                      {CommonUtil.parsePrice((parseInt(finalPrice)).toFixed(0))}
+>>>>>>> 7da93aec6914625fae18d09e55a916c11467f1b9
                     </dd>
                   </div>
                 </dl>
@@ -425,7 +852,11 @@ export default function Example() {
                 <div className="border-t border-gray-200 px-4 py-6 sm:px-6">
                   <button
                     type="submit"
+<<<<<<< HEAD
                     className="w-full rounded-md border border-transparent bg-indigo-600 px-4 py-3 text-base font-medium text-white shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 focus:ring-offset-gray-50"
+=======
+                    className="w-full rounded-md border border-transparent bg-black px-4 py-3 text-base font-medium text-white shadow-sm hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 focus:ring-offset-gray-50"
+>>>>>>> 7da93aec6914625fae18d09e55a916c11467f1b9
                   >
                     Confirm order
                   </button>
@@ -437,4 +868,8 @@ export default function Example() {
       </main>
     </div>
   );
+<<<<<<< HEAD
 }
+=======
+}
+>>>>>>> 7da93aec6914625fae18d09e55a916c11467f1b9

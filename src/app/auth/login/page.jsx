@@ -5,6 +5,7 @@ import { useRouter, useSearchParams } from "next/navigation";
 import { useState, useEffect } from "react";
 import { signIn, useSession } from "next-auth/react";
 import { LoginUser } from "@/services/userService";
+import { LoginUser } from "@/services/userService";
 import LoadingComponent from "../../loading";
 
 export default function LoginPage() {
@@ -13,6 +14,7 @@ export default function LoginPage() {
   const params = useSearchParams();
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
+
 
   const [loading, setLoading] = useState(false);
   useEffect(() => {
@@ -27,6 +29,7 @@ export default function LoginPage() {
     setLoading(true);
     try {
       await LoginUser(email, password)
+      await LoginUser(email, password)
     } catch (error) {
       console.error(error);
     } finally {
@@ -36,9 +39,11 @@ export default function LoginPage() {
 
   if (session.status === "loading") {
     return <LoadingComponent />;
+    return <LoadingComponent />;
   }
 
   if (session.status === "authenticated") {
+    router?.push("/marketplace");
     router?.push("/marketplace");
   }
 
@@ -74,7 +79,7 @@ export default function LoginPage() {
                   placeholder="Email address"
                   required
                   autoFocus
-                  className="block w-full rounded-lg border-0  px-4 py-1.5 text-gray-900 shadow-sm  outline-offset-0 outline-gray-600 ring-1 ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+                  className="block w-full rounded-lg border-0  px-4 py-1.5 text-gray-900 shadow-sm outline outline-offset-0 outline-gray-600 ring-1 ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
                 />
               </div>
             </div>
@@ -88,7 +93,7 @@ export default function LoginPage() {
                   autoComplete="current-password"
                   placeholder="Password"
                   required
-                  className="block w-full rounded-lg border-0  px-4 py-1.5 text-gray-900 shadow-sm  outline-offset-0 outline-gray-600 ring-1 ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+                  className="block w-full rounded-lg border-0  px-4 py-1.5 text-gray-900 shadow-sm outline outline-offset-0 outline-gray-600 ring-1 ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
                 />
 
                 <div className="flex items-center justify-between py-4">

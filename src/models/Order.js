@@ -4,30 +4,33 @@ const { Schema } = mongoose;
 
 const orderSchema = new Schema(
   {
-    name: {
-      type: String,
-      require: true,
+    userInfo:
+    {
+      userId: String,
+      email: String,
+      firstName: String,
+      lastName: String,
+      fullName: String,
+      company: String,
+      address: String,
+      city: String,
+      country: String,
+      state: String,
+      postalCode: String,
+      phoneNumber: String,
     },
-    price: {
-      type: String,
-      require: true,
+
+    orderInfo:
+    {
+      deliveryMethod: String,
+      deliveryFee: String,
+      shippingStatus: String,
+      paymentMethod: String,
+      paymentStatus: String,
+      totalPrice: String,
     },
-    type: {
-      type: String,
-      require: true,
-    },
-    description: {
-      type: String,
-      require: true,
-    },
-    imageSrc: {
-      type: String,
-      require: true,
-    },
-    rating: {
-      type: String,
-      require: true,
-    },
+
+    products: Array,
   },
   {
     timestamps: true,
