@@ -159,6 +159,13 @@ export default function Header() {
               Admin
             </Link>}
 
+            {session?.status === "authenticated" &&
+            <Link
+              href="/auth/profile"
+              className="text-sm font-semibold leading-6 text-textDark"
+            >
+              Profile
+            </Link>}
 
           {session.status === "authenticated" ? (
             <button

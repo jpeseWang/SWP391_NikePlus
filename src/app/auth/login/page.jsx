@@ -74,7 +74,7 @@ export default function LoginPage() {
                   placeholder="Email address"
                   required
                   autoFocus
-                  className="block w-full rounded-lg border-0  px-4 py-1.5 text-gray-900 shadow-sm outline outline-offset-0 outline-gray-600 ring-1 ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+                  className="block w-full rounded-lg border-0  px-4 py-1.5 text-gray-900 shadow-sm  outline-offset-0 outline-gray-600 ring-1 ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
                 />
               </div>
             </div>
@@ -88,7 +88,7 @@ export default function LoginPage() {
                   autoComplete="current-password"
                   placeholder="Password"
                   required
-                  className="block w-full rounded-lg border-0  px-4 py-1.5 text-gray-900 shadow-sm outline outline-offset-0 outline-gray-600 ring-1 ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+                  className="block w-full rounded-lg border-0  px-4 py-1.5 text-gray-900 shadow-sm  outline-offset-0 outline-gray-600 ring-1 ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
                 />
 
                 <div className="flex items-center justify-between py-4">
@@ -97,7 +97,7 @@ export default function LoginPage() {
                       id="remember-me"
                       name="remember-me"
                       type="check-box"
-                      className="h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-600"
+                      className="h-4 w-4 rounded border-gray-800 text-indigo-600 focus:ring-indigo-600 "
                     ></input>
                     <label
                       htmlFor="remember-me"
@@ -108,12 +108,14 @@ export default function LoginPage() {
                   </div>
 
                   <div className="text-sm leading-6">
-                    <a
-                      href="#"
+                    <button
+                    type="button"
+                      onClick={() => router.push("/auth/forgot-password")}
+                      
                       className="font-light text-gray-700 hover:text-black"
                     >
                       Forgotten your password?
-                    </a>
+                    </button>
                   </div>
                 </div>
                 <p className="text-md px-4 py-3 text-center font-light text-gray-500">
@@ -126,7 +128,7 @@ export default function LoginPage() {
             <div>
               <button
                 type="submit"
-                className="flex w-full justify-center rounded-sm bg-black px-3 py-2 text-sm font-semibold leading-6 text-white shadow-sm hover:bg-gray-600 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
+                className="flex w-full justify-center rounded-md bg-black px-3 py-2 text-sm font-semibold leading-6 text-white shadow-sm hover:bg-gray-600 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
               >
                 {loading ? <span>PROCESSING...</span> : <span>SIGN IN</span>}
               </button>
