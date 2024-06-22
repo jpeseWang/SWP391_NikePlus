@@ -10,7 +10,7 @@ export const CreateUser = async (userData) => {
     },
     body: JSON.stringify({ ...userData }),
   });
-  return res
+  return res;
 };
 
 export const LoginUser = async (email, password) => {
@@ -19,15 +19,12 @@ export const LoginUser = async (email, password) => {
 
 export function GetAllUser() {
   const { data, error, isLoading, mutate } = useSWR(`/api/product`, fetcher);
-  return { productData: data, isLoading, isError: error, mutate };
+  return { userData: data, isLoading, isError: error, mutate };
 }
 
 export function GetUserById(id) {
-  const { data, error, isLoading } = useSWR(
-    `/api/user/${id}`,
-    fetcher,
-  );
-  return { productData: data, isLoading, isError: error };
+  const { data, error, isLoading } = useSWR(`/api/user/getById/${id}`, fetcher);
+  return { userData: data, isLoading, isError: error };
 }
 
 export const DeleteUser = async (id) => {
@@ -39,15 +36,15 @@ export const DeleteUser = async (id) => {
     console.error("Error deleting product:", err);
     throw err;
   }
-}
+};
 
-export const UpdateUSer = async (productData) => {
-  const id = productData._id
+export const UpdateUser = async (productData) => {
+  const id = productData._id;
   try {
     const response = await fetch(`/api/product/${id}`, {
       method: "PUT",
       body: JSON.stringify({
-        productData
+        productData,
       }),
     });
     return response.status;
@@ -55,4 +52,3 @@ export const UpdateUSer = async (productData) => {
     console.error(error);
   }
 };
-
