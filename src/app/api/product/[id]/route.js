@@ -19,19 +19,11 @@ export const GET = async (request, { params }) => {
 // Update Product API
 export const PUT = async (request, { params }) => {
   const { id } = params;
-<<<<<<< HEAD
-  const updatedProduct = await request.json();
-
-  try {
-    await CommonUtil.connectDB();
-    const product = await Product.findByIdAndUpdate(id, updatedProduct, { new: true });
-=======
   const { productData } = await request.json();
 
   try {
     await CommonUtil.connectDB();
     const product = await Product.findByIdAndUpdate(id, productData, { new: true });
->>>>>>> 7da93aec6914625fae18d09e55a916c11467f1b9
 
     if (!product) {
       return new NextResponse("Product not found", { status: 404 });
@@ -43,8 +35,6 @@ export const PUT = async (request, { params }) => {
   }
 };
 
-<<<<<<< HEAD
-=======
 // Patch Product API
 export const PATCH = async (request, { params }) => {
   const { id } = params;
@@ -65,7 +55,6 @@ export const PATCH = async (request, { params }) => {
 };
 
 
->>>>>>> 7da93aec6914625fae18d09e55a916c11467f1b9
 // Delete Product API
 export const DELETE = async (request, { params }) => {
   const { id } = params;

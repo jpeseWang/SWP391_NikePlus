@@ -1,10 +1,5 @@
 /* eslint-disable react-hooks/rules-of-hooks */
 "use client";
-<<<<<<< HEAD
-import { useRouter } from "next/navigation";
-export default function OrderSummary(props) {
-  const router = useRouter();
-=======
 import { CartContext } from "@/context/Provider/CartContext";
 import { useState, useContext, useEffect } from "react";
 import { useRouter } from "next/navigation";
@@ -46,7 +41,6 @@ export default function OrderSummary() {
   }
 
 
->>>>>>> 7da93aec6914625fae18d09e55a916c11467f1b9
   return (
     <>
       <main className="relative lg:min-h-full">
@@ -54,11 +48,7 @@ export default function OrderSummary() {
           <img
             src="https://images.unsplash.com/photo-1554350747-ec45fd24f51b?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=987&q=80"
             alt="TODO"
-<<<<<<< HEAD
-            className="mt-6 h-full w-full object-cover object-center"
-=======
             className="h-full w-full object-cover object-center mt-6"
->>>>>>> 7da93aec6914625fae18d09e55a916c11467f1b9
           />
         </div>
 
@@ -85,37 +75,15 @@ export default function OrderSummary() {
                 role="list"
                 className="mt-6 divide-y divide-gray-200 border-t border-gray-200 text-sm font-medium text-gray-500"
               >
-<<<<<<< HEAD
-               
-                  <li key="" className="flex space-x-6 py-6">
-                    <img
-                      src=""
-                      alt=""
-=======
                 {products.map((product) => (
                   <li key={product.id} className="flex space-x-6 py-6">
                     <img
                       src={product?.specs[0]?.imgList[0]}
                       alt={product.imageAlt}
->>>>>>> 7da93aec6914625fae18d09e55a916c11467f1b9
                       className="h-24 w-24 flex-none rounded-md bg-gray-100 object-cover object-center"
                     />
                     <div className="flex-auto space-y-1">
                       <h3 className="text-gray-900">
-<<<<<<< HEAD
-                        <a href="">product name</a>
-                      </h3>
-                      <p>product type</p>
-                      <div className="w-fit rounded-md border border-gray-300 px-2 text-left text-base font-medium text-gray-700 shadow-sm focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500 sm:text-sm">
-                        x product quantity
-                      </div>
-                    </div>
-                    <p className="flex-none font-medium text-gray-900">
-                      product price
-                    </p>
-                  </li>
-                
-=======
                         <a href={product.href}>{product.name}</a>
                       </h3>
                       <p>{product.type}</p>
@@ -128,45 +96,28 @@ export default function OrderSummary() {
                     </p>
                   </li>
                 ))}
->>>>>>> 7da93aec6914625fae18d09e55a916c11467f1b9
               </ul>
 
               <dl className="space-y-6 border-t border-gray-200 pt-6 text-sm font-medium text-gray-500">
                 <div className="flex justify-between">
                   <dt>Subtotal</dt>
-<<<<<<< HEAD
-                  <dd className="text-gray-900">subtotal</dd>
-=======
                   <dd className="text-gray-900">{CommonUtil.parsePrice(totalPrice)}</dd>
->>>>>>> 7da93aec6914625fae18d09e55a916c11467f1b9
                 </div>
 
                 <div className="flex justify-between">
                   <dt>Shipping</dt>
-<<<<<<< HEAD
-                  <dd className="text-gray-900">delivery fee</dd>
-=======
                   <dd className="text-gray-900">{CommonUtil.parsePrice(shippingFee)}</dd>
->>>>>>> 7da93aec6914625fae18d09e55a916c11467f1b9
                 </div>
 
                 <div className="flex justify-between">
                   <dt>Taxes</dt>
-<<<<<<< HEAD
-                  <dd className="text-gray-900">taxes</dd>
-=======
                   <dd className="text-gray-900">{CommonUtil.parsePrice(taxes)}</dd>
->>>>>>> 7da93aec6914625fae18d09e55a916c11467f1b9
                 </div>
 
                 <div className="flex items-center justify-between border-t border-gray-200 pt-6 text-gray-900">
                   <dt className="text-base">Total</dt>
                   <dd className="text-base">
-<<<<<<< HEAD
-                    subtotal + taxes + deliveryFee
-=======
                     {CommonUtil.parsePrice(finalTotal)}
->>>>>>> 7da93aec6914625fae18d09e55a916c11467f1b9
                   </dd>
                 </div>
               </dl>
@@ -216,15 +167,11 @@ export default function OrderSummary() {
               <div className="mt-16 border-t border-gray-200 py-6 text-right">
                 <button
                   className="text-sm font-medium text-indigo-600 hover:text-indigo-500"
-<<<<<<< HEAD
-                  onClick={() => router.push("/marketplace")}
-=======
                   onClick={() => {
                     handleClearLs()
                     router.push("/marketplace")
                   }
                   }
->>>>>>> 7da93aec6914625fae18d09e55a916c11467f1b9
                 >
                   Continue Shopping
                   <span aria-hidden="true"> &rarr;</span>

@@ -1,4 +1,5 @@
 "use client";
+import CommonUtil from "@/common/commonUtils";
 import { createContext, useState, useEffect } from "react";
 import toast from "react-hot-toast";
 
@@ -46,7 +47,7 @@ export function CartContextProvider({ children }) {
       console.log("New cartProducts:", [
         ...cartProducts,
         { id: productId, price: productPrice, quantity: 1 },
-      ]); 
+      ]);
       toast.success("Product added successfully!");
     } else {
       setCartProducts(updatedCart);
@@ -72,6 +73,8 @@ export function CartContextProvider({ children }) {
         ? { ...product, quantity: newQuantity }
         : product
     );
+    CommonUtil.setStorageValue("cart", updatedCart)
+    
     setCartProducts(updatedCart);
   }
 

@@ -26,7 +26,7 @@ export default function LoginPage() {
     const password = e.target[1].value;
     setLoading(true);
     try {
-      await LoginUser(email, password)
+      await LoginUser(email, password);
     } catch (error) {
       console.error(error);
     } finally {
@@ -51,10 +51,12 @@ export default function LoginPage() {
             className="mx-auto h-8 w-auto"
             src="/nike.webp"
           ></img>
-          <h2 className="mt-10 text-center font-mono text-xl font-semibold leading-9 tracking-tight text-gray-900">
+          <h2 className="font-mono mt-10 text-center text-xl font-semibold leading-9 tracking-tight text-gray-900">
             Verify your email and enter new password.
           </h2>
-          <h3 className="text-center leading-5 tracking-tight">Enter your email to sign up for this app</h3>
+          <h3 className="text-center leading-5 tracking-tight">
+            Enter your email to sign up for this app
+          </h3>
         </div>
 
         <div className="mt-6 sm:mx-auto sm:w-full sm:max-w-sm">
@@ -69,18 +71,21 @@ export default function LoginPage() {
                   placeholder="email@figmafakedomains.net"
                   required
                   autoFocus
-                  className="block w-full rounded-md border  px-4 py-1.5 text-gray-950 shadow-sm ring-1 ring-gray-300 placeholder:text-base text-gray-950 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+                  className="block w-full rounded-md border  px-4 py-1.5 text-gray-950 text-gray-950 shadow-sm ring-1 ring-gray-300 placeholder:text-base focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
                 />
               </div>
             </div>
 
-            
             <div>
               <button
                 type="submit"
                 className="flex w-full justify-center rounded-md bg-black px-3 py-2 text-base font-semibold leading-6 text-white shadow-sm hover:bg-gray-600 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
               >
-                {loading ? <span>PROCESSING...</span> : <span>Sign up with email</span>}
+                {loading ? (
+                  <span>PROCESSING...</span>
+                ) : (
+                  <span>Sign up with email</span>
+                )}
               </button>
               <p className="my-2 font-medium text-red-500">{error && error}</p>
             </div>
@@ -94,7 +99,9 @@ export default function LoginPage() {
                 <div className="w-full border-t border-gray-200"></div>
               </div>
               <div className="relative flex justify-center text-sm font-medium leading-5">
-                <span className="bg-white px-4 text-gray-500 font-normal">or continue with</span>
+                <span className="bg-white px-4 font-normal text-gray-500">
+                  or continue with
+                </span>
               </div>
             </div>
             <div className="mt-6 gap-4 bg-slate-100">
@@ -108,9 +115,7 @@ export default function LoginPage() {
                   className="h-6 w-6 "
                   src="https://upload.wikimedia.org/wikipedia/commons/thumb/c/c1/Google_%22G%22_logo.svg/1200px-Google_%22G%22_logo.svg.png"
                 ></img>
-                <span className="text-sm font-semibold leading-6 ">
-                  Google
-                </span>
+                <span className="text-sm font-semibold leading-6 ">Google</span>
               </div>
             </div>
             <div>

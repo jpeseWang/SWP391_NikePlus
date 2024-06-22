@@ -5,7 +5,6 @@ import { useRouter, useSearchParams } from "next/navigation";
 import { useState, useEffect } from "react";
 import { signIn, useSession } from "next-auth/react";
 import { LoginUser } from "@/services/userService";
-import { LoginUser } from "@/services/userService";
 import LoadingComponent from "../../loading";
 
 export default function LoginPage() {
@@ -14,7 +13,6 @@ export default function LoginPage() {
   const params = useSearchParams();
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
-
 
   const [loading, setLoading] = useState(false);
   useEffect(() => {
@@ -29,7 +27,6 @@ export default function LoginPage() {
     setLoading(true);
     try {
       await LoginUser(email, password)
-      await LoginUser(email, password)
     } catch (error) {
       console.error(error);
     } finally {
@@ -39,11 +36,9 @@ export default function LoginPage() {
 
   if (session.status === "loading") {
     return <LoadingComponent />;
-    return <LoadingComponent />;
   }
 
   if (session.status === "authenticated") {
-    router?.push("/marketplace");
     router?.push("/marketplace");
   }
 

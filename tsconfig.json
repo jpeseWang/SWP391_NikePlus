@@ -22,6 +22,7 @@
     ],
     "strictNullChecks": true
   },
+  "include": ["next-env.d.ts", ".next/types/**/*.ts", "**/*.ts", "**/*.tsx", "src/common/commonUtils.js", "src/services/productService.js", "src/services/orderService.js"],
   "include": ["next-env.d.ts", ".next/types/**/*.ts", "**/*.ts", "**/*.tsx", "src/common/commonUtils.js", "src/services/productService.js"],
   "exclude": ["node_modules"]
 }

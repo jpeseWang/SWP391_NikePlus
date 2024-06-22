@@ -31,9 +31,26 @@ export default class CommonUtil {
     }
 
     let formattedStr = formattedReversedStr.split("").reverse().join("");
+
+    // Tìm vị trí của dấu chấm trong chuỗi
+    let decimalIndex = formattedStr.indexOf('.');
+    // Nếu có dấu chấm trong chuỗi
+    if (decimalIndex !== -1) {
+      // Thay thế dấu chấm bằng số 0
+      formattedStr = formattedStr.replace('.', '0');
+    }
+
+    // Add '000d' at the end
     formattedStr += ",000₫";
     return formattedStr;
   }
+
+  static parseTimestamp(input) {
+    const res = input.split("T")[0]
+    return res;
+  }
+
+
 
   static getCountByData(data, attribute) {
     const typeCount = {};
@@ -45,8 +62,21 @@ export default class CommonUtil {
         typeCount[item[attribute]] = 1;
       }
     });
-
     // const result = Object.values(typeCount).map(count => count.toString());
     return Object.values(typeCount)
+  }
+
+  static getStorageValue(key, defaultValue) {
+    if (typeof window !== "undefined") {
+      const saved = localStorage.getItem(key);
+      const initial = saved !== null ? JSON.parse(saved) : defaultValue;
+      return initial;
+    }
+  }
+
+  static setStorageValue(key, value) {
+    if (typeof window !== "undefined") {
+      localStorage.setItem(key, JSON.stringify(value));
+    }
   }
 }
