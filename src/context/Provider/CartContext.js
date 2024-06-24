@@ -29,57 +29,58 @@ export function CartContextProvider({ children }) {
   }, []);
 
   function addProduct(productId, productPrice) {
-    console.log("addProduct called with:", productId, productPrice); // Debugging line
-
     const updatedCart = cartProducts.map((product) =>
       product.id === productId
         ? { ...product, price: productPrice, quantity: product.quantity + 1 }
-        : product
+        : product,
     );
     const productAlreadyInCart = updatedCart.some(
-      (product) => product.id === productId
+      (product) => product.id === productId,
     );
     if (!productAlreadyInCart) {
       setCartProducts((prev) => [
         ...prev,
         { id: productId, price: productPrice, quantity: 1 },
       ]);
-      console.log("New cartProducts:", [
-        ...cartProducts,
-        { id: productId, price: productPrice, quantity: 1 },
-      ]);
       toast.success("Product added successfully!");
     } else {
       setCartProducts(updatedCart);
-      console.log("Updated cartProducts:", updatedCart); // Debugging line
+      console.log("Updated cartProducts:", updatedCart);
     }
   }
 
   function removeProduct(productId) {
-    console.log("removeProduct called with:", productId); // Debugging line
-
-    setCartProducts((prev) =>
-      prev.filter((product) => product.id !== productId)
+    const updatedCart = cartProducts.filter(
+      (product) => product.id !== productId,
     );
-    ls?.removeItem("cart");
-    toast.info("Removed product successfully!");
+    setCartProducts(updatedCart);
+    CommonUtil.setStorageValue("cart", updatedCart);
+    toast("Removed product successfully!", {
+      icon: "🗑️",
+    });
   }
 
   function updateProduct(productId, newQuantity) {
-    console.log("updateProduct called with:", productId, newQuantity); // Debugging line
-
+    console.log("updateProduct called with:", productId, newQuantity);
     const updatedCart = cartProducts.map((product) =>
       product.id === productId
         ? { ...product, quantity: newQuantity }
-        : product
+        : product,
     );
-    CommonUtil.setStorageValue("cart", updatedCart)
-    
+    CommonUtil.setStorageValue("cart", updatedCart);
+
     setCartProducts(updatedCart);
   }
 
   function addUserInfo(Email, name, address, phone, payment) {
-    console.log("addUserInfo called with:", Email, name, address, phone, payment); // Debugging line
+    console.log(
+      "addUserInfo called with:",
+      Email,
+      name,
+      address,
+      phone,
+      payment,
+    ); // Debugging line
 
     setUserInfo({
       email: Email,

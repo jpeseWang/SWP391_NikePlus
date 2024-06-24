@@ -13,14 +13,12 @@ export default function OrderSummary() {
   const { cartProducts } = useContext(CartContext);
   const router = useRouter();
 
-
   useEffect(() => {
-    const lp = CommonUtil.getStorageValue("cartProduct")
+    const lp = CommonUtil.getStorageValue("cartProduct");
     if (lp) {
       setProducts(lp);
     }
   }, []);
-
 
   // Calculate totalPrice using products state
   const totalPrice = products.reduce((total, product) => {
@@ -29,7 +27,11 @@ export default function OrderSummary() {
 
   const shippingFee = 125;
   const taxes = (totalPrice * 0.1).toFixed(0);
-  const finalTotal = (parseFloat(totalPrice) + parseFloat(taxes) + shippingFee).toFixed(0);
+  const finalTotal = (
+    parseFloat(totalPrice) +
+    parseFloat(taxes) +
+    shippingFee
+  ).toFixed(0);
 
   const handleClearLs = () => {
     if (ls) {
@@ -38,8 +40,7 @@ export default function OrderSummary() {
       ls.removeItem("cartProduct");
       ls.removeItem("totalPrice");
     }
-  }
-
+  };
 
   return (
     <>
@@ -48,7 +49,7 @@ export default function OrderSummary() {
           <img
             src="https://images.unsplash.com/photo-1554350747-ec45fd24f51b?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=987&q=80"
             alt="TODO"
-            className="h-full w-full object-cover object-center mt-6"
+            className="mt-6 h-full w-full object-cover object-center"
           />
         </div>
 
@@ -87,7 +88,7 @@ export default function OrderSummary() {
                         <a href={product.href}>{product.name}</a>
                       </h3>
                       <p>{product.type}</p>
-                      <div className="w-fit rounded-md border border-gray-300 text-left text-base font-medium text-gray-700 shadow-sm focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500 sm:text-sm px-2">
+                      <div className="w-fit rounded-md border border-gray-300 px-2 text-left text-base font-medium text-gray-700 shadow-sm focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500 sm:text-sm">
                         x{product.quantity}
                       </div>
                     </div>
@@ -101,17 +102,23 @@ export default function OrderSummary() {
               <dl className="space-y-6 border-t border-gray-200 pt-6 text-sm font-medium text-gray-500">
                 <div className="flex justify-between">
                   <dt>Subtotal</dt>
-                  <dd className="text-gray-900">{CommonUtil.parsePrice(totalPrice)}</dd>
+                  <dd className="text-gray-900">
+                    {CommonUtil.parsePrice(totalPrice)}
+                  </dd>
                 </div>
 
                 <div className="flex justify-between">
                   <dt>Shipping</dt>
-                  <dd className="text-gray-900">{CommonUtil.parsePrice(shippingFee)}</dd>
+                  <dd className="text-gray-900">
+                    {CommonUtil.parsePrice(shippingFee)}
+                  </dd>
                 </div>
 
                 <div className="flex justify-between">
                   <dt>Taxes</dt>
-                  <dd className="text-gray-900">{CommonUtil.parsePrice(taxes)}</dd>
+                  <dd className="text-gray-900">
+                    {CommonUtil.parsePrice(taxes)}
+                  </dd>
                 </div>
 
                 <div className="flex items-center justify-between border-t border-gray-200 pt-6 text-gray-900">
@@ -122,7 +129,7 @@ export default function OrderSummary() {
                 </div>
               </dl>
 
-              <dl className="mt-16 grid grid-cols-2 gap-x-4 text-sm text-gray-600">
+              {/* <dl className="mt-16 grid grid-cols-2 gap-x-4 text-sm text-gray-600">
                 <div>
                   <dt className="font-medium text-gray-900">
                     Shipping Address
@@ -162,16 +169,15 @@ export default function OrderSummary() {
                     </div>
                   </dd>
                 </div>
-              </dl>
+              </dl> */}
 
               <div className="mt-16 border-t border-gray-200 py-6 text-right">
                 <button
                   className="text-sm font-medium text-indigo-600 hover:text-indigo-500"
                   onClick={() => {
-                    handleClearLs()
-                    router.push("/marketplace")
-                  }
-                  }
+                    handleClearLs();
+                    router.push("/marketplace");
+                  }}
                 >
                   Continue Shopping
                   <span aria-hidden="true"> &rarr;</span>
