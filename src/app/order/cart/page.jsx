@@ -42,7 +42,7 @@ export default function Example() {
       console.log("lp", lp)
       if (lp.length > 0) {
         setLocalProducts(lp);
-
+      
         const updateProducts = await Promise.all(lp.map(async (productData) => {
           try {
             const response = await fetch(`/api/product/${productData.id}`);

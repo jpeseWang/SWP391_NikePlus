@@ -7,7 +7,7 @@ import { signIn, useSession } from "next-auth/react";
 import { LoginUser } from "@/services/userService";
 import LoadingComponent from "../../loading";
 
-export default function LoginPage() {
+export default function ForgotPasswordPage() {
   const router = useRouter();
   const session = useSession();
   const params = useSearchParams();

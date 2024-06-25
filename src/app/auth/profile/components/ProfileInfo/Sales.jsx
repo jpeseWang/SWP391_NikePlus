@@ -1,6 +1,47 @@
 import React from "react";
+import useSWR from "swr";
+import { fetcher } from "@/utils/fetcher";
+import { GetAllProduct } from "@/services/productService";
+import CommonUtil from "@/common/commonUtils";
+
 
 export default function Sales() {
+
+  const { productData, isLoading, isError } = GetAllProduct();
+
+  const saleProductIds = [
+    "66763367cb1f2afb06b841bc",
+    "667633d0cb1f2afb06b841c0",
+    "66763431cb1f2afb06b841c3",
+  ];
+
+  const {
+    data: saleProduct1,
+    error: saleError1,
+    isLoading: saleLoading1,
+  } = useSWR(`/api/product/${saleProductIds[0]}`, fetcher);
+  const {
+    data: saleProduct2,
+    error: saleError2,
+    isLoading: saleLoading2,
+  } = useSWR(`/api/product/${saleProductIds[1]}`, fetcher);
+  const {
+    data: saleProduct3,
+    error: saleError3,
+    isLoading: saleLoading3,
+  } = useSWR(`/api/product/${saleProductIds[2]}`, fetcher);
+
+  const saleProducts = [saleProduct1, saleProduct2, saleProduct3];
+
+  if (
+    status === "loading" ||
+    isLoading ||
+    saleLoading1 ||
+    saleLoading2 ||
+    saleLoading3
+  ) {
+    return <LoadingComponent />;
+  }
   return (
     <section>
       <h2 className="mb-4 text-2xl font-semibold">SALES 🔥</h2>

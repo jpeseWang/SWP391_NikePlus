@@ -21,7 +21,7 @@ export default function ProfileNav() {
           Order
         </a>
         <button
-          onClick={() => router.push("/order/history")}
+          onClick={() => router.push("/auth/profile/setting")}
           className="text-gray-800 hover:text-black"
         >
           Settings

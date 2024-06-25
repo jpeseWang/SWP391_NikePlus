@@ -8,7 +8,7 @@ import { CheckCircleIcon } from "@heroicons/react/16/solid";
 import { classNames } from "@/utils/classNames";
 import LoadingComponent from "../../loading";
 import { useSession } from "next-auth/react";
-import { CreateUser } from "@/services/userService"
+import { CreateUser } from "@/services/userService";
 import { mutate } from 'swr';
 
 const genderOptions = [
