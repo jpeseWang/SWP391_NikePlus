@@ -5,7 +5,6 @@ import { useRouter, useSearchParams } from "next/navigation";
 import { useState, useEffect } from "react";
 import { signIn, useSession } from "next-auth/react";
 import { LoginUser } from "@/services/userService";
-import { LoginUser } from "@/services/userService";
 import LoadingComponent from "../../loading";
 
 export default function LoginPage() {
