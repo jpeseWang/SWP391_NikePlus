@@ -13,7 +13,10 @@ import {
 import {
   ChevronDownIcon,
   PhoneIcon,
-  PlayCircleIcon,
+  AdjustmentsHorizontalIcon,
+  GlobeAltIcon,
+  ShoppingCartIcon,
+  UserIcon,
 } from "@heroicons/react/20/solid";
 import Link from "next/link";
 import { useSession } from "next-auth/react";
@@ -55,8 +58,8 @@ const products = [
   },
 ];
 const callsToAction = [
-  { name: "Shop all categories", href: "/marketplace", icon: PlayCircleIcon },
-  { name: "Auction community", href: "#", icon: PhoneIcon },
+  { name: "Shop all categories", href: "/marketplace", icon: ShoppingCartIcon },
+  { name: "Auction community", href: "#", icon: GlobeAltIcon },
 ];
 
 export default function Header() {
@@ -179,20 +182,22 @@ export default function Header() {
                       href="/auth/profile"
                       className="flex items-center justify-center gap-x-2.5 p-3 text-sm font-semibold leading-6 text-gray-900 hover:bg-gray-100 dark:text-textDark"
                     >
+                      <UserIcon
+                        className="h-5 w-5 flex-none text-gray-400"
+                        aria-hidden="true"
+                      />
                       Profile
                     </Link>
 
-                    {/* <Link
-                      href="/order/history"
-                      className="flex items-center justify-center gap-x-2.5 p-3 text-sm font-semibold leading-6 text-gray-900 hover:bg-gray-100 dark:text-textDark"
-                    >
-                      My Order
-                    </Link> */}
                     {session?.data?.role === "admin" && (
                       <Link
                         href="/admin/page?title=Dashboard"
                         className="flex items-center justify-center gap-x-2.5 p-3 text-sm font-semibold leading-6 text-gray-900 hover:bg-gray-100 dark:text-textDark"
                       >
+                        <AdjustmentsHorizontalIcon
+                          className="h-5 w-5 flex-none text-gray-400"
+                          aria-hidden="true"
+                        />
                         Admin
                       </Link>
                     )}

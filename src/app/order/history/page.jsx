@@ -62,7 +62,9 @@ export default function OrderHistoryPage() {
                         </div>
                         <div className="flex justify-between pt-4 font-medium text-gray-900 md:block md:pt-0">
                           <dt>Total amount</dt>
-                          <dd className="md:mt-1">{order.total}</dd>
+                          <dd className="md:mt-1">
+                            {CommonUtil.parsePrice(order.orderInfo.totalPrice)}
+                          </dd>
                         </div>
                       </dl>
                       <div className="mt-6 space-y-4 sm:flex sm:space-x-4 sm:space-y-0 md:mt-0">
@@ -110,13 +112,31 @@ export default function OrderHistoryPage() {
                                     View Product
                                   </a>
                                   <div className="ml-4 border-l border-gray-200 pl-4 sm:ml-6 sm:pl-6">
-                                    <a
+                                    {/* <a
                                       href="#"
                                       className="text-indigo-600 hover:text-indigo-500"
                                     >
                                       Buy Again
-                                    </a>
+                                    </a> */}
+                                    <span className="text inline-flex items-center gap-x-1.5 rounded-md bg-yellow-100 px-1.5 py-0.5 font-medium text-yellow-800">
+                                      <svg
+                                        className="h-1.5 w-1.5 fill-yellow-500"
+                                        viewBox="0 0 6 6"
+                                        aria-hidden="true"
+                                      >
+                                        <circle cx={3} cy={3} r={3} />
+                                      </svg>
+                                      To pack
+                                    </span>
                                   </div>
+                                </div>
+                                <div className="mt-2 flex text-sm font-medium">
+                                  <a
+                                    href={product.href}
+                                    className="text-slate-600 hover:text-indigo-500"
+                                  >
+                                    Quantity: x{product.quantity}
+                                  </a>
                                 </div>
                               </div>
                               <div className="mt-6 font-medium">

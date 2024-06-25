@@ -5,18 +5,13 @@ import { useState, useContext, useEffect, useRef } from "react";
 import { useRouter } from "next/navigation";
 import { RadioGroup } from "@headlessui/react";
 import CommonUtil from "@/common/commonUtils";
-import {
-  CheckCircleIcon,
-  TrashIcon,
-} from "@heroicons/react/20/solid";
+import { CheckCircleIcon, TrashIcon } from "@heroicons/react/20/solid";
 import { classNames } from "@/utils/classNames";
 import { CartContext } from "@/context/Provider/CartContext";
 import { useSession } from "next-auth/react";
 import { CreateOrder } from "@/services/orderService";
 import emailjs from "@emailjs/browser";
 import toast from "react-hot-toast";
-
-
 
 const deliveryMethods = [
   {
@@ -37,25 +32,28 @@ export default function CheckOutPage() {
   const ls = typeof window !== "undefined" ? window.localStorage : null;
   const totalPrice = parseInt(ls?.getItem("totalPrice") || "0");
   const [selectedDeliveryMethod, setSelectedDeliveryMethod] = useState(
-    deliveryMethods[0]
+    deliveryMethods[0],
   );
   const [selectedPaymentMethod, setSelectedPaymentMethod] = useState("cod");
 
   const { removeProduct, addUserInfo } = useContext(CartContext);
   const [products, setProducts] = useState([]);
-  const [order, setOrder] = useState({ userInfo: {}, orderInfo: {}, products: [] });
+  const [order, setOrder] = useState({
+    userInfo: {},
+    orderInfo: {},
+    products: [],
+  });
 
   const session = useSession();
   const router = useRouter();
   const form = useRef();
 
   useEffect(() => {
-    const lp = CommonUtil.getStorageValue("cartProduct")
+    const lp = CommonUtil.getStorageValue("cartProduct");
     if (lp) {
       setProducts(lp);
     }
   }, []);
-
 
   const handleSubmit = async (event) => {
     event.preventDefault();
@@ -93,7 +91,7 @@ export default function CheckOutPage() {
         shippingStatus: "Ready",
         paymentMethod: selectedPaymentMethod.id,
         paymentStatus: "Unpaid",
-        totalPrice: finalPrice
+        totalPrice: parseInt(finalPrice),
       },
       products: products,
     };
@@ -105,7 +103,6 @@ export default function CheckOutPage() {
       ls.setItem("totalPrice", totalPrice);
       ls.setItem("finalPrice", finalPrice);
       ls.setItem("deliveryFee", selectedDeliveryMethod.price);
-
     } catch (error) {
       console.error("Error during form submission:", error);
       toast.error("An error occurred during form submission: " + error.message);
@@ -117,19 +114,21 @@ export default function CheckOutPage() {
       await CreateOrder(orderData);
       toast.success("Order created successfully!");
 
-      emailjs.sendForm(
-        "service_p7v3jef",
-        "template_7qldsv1",
-        form.current,
-        "EgKI2lPX0TVNbzTbs"
-      ).then(
-        (result) => {
-          console.log("EmailJS result:", result.text);
-        },
-        (error) => {
-          console.error("EmailJS error:", error.text);
-        }
-      );
+      emailjs
+        .sendForm(
+          "service_p7v3jef",
+          "template_7qldsv1",
+          form.current,
+          "EgKI2lPX0TVNbzTbs",
+        )
+        .then(
+          (result) => {
+            console.log("EmailJS result:", result.text);
+          },
+          (error) => {
+            console.error("EmailJS error:", error.text);
+          },
+        );
       router.push("/order/summary");
       // Uncomment and modify the following lines if needed
       // if (selectedPaymentMethod.id === "paypal") {
@@ -137,7 +136,6 @@ export default function CheckOutPage() {
       // } else {
       //   router.push("/order/summary");
       // }
-
     } catch (err) {
       console.error("Error creating order:", err);
       toast.error("Something went wrong: " + err.message);
@@ -176,7 +174,6 @@ export default function CheckOutPage() {
   //   }
   // }
 
-
   const subTotal = totalPrice;
   const deliveryFee = selectedDeliveryMethod.price;
   const taxes = (totalPrice * 0.1).toFixed(2);
@@ -185,14 +182,14 @@ export default function CheckOutPage() {
     selectedDeliveryMethod.price +
     totalPrice * 0.1
   ).toFixed(2);
-  console.log(order)
+  console.log(order);
 
   return (
     <div className="bg-gray-50">
       <main className="mx-auto max-w-7xl px-4 pb-24 pt-16 sm:px-6 lg:px-8">
         {" "}
         <button
-          class="text-base font-semibold text-indigo-600 hover:text-indigo-500 pb-6"
+          class="pb-6 text-base font-semibold text-indigo-600 hover:text-indigo-500"
           onClick={() => {
             router.push("/marketplace/cart");
           }}
@@ -225,7 +222,7 @@ export default function CheckOutPage() {
                       id="email"
                       name="email"
                       autoComplete="email"
-                      className="block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm px-2 py-2"
+                      className="block w-full rounded-md border-gray-300 px-2 py-2 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
                     />
                   </div>
                 </div>
@@ -249,7 +246,7 @@ export default function CheckOutPage() {
                         id="first-name"
                         name="firstName"
                         autoComplete="given-name"
-                        className="block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm px-2 py-2"
+                        className="block w-full rounded-md border-gray-300 px-2 py-2 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
                       />
                     </div>
                   </div>
@@ -267,7 +264,7 @@ export default function CheckOutPage() {
                         id="lastName"
                         name="lastName"
                         autoComplete="family-name"
-                        className="block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm px-2 py-2"
+                        className="block w-full rounded-md border-gray-300 px-2 py-2 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
                       />
                     </div>
                   </div>
@@ -284,7 +281,7 @@ export default function CheckOutPage() {
                         type="text"
                         name="company"
                         id="company"
-                        className="block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm px-2 py-2"
+                        className="block w-full rounded-md border-gray-300 px-2 py-2 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
                       />
                     </div>
                   </div>
@@ -302,7 +299,7 @@ export default function CheckOutPage() {
                         name="address"
                         id="address"
                         autoComplete="street-address"
-                        className="block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm px-2 py-2"
+                        className="block w-full rounded-md border-gray-300 px-2 py-2 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
                       />
                     </div>
                   </div>
@@ -319,7 +316,7 @@ export default function CheckOutPage() {
                         type="text"
                         name="apartment"
                         id="apartment"
-                        className="block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm px-2 py-2"
+                        className="block w-full rounded-md border-gray-300 px-2 py-2 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
                       />
                     </div>
                   </div>
@@ -337,7 +334,7 @@ export default function CheckOutPage() {
                         name="city"
                         id="city"
                         autoComplete="address-level2"
-                        className="block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm px-2 py-2"
+                        className="block w-full rounded-md border-gray-300 px-2 py-2 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
                       />
                     </div>
                   </div>
@@ -354,7 +351,7 @@ export default function CheckOutPage() {
                         id="country"
                         name="country"
                         autoComplete="country-name"
-                        className="block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm px-2 py-2"
+                        className="block w-full rounded-md border-gray-300 px-2 py-2 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
                       >
                         <option>United States</option>
                         <option>Canada</option>
@@ -377,7 +374,7 @@ export default function CheckOutPage() {
                         name="region"
                         id="region"
                         autoComplete="address-level1"
-                        className="block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm px-2 py-2"
+                        className="block w-full rounded-md border-gray-300 px-2 py-2 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
                       />
                     </div>
                   </div>
@@ -395,7 +392,7 @@ export default function CheckOutPage() {
                         name="postal-code"
                         id="postal-code"
                         autoComplete="postal-code"
-                        className="block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm px-2 py-2"
+                        className="block w-full rounded-md border-gray-300 px-2 py-2 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
                       />
                     </div>
                   </div>
@@ -413,7 +410,7 @@ export default function CheckOutPage() {
                         name="phone"
                         id="phone"
                         autoComplete="tel"
-                        className="block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm px-2 py-2"
+                        className="block w-full rounded-md border-gray-300 px-2 py-2 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
                       />
                     </div>
                   </div>
@@ -446,7 +443,7 @@ export default function CheckOutPage() {
                           classNames(
                             checked ? "border-transparent" : "border-gray-300",
                             active ? "ring-2 ring-indigo-500" : "",
-                            "relative flex cursor-pointer rounded-lg border bg-white p-4 shadow-sm focus:outline-none"
+                            "relative flex cursor-pointer rounded-lg border bg-white p-4 shadow-sm focus:outline-none",
                           )
                         }
                       >
@@ -486,7 +483,7 @@ export default function CheckOutPage() {
                                 checked
                                   ? "border-indigo-500"
                                   : "border-transparent",
-                                "pointer-events-none absolute -inset-px rounded-lg"
+                                "pointer-events-none absolute -inset-px rounded-lg",
                               )}
                               aria-hidden="true"
                             />
@@ -619,7 +616,7 @@ export default function CheckOutPage() {
                             <div
                               id="quantity"
                               name="quantity"
-                              className="rounded-md border border-gray-300 text-left text-base font-medium text-gray-700 shadow-sm focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500 sm:text-sm px-2"
+                              className="rounded-md border border-gray-300 px-2 text-left text-base font-medium text-gray-700 shadow-sm focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500 sm:text-sm"
                             >
                               x{product.quantity}
                             </div>
@@ -666,7 +663,7 @@ export default function CheckOutPage() {
                       className="text-base font-medium text-gray-900"
                       name="totalPrice"
                     >
-                      {CommonUtil.parsePrice((parseInt(finalPrice)).toFixed(0))}
+                      {CommonUtil.parsePrice(parseInt(finalPrice).toFixed(0))}
                     </dd>
                   </div>
                 </dl>
