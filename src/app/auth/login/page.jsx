@@ -14,7 +14,6 @@ export default function LoginPage() {
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
 
-
   const [loading, setLoading] = useState(false);
   useEffect(() => {
     setError(params.get("error"));
@@ -28,7 +27,6 @@ export default function LoginPage() {
     setLoading(true);
     try {
       await LoginUser(email, password)
-      await LoginUser(email, password)
     } catch (error) {
       console.error(error);
     } finally {
@@ -38,11 +36,9 @@ export default function LoginPage() {
 
   if (session.status === "loading") {
     return <LoadingComponent />;
-    return <LoadingComponent />;
   }
 
   if (session.status === "authenticated") {
-    router?.push("/marketplace");
     router?.push("/marketplace");
   }
 

@@ -9,12 +9,8 @@ import {
     BarElement,
     Title,
     Tooltip,
-<<<<<<< HEAD
-    Legend
-=======
     Legend,
     plugins
->>>>>>> 7da93aec6914625fae18d09e55a916c11467f1b9
 } from "chart.js";
 import { chartData } from "./mockChartData"
 import { GetAllProduct } from "@/services/productService";
@@ -32,13 +28,6 @@ ChartJS.register(
 
 export default function ProductDashBoard() {
     const { productData, isLoading, isError } = GetAllProduct();
-<<<<<<< HEAD
-    const result = CommonUtil.getCountByData(productData, "type")
-
-    const options = {}
-    const productOverviewData = {
-        labels: ["Shoes", "Clothing", "Accessory", "Stjg"],
-=======
     const result = CommonUtil.getCountByData(productData, "category")
 
     const options = {
@@ -56,7 +45,6 @@ export default function ProductDashBoard() {
     }
     const productOverviewData = {
         labels: ["Shoes", "Clothings", "Accessories and Equipment"],
->>>>>>> 7da93aec6914625fae18d09e55a916c11467f1b9
         datasets: [{
             label: 'Item',
             data: result,
@@ -74,13 +62,8 @@ export default function ProductDashBoard() {
         <div className="dark:text-textDark">
 
             <h1 className="my-6 text-2xl font-semibold">Product Dashboard</h1>
-<<<<<<< HEAD
-            <h2 className="mb-4 text-xl ">Product satics</h2>
-            
-=======
             <h2 className="mb-4 text-xl ">Product statics</h2>
 
->>>>>>> 7da93aec6914625fae18d09e55a916c11467f1b9
             <Bar options={options} data={productOverviewData} />
 
             <h2 className="mb-4 mt-16 text-xl ">Product sales</h2>
