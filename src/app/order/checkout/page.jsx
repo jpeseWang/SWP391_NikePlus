@@ -131,11 +131,11 @@ export default function CheckOutPage() {
         );
       router.push("/order/summary");
       // Uncomment and modify the following lines if needed
-      // if (selectedPaymentMethod.id === "paypal") {
-      //   router.push("/payment");
-      // } else {
-      //   router.push("/order/summary");
-      // }
+      if (selectedPaymentMethod.id === "paypal") {
+        router.push("/order/payment");
+      } else {
+        router.push("/order/summary");
+      }
     } catch (err) {
       console.error("Error creating order:", err);
       toast.error("Something went wrong: " + err.message);
@@ -176,12 +176,12 @@ export default function CheckOutPage() {
 
   const subTotal = totalPrice;
   const deliveryFee = selectedDeliveryMethod.price;
-  const taxes = (totalPrice * 0.1).toFixed(2);
+  const taxes = (totalPrice * 0.1).toFixed(0);
   const finalPrice = (
     totalPrice +
-    selectedDeliveryMethod.price +
-    totalPrice * 0.1
-  ).toFixed(2);
+    125 +
+    (totalPrice * 0.1)
+  ).toFixed(0);
   console.log(order);
 
   return (
@@ -417,14 +417,26 @@ export default function CheckOutPage() {
                 </div>
               </div>
               {/* Product price */}
-              <input className="hidden" name="subTotal" value={subTotal} />
+              <input
+                className="hidden"
+                name="subTotal"
+                value={CommonUtil.parsePrice(totalPrice)}
+              />
               <input
                 className="hidden"
                 name="deliveryFee"
-                value={deliveryFee}
+                value={CommonUtil.parsePrice(125)}
               />
-              <input className="hidden" name="taxes" value={taxes} />
-              <input className="hidden" name="finalPrice" value={finalPrice} />
+              <input
+                className="hidden"
+                name="taxes"
+                value={CommonUtil.parsePrice((totalPrice * 0.1).toFixed(0))}
+              />
+              <input
+                className="hidden"
+                name="finalPrice"
+                value={CommonUtil.parsePrice(parseInt(finalPrice).toFixed(0))}
+              />
               <div className="mt-10 border-t border-gray-200 pt-10">
                 <RadioGroup
                   value={selectedDeliveryMethod}
@@ -505,16 +517,19 @@ export default function CheckOutPage() {
                       <div
                         key={paymentMethod.id}
                         className="flex items-center"
-                        defaultValue={selectedPaymentMethod}
-                        onClick={() => {
-                          setSelectedPaymentMethod(paymentMethod);
-                        }}
+                        onClick={() => setSelectedPaymentMethod(paymentMethod)}
                       >
                         <input
                           id={paymentMethod.id}
                           name="payment-type"
                           type="radio"
-                          defaultValue={selectedPaymentMethod}
+                          value={paymentMethod.id}
+                          checked={
+                            selectedPaymentMethod.id === paymentMethod.id
+                          }
+                          onChange={() =>
+                            setSelectedPaymentMethod(paymentMethod)
+                          }
                           className="h-4 w-4 border-gray-300 text-indigo-600 focus:ring-indigo-500"
                         />
                         <label
