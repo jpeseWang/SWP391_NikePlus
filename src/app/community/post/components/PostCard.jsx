@@ -1,3 +1,4 @@
+"use client"
 import React from "react";
 import {
     PhotoIcon,
@@ -6,13 +7,32 @@ import {
     ChatBubbleLeftIcon,
     ChatBubbleOvalLeftIcon,
     PaperAirplaneIcon,
-
     TrashIcon,
 } from "@heroicons/react/24/outline";
 import { HeartIcon } from "@heroicons/react/24/solid";
 import Link from "next/link";
 import CommonUtil from "@/common/commonUtils";
+
+
 export default function PostCard({ postData }) {
+    const handleUpdateReact = async (id) => {
+        //Like
+        try {
+            await fetch(`/api/forum/react/${id}`, {
+                method: 'PUT',
+                body: JSON.stringify({
+                    userID: session.data.id,
+                }),
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+            })
+            mutate()
+        } catch (error) {
+            console.error('Error updating rating:', error)
+        }
+    }
+
     return (
         <div>
             <div className="mx-auto mt-6 max-w-md rounded-lg border p-4 ring-1 ring-gray-100 dark:border-none dark:bg-black  dark:ring-gray-700 sm:max-w-xl">
@@ -32,13 +52,17 @@ export default function PostCard({ postData }) {
                         </div>
                     </div>
                 </div>
+                <div className="relative">
 
-                <span className="text-lg font-medium">{postData.title}</span>
-                <img
-                    src={postData.imgSrc}
-                    className="aspect-w-1 aspect-h-1 my-2 h-[468px] w-full object-cover rounded-lg"
-                />
-               
+                    <img
+                        src={postData.imgSrc}
+                        className="aspect-w-1 aspect-h-1 my-2 h-[468px] w-full object-cover rounded-lg brightness-75"
+                    />
+                    <span className="z-40 pl-4 text-3xl font-medium absolute text-white bottom-[60px]">{postData.content}</span>
+                    <span className="z-40 pl-4 text-xl absolute text-gray-300 bottom-[30px]"> {CommonUtil.getTimeDiff(postData.createdAt)}</span>
+                </div>
+
+
                 <div className=" mb-2 mt-3 flex items-center justify-between">
                     <div className="flex">
                         {/* <span
@@ -71,7 +95,7 @@ export default function PostCard({ postData }) {
 
                     <div className="flex">
                         <PaperAirplaneIcon
-                            className="h-6 w-6 cursor-pointer text-[#969696] hover:text-blue-500"
+                            className="h-6 w-6 cursor-pointer text-[#969696] hover:text-blue-500 -rotate-45"
                         //   onClick={() => {
                         //     handleDelete(post._id)
                         //   }}
@@ -79,6 +103,7 @@ export default function PostCard({ postData }) {
                     </div>
                 </div>
 
+                {/* Preview comment
                 <div className="flex">
                     <div className="text-sm font-semibold  antialiased dark:text-gray-400">
                         jpese_wang
@@ -86,7 +111,7 @@ export default function PostCard({ postData }) {
                     <span className="ml-1 text-sm text-gray-800 dark:text-white">
                         Nice
                     </span>
-                </div>
+                </div> */}
 
                 <div className="text-sm font-medium text-gray-500">
                     <p
@@ -96,7 +121,7 @@ export default function PostCard({ postData }) {
                     //   setViewModalIsOpen(true)
                     // }}
                     >
-                        View all 3 comments
+                        View all comments
                     </p>
                     <hr className="mt-4 mb-2 mx-0" />
                     <div>

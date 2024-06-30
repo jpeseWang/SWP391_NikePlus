@@ -4,11 +4,8 @@ const { Schema } = mongoose;
 
 const postSchema = new Schema(
     {
-        title: {
-            type: String,
-            required: true,
-        },
-        description: {
+
+        content: {
             type: String,
             required: true,
         },
@@ -22,6 +19,12 @@ const postSchema = new Schema(
             authorName: String,
             authorRole: String,
         },
+        like: [
+            {
+                authorID: String,
+            },
+            { timestamps: true }
+        ],
         comment: [
             {
                 authorInfo:

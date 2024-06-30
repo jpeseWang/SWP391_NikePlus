@@ -39,7 +39,7 @@ export const PUT = async (request, { params }) => {
       return new NextResponse("Post not found", { status: 404 });
     }
 
-    post.comment = post.comment.concat(newComment);
+    // post.comment = post.comment.concat(newComment);
 
     await post.save();
 

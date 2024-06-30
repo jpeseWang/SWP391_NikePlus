@@ -6,12 +6,12 @@ export function GetAllPost() {
   return { postData: data, isLoading, isError: error, mutate };
 }
 
-export function GetProductById(id) {
+export function GetPostById(id) {
   const { data, error, isLoading } = useSWR(
-    `/api/product/${id}`,
+    `/api/post/${id}`,
     fetcher,
   );
-  return { productData: data, isLoading, isError: error };
+  return { postData: data, isLoading, isError: error };
 }
 
 export const CreatePost = async (postData) => {
@@ -24,37 +24,27 @@ export const CreatePost = async (postData) => {
   });
 };
 
-export const CreateInventory = async (productData) => {
-  await fetch("/api/product", {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify({ ...productData }),
-  });
-};
-
-export const DeleteProduct = async (id) => {
+export const DeletePost = async (id) => {
   try {
-    await fetch(`/api/product/${id}`, {
+    await fetch(`/api/post/${id}`, {
       method: "DELETE",
     });
   } catch (err) {
-    console.error("Error deleting product:", err);
+    console.error("Error deleting post:", err);
     throw err;
   }
 }
 
-export const UpdateProduct = async (productData) => {
-  const id = productData._id;
+export const UpdatePost = async (postData) => {
+  const id = postData._id;
   try {
-    const response = await fetch(`/api/product/${id}`, {
+    const response = await fetch(`/api/post/${id}`, {
       method: "PUT",
       headers: {
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
-        productData
+        postData
       }),
     });
     return response.status;
