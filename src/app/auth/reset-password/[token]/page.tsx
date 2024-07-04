@@ -1,47 +1,93 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
-import { useSession } from "next-auth/react";
+import { signIn, useSession } from "next-auth/react";
 import emailjs from "@emailjs/browser";
-import LoadingComponent from "../../loading";
+import LoadingComponent from "../../../loading";
+import { toast } from "react-hot-toast";
 
-export default function ForgotPasswordPage() {
+const ResetPasswordPage = ({params} : any) => {
+    console.log(params.token);
     const router = useRouter();
-    const session = useSession();
-    const params = useSearchParams();
     const [error, setError] = useState("");
     const [loading, setLoading] = useState(false);
 
-    const validateEmail = (email) => {
-        const regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-        return regex.test(email);
-    };
+    const [verified, setVerified] = useState(false);
+    const [user, setUser] = useState(null);
+    const { data: session, status: sessionStatus } = useSession();
 
-    const handleSubmit = async (e) => {
-        e.preventDefault();
-        const email = e.target[0].value;
-
-        if (!validateEmail(email)) {
-            setError("Please enter a valid email address.");
-            return;
-        }
-
-        setLoading(true);
-
-        try {
-            const res = await fetch("/api/auth/forget-password", {
+    useEffect(() => {
+        const verifyToken = async () => {
+            try {
+            const res = await fetch("/api/auth/verify-token", {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
                 },
                 body: JSON.stringify({
-                    email,
+                    token: params.token,
                 }),
             });
 
             if (res.status === 400) {
-                setError("User with this email is not registered!");
+                setError("Token are not invalid or has expired.");
+                setVerified(false);
+                return;
+            }
+
+            if (res.status === 200) {
+                setError("");
+                setVerified(true);
+                const userData = await res.json();
+                setUser(userData);
+            }
+        } catch (error) {
+            setError("Error verifying token. Please try again!");
+            console.error("Error verifying token:", error);
+        } finally {
+            setLoading(false);
+        }
+        };
+        verifyToken();
+    }, [params.token])
+
+    useEffect(() => {
+        if (sessionStatus === 'authenticated') {
+            router.replace('/marketplace')
+        }
+    }, [sessionStatus, router])
+
+    const isValidPassword = (password) => {
+        const regex = /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[!@#$%^&*()_+[\]{}|\\:"';<>?,./-]).{6,}$/;
+        return regex.test(password);
+      };
+
+    const handleSubmit = async (e : any) => {
+        e.preventDefault();
+        const password = e.target[0].value;
+
+        if (!isValidPassword(password)) {
+            toast.error("Password must contain at least six characters, at least one number, both lower and uppercase letters, and special characters.");
+            return;
+          }
+
+        setLoading(true);
+
+        try {
+            const res = await fetch("/api/auth/reset-password", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify({
+                    password,
+                    email: user?.email
+                }),
+            });
+
+            if (res.status === 400) {
+                setError("Something went wrong, please try again.");
                 setLoading(false);
                 return;
             }
@@ -55,6 +101,7 @@ export default function ForgotPasswordPage() {
         } catch (error) {
             setError("Error, please try again!");
             console.error("Error initiating password reset: ", error);
+            router.push("/auth/login");
         } finally {
             setLoading(false);
         }
@@ -79,15 +126,6 @@ export default function ForgotPasswordPage() {
             console.error("Error sending email:", error);
         }
     };
-
-    if (session.status === "loading") {
-        return <LoadingComponent />;
-    }
-
-    if (session.status === "authenticated") {
-        router?.push("/marketplace");
-        return <LoadingComponent />;
-    }
 
     return (
         <>
@@ -115,9 +153,9 @@ export default function ForgotPasswordPage() {
                         <div>
                             <div className="mt-0">
                                 <input
-                                    id="email"
-                                    name="email"
-                                    type="email"
+                                    id="password"
+                                    name="password"
+                                    type="password"
                                     autoComplete="email"
                                     placeholder="email@figmafakedomains.net"
                                     required
@@ -131,7 +169,7 @@ export default function ForgotPasswordPage() {
                             <button
                                 type="submit"
                                 className="flex w-full justify-center rounded-md bg-black px-3 py-2 text-base font-semibold leading-6 text-white shadow-sm hover:bg-gray-600 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
-                                disabled={loading}
+                                disabled={error.length > 0}
                             >
                                 {loading ? (
                                     <span>PROCESSING...</span>
@@ -185,3 +223,5 @@ export default function ForgotPasswordPage() {
         </>
     );
 }
+
+export default ResetPasswordPage;
