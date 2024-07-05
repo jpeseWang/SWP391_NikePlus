@@ -4,8 +4,12 @@ import { Field, Label, Switch } from "@headlessui/react";
 import { Bars3BottomLeftIcon, BellIcon } from "@heroicons/react/24/outline";
 import { MagnifyingGlassIcon } from "@heroicons/react/20/solid";
 import { useSession } from "next-auth/react";
-import { GetUserById } from "@/services/userService";
+import { GetUserById, UpdateUser } from "@/services/userService";
 import LoadingComponent from "@/app/loading";
+import { mutate } from "swr";
+import { CountrySelector } from '@/utils/data/country-options';
+
+
 const tabs = [
   { name: "General", href: "#", current: true },
   { name: "Password", href: "#", current: false },
@@ -26,11 +30,45 @@ export default function ProfileInfo() {
   const [autoUpdateApplicantDataEnabled, setAutoUpdateApplicantDataEnabled] =
     useState(false);
 
+
+
   const session = useSession();
   const userId = session?.data?.id;
 
   const { userData, isLoading, isError } = GetUserById(userId);
+
+  const [editName, setEditName] = useState(userData?.name || "");
+  const [editEmail, setEditEmail] = useState(userData?.email || "");
+  const [editGender, setEditGender] = useState(userData?.gender || "");
+  const [editCountry, setEditCountry] = useState(userData?.country || "");
+  const [editDob, setEditDob] = useState(userData?.dob || "");
+
+
   console.log(userData);
+
+  const handleUpdate = async (field, value) => {
+    try {
+      console.log("Updating user:", userId, field, value);
+      const response = await UpdateUser(userId, { [field]: value });
+      if (response.ok) {
+        mutate(`/api/user/${userId}`);
+        console.log("User updated successfully:", response.data);
+      } else {
+        console.error("Failed to update user:", response.data || response.error);
+      }
+    } catch (error) {
+      console.error("Error updating user:", error);
+    }
+  };
+
+  const handleCountryChange = (e) => {
+    setEditCountry(e.target.value);
+  };
+
+  const handleGenderChange = (e) => {
+    setEditGender(e.target.value);
+  };
+
   return (
     <>
       {isLoading ? (
@@ -176,12 +214,17 @@ export default function ProfileInfo() {
                                     Name
                                   </dt>
                                   <dd className="mt-1 flex text-sm text-gray-900 sm:col-span-2 sm:mt-0">
-                                    <span className="flex-grow">
-                                      {userData.name}
-                                    </span>
-                                    <span className="ml-4 flex-shrink-0">
+                                    <input
+                                      type="text"
+                                      value={editName}
+                                      placeholder={userData.name}
+                                      onChange={(e) => setEditName(e.target.value)}
+                                      
+                                    />
+                                    <span className="ml-12 flex-shrink-0">
                                       <button
                                         type="button"
+                                        onClick={() => handleUpdate("name", editName)}
                                         className="rounded-md bg-white font-medium text-purple-600 hover:text-purple-500 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:ring-offset-2"
                                       >
                                         Update
@@ -228,12 +271,16 @@ export default function ProfileInfo() {
                                     Email
                                   </dt>
                                   <dd className="mt-1 flex text-sm text-gray-900 sm:col-span-2 sm:mt-0">
-                                    <span className="flex-grow">
-                                      {userData.email}
-                                    </span>
-                                    <span className="ml-4 flex-shrink-0">
+                                    <input
+                                      type="text"
+                                      value={editEmail}
+                                      placeholder={userData.email}
+                                      onChange={(e) => setEditEmail(e.target.value)}
+                                    />
+                                    <span className="ml-12 flex-shrink-0">
                                       <button
                                         type="button"
+                                        onClick={() => handleUpdate("email", editEmail)}
                                         className="rounded-md bg-white font-medium text-purple-600 hover:text-purple-500 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:ring-offset-2"
                                       >
                                         Update
@@ -243,15 +290,24 @@ export default function ProfileInfo() {
                                 </div>
                                 <div className="py-4 sm:grid sm:grid-cols-3 sm:gap-4 sm:border-b sm:border-gray-200 sm:py-5">
                                   <dt className="text-sm font-medium text-gray-500">
-                                    Job title
+                                    Gender
                                   </dt>
                                   <dd className="mt-1 flex text-sm text-gray-900 sm:col-span-2 sm:mt-0">
-                                    <span className="flex-grow">
-                                      Human Resources Manager
-                                    </span>
-                                    <span className="ml-4 flex-shrink-0">
+                                    <select
+                                      id="gender"
+                                      name="gender"
+                                      value={editGender}
+                                      onChange={handleGenderChange}
+                                      placeholder={userData.gender}
+                                      className="block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm px-2 py-2"
+                                    >
+                                      <option value="Male">Male</option>
+                                      <option value="Female">Female</option>
+                                    </select>
+                                    <span className="ml-12 flex-shrink-0">
                                       <button
                                         type="button"
+                                        onClick={() => handleUpdate("gender", editGender)}
                                         className="rounded-md bg-white font-medium text-purple-600 hover:text-purple-500 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:ring-offset-2"
                                       >
                                         Update
@@ -280,13 +336,14 @@ export default function ProfileInfo() {
                                     Country
                                   </dt>
                                   <dd className="mt-1 flex text-sm text-gray-900 sm:col-span-2 sm:mt-0">
-                                    <span className="flex-grow">
-                                      {" "}
-                                      {userData.country}
-                                    </span>
-                                    <span className="ml-4 flex-shrink-0">
+                                    <CountrySelector
+                                      value={userData.country}
+                                      onChange={handleCountryChange}
+                                    />
+                                    <span className="ml-12 flex-shrink-0">
                                       <button
                                         type="button"
+                                        onClick={() => handleUpdate("country", editCountry)}
                                         className="rounded-md bg-white font-medium text-purple-600 hover:text-purple-500 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:ring-offset-2"
                                       >
                                         Update
@@ -299,27 +356,19 @@ export default function ProfileInfo() {
                                     Birthday
                                   </dt>
                                   <dd className="mt-1 flex text-sm text-gray-900 sm:col-span-2 sm:mt-0">
-                                    <span className="flex-grow">
-                                      {userData.dob}
-                                    </span>
-                                    <span className="ml-4 flex flex-shrink-0 items-start space-x-4">
+                                    <input
+                                      type="text"
+                                      value={editDob}
+                                      placeholder={userData.dob}
+                                      onChange={(e) => setEditDob(e.target.value)}
+                                    />
+                                    <span className="ml-12 flex flex-shrink-0 items-start space-x-4">
                                       <button
                                         type="button"
+                                        onClick={() => handleUpdate("dob", editDob)}
                                         className="rounded-md bg-white font-medium text-purple-600 hover:text-purple-500 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:ring-offset-2"
                                       >
                                         Update
-                                      </button>
-                                      <span
-                                        className="text-gray-300"
-                                        aria-hidden="true"
-                                      >
-                                        |
-                                      </span>
-                                      <button
-                                        type="button"
-                                        className="rounded-md bg-white font-medium text-purple-600 hover:text-purple-500 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:ring-offset-2"
-                                      >
-                                        Remove
                                       </button>
                                     </span>
                                   </dd>
