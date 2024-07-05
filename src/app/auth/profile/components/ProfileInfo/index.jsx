@@ -12,7 +12,7 @@ import { CountrySelector } from '@/utils/data/country-options';
 
 const tabs = [
   { name: "General", href: "#", current: true },
-  { name: "Password", href: "#", current: false },
+  { name: "Password", href: "/auth/change-password", current: false },
   { name: "Notifications", href: "#", current: false },
   { name: "Plan", href: "#", current: false },
   { name: "Billing", href: "#", current: false },

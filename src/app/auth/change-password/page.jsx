@@ -5,8 +5,8 @@ import { changePassword } from "@/services/userService";
 import LoadingComponent from "@/app/loading";
 
 export default function ChangePassword() {
-  const { data: session, status } = useSession();
-  const userId = session?.user?.id;
+  const session = useSession();
+  const userId = session?.data?.id;
 
   const [currentPassword, setCurrentPassword] = useState("");
   const [newPassword, setNewPassword] = useState("");
@@ -14,6 +14,8 @@ export default function ChangePassword() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
+
+  console.log("UID", userId);
 
   const handlePasswordChange = async (e) => {
     e.preventDefault();
@@ -30,6 +32,7 @@ export default function ChangePassword() {
       const response = await changePassword(userId, currentPassword, newPassword);
       if (response.ok) {
         setSuccess("Password updated successfully.");
+        router.push("/marketplace");
       } else {
         setError(response.data || "Failed to update password.");
       }
@@ -42,7 +45,7 @@ export default function ChangePassword() {
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-100 py-12 px-4 sm:px-6 lg:px-8">
-      {status === "loading" ? (
+      {session.status === "loading" ? (
         <LoadingComponent />
       ) : (
         <div className="max-w-md w-full space-y-8">

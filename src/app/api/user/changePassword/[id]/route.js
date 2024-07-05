@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import User from '@/models/User';
-import CommonUtil from '../../../../common/commonUtils';
+import CommonUtil from "@/common/commonUtils";
 import bcrypt from 'bcryptjs';
 
 export const PATCH = async (request, { params }) => {
