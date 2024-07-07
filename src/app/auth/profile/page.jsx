@@ -1,21 +1,21 @@
 "use client";
 
 import { GetAllProduct } from "@/services/productService";
-import React, { useRef } from "react";
+import React from "react";
 import { useRouter } from "next/navigation";
 import { useSession } from "next-auth/react";
-import CommonUtil from "@/common/commonUtils";
 import LoadingComponent from "@/app/loading";
 import useSWR from "swr";
 import { fetcher } from "@/utils/fetcher";
 import ProfileNav from "./components/ProfileNav";
-import ProfileInfo from "./components/ProfileInfo/index";
+import Favourite from './components/ProfileInfo/Favourite';
+import Sales from './components/ProfileInfo/Sales';
 
 export default function ProfilePage() {
   const { data: session, status } = useSession();
   const { productData, isLoading, isError } = GetAllProduct();
   const router = useRouter();
-  const scrollContainerRef = useRef(null);
+
 
   const saleProductIds = [
     "66763367cb1f2afb06b841bc",
@@ -69,14 +69,6 @@ export default function ProfilePage() {
     return <p>Error loading sale products.</p>;
   }
 
-  const scrollLeft = () => {
-    scrollContainerRef.current.scrollBy({ left: -300, behavior: "smooth" });
-  };
-
-  const scrollRight = () => {
-    scrollContainerRef.current.scrollBy({ left: 300, behavior: "smooth" });
-  };
-
   return (
     <div className="p-9">
       <ProfileNav />
@@ -99,10 +91,10 @@ export default function ProfilePage() {
         </div>
       </div>
 
-      {/* Profile info */}
-      <ProfileInfo />
       {/* Favourites section */}
+      <Favourite />
       {/* Sales section */}
+      <Sales />
     </div>
   );
 }

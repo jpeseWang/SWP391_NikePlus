@@ -10,7 +10,7 @@ const InboxPage = () => {
 
   if (!session) {
     return <p>You need to be authenticated to view this page.</p>;
-}
+  }
 
   return (
     <div className="flex flex-col min-h-screen bg-gray-50">
@@ -19,10 +19,10 @@ const InboxPage = () => {
           <span className="text-gray-800 font-semibold px-8">{session.user.name}</span>
           <div className="flex-1 flex justify-center mr-40">
             <div className="flex space-x-7">
-              <button onClick={() => router.push("/auth/profile/")} className="text-gray-800 hover:text-black">Profile</button>
-              <button onClick={() => router.push("/auth/profile/inbox")} className="text-gray-800 hover:text-black">Inbox</button>
-              <button onClick={() => router.push("/auth/profile/orders")} className="text-gray-800 hover:text-black">Orders</button>
-              <button onClick={() => router.push("/auth/profile/setting")} className="text-gray-800 hover:text-black">Settings</button>
+              <a href="/auth/profile" className="text-gray-800 hover:text-black">Profile</a>
+              <a href="/auth/profile/inbox" className="text-gray-800 hover:text-black">Inbox</a>
+              <a href="/order/history" className="text-gray-800 hover:text-black">Order</a>
+              <a href="/auth/profile/setting" className="text-gray-800 hover:text-black">Settings</a>
             </div>
           </div>
         </div>

@@ -8,8 +8,7 @@ import { CheckCircleIcon } from "@heroicons/react/16/solid";
 import { classNames } from "@/utils/classNames";
 import LoadingComponent from "../../loading";
 import { useSession } from "next-auth/react";
-import { CreateUser } from "@/services/userService"
-import { mutate } from 'swr';
+import emailjs from '@emailjs/browser';
 
 const genderOptions = [
   {
@@ -26,6 +25,7 @@ const SignupPage = () => {
   const [genderOption, setGenderOption] = useState(genderOptions[0]);
   const [inputType, setInputType] = useState("");
   const [err, setErr] = useState(false);
+  const [dobError, setDobError] = useState("");
   const router = useRouter();
   const session = useSession();
 
@@ -37,8 +37,18 @@ const SignupPage = () => {
     const name = e.target[2].value;
     const dob = e.target[3].value;
     const country = e.target[4].value;
-    const gender = genderOption
+    const gender = genderOption;
     const role = "user";
+
+    if (!validateEmail(email)) {
+      toast.error("Please enter a valid email address.");
+      return;
+    }
+
+    if (!validatePassword(password)) {
+      toast.error("Password must contain at least six characters, at least one number, both lower and uppercase letters, and special characters.");
+      return;
+    }
 
     const userData = {
       name,
@@ -47,30 +57,65 @@ const SignupPage = () => {
       role,
       dob,
       country,
-      gender
+      gender,
+    };
+
+    if (!isValidAge(dob)) {
+      setDobError("You must be at least 16 years old.");
+      return;
     }
+
+    setDobError("");
+
     try {
-      const res = await toast.promise(
-        CreateUser(userData),
-        {
-          loading: 'Creating...',
-          success: <p>Create account successfully!</p>,
-          error: <p>Could not save.</p>,
-        }
-      ).then(response => {
-        mutate();
-        return response; 
-      });
+      const otp = generateOTP();
+      await sendOTPEmail(name, email, otp);
 
-      if (res.status === 201) {
-        router.push("/auth/login");
-      }
+      sessionStorage.setItem('otp', otp);
+      sessionStorage.setItem('userData', JSON.stringify(userData));
 
+      router.push("/auth/verify-otp");
     } catch (err) {
       setErr(true);
+      toast.error("Could not send verification email.");
     }
-  }
+  };
 
+  const isValidAge = (dob) => {
+    const today = new Date();
+    const birthDate = new Date(dob);
+    const age = today.getFullYear() - birthDate.getFullYear();
+    const monthDifference = today.getMonth() - birthDate.getMonth();
+    if (
+      monthDifference < 0 ||
+      (monthDifference === 0 && today.getDate() < birthDate.getDate())
+    ) {
+      return age - 1 >= 16;
+    }
+    return age >= 16;
+  };
+
+  const validateEmail = (email) => {
+    const regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    return regex.test(email);
+  };
+
+  const validatePassword = (password) => {
+    const regex = /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[!@#$%^&*()_+[\]{}|\\:"';<>?,./-]).{6,}$/;
+    return regex.test(password);
+  };
+
+  const generateOTP = () => {
+    return Math.floor(1000 + Math.random() * 9000).toString();
+  };
+
+  const sendOTPEmail = (name, email, otp) => {
+    return emailjs.send('service_w7stawa', 'template_zymebsx', {
+      to_name: name,
+      to_email: email,
+      otp: otp
+    }, 'VcQGs4eC_a9lJrzr0');
+  };
 
   if (session.status === "loading") {
     return <LoadingComponent></LoadingComponent>;
@@ -131,6 +176,7 @@ const SignupPage = () => {
                 required
                 className="my-4 block w-full rounded border-0 px-4 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
               />
+              {dobError && <p className="text-red-500 text-base mb-5">{dobError}</p>}
 
               <p className="-mt-2 px-2 text-xs font-light text-gray-500">
                 Get a Nike Member Reward every year on your Birthday.
@@ -210,6 +256,7 @@ const SignupPage = () => {
                 </label>
               </div>
             </div>
+
             <div>
               <div>
                 <p className="text-md px-4 py-3 text-center font-light text-gray-500">
