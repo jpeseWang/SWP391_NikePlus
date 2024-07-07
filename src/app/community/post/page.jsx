@@ -7,7 +7,7 @@ import { useRouter } from "next/navigation";
 import LoadingComponent from "@/app/loading";
 import { motion } from "framer-motion";
 import CreatePostModal from "./post-modal/CreatePostModal";
-import PostCard from "./components/PostCard"
+import PostCard from "./components/PostCard";
 
 export default function Blog() {
   const [modalIsOpen, setIsOpen] = useState(false);
@@ -15,10 +15,7 @@ export default function Blog() {
   const router = useRouter();
   const fetcher = (...args) => fetch(...args).then((res) => res.json());
 
-  const { data, mutate, error, isLoading } = useSWR(
-    "/api/post",
-    fetcher
-  );
+  const { data, mutate, error, isLoading } = useSWR("/api/post", fetcher);
 
   if (session.status === "loading") {
     return <LoadingComponent />;
@@ -28,12 +25,12 @@ export default function Blog() {
   }
 
   return (
-    <div className=" py-14 sm:py-22">
+    <div className=" sm:py-22 py-14">
       <div className="mx-auto max-w-7xl px-6 lg:px-8">
         <div className="mx-auto max-w-2xl lg:max-w-4xl">
           {session.status === "authenticated" &&
             typeof document !== "undefined" && (
-              <div className="text-center ring-2 py-4 px-2 rounded mb-10 ring-gray-200">
+              <div className="mb-10 rounded px-2 py-4 text-center ring-2 ring-gray-200">
                 <svg
                   className="mx-auto h-12 w-12 text-gray-400"
                   fill="none"
@@ -49,7 +46,7 @@ export default function Blog() {
                     d="M9 13h6m-3-3v6m-9 1V7a2 2 0 012-2h6l2 2h6a2 2 0 012 2v8a2 2 0 01-2 2H5a2 2 0 01-2-2z"
                   />
                 </svg>
-                <h3 className="mt-2 text-sm font-semibold text-gray-900">
+                <h3 className="mt-2 text-sm font-semibold text-gray-900 dark:text-white">
                   Create new Blog
                 </h3>
                 <p className="mt-1 text-sm text-gray-500">
@@ -72,32 +69,33 @@ export default function Blog() {
                 </div>
               </div>
             )}
-          <h2 className="text-3xl font-bold tracking-tight text-gray-900 sm:text-4xl">
+          <h2 className="text-3xl font-bold tracking-tight text-gray-900 sm:text-4xl dark:text-white">
             From the blog
           </h2>
-          <p className="mt-2 text-lg leading-8 text-gray-600">
+          <p className="mt-2 text-lg leading-8 text-gray-600 dark:text-textDark">
             Learn how to grow your career with our expert advice.
           </p>
           <div className="mt-16 space-y-20 lg:mt-20 lg:space-y-20">
             {isLoading ? (
               <LoadingComponent />
             ) : (
-
               <>
-                {data && data
-                  .slice()
-                  .reverse()
-                  .map((post) => (
-                    <PostCard postData={post}/>
-                  ))}
+                {data &&
+                  data
+                    .slice()
+                    .reverse()
+                    .map((post) => <PostCard postData={post} />)}
               </>
             )}
           </div>
         </div>
-        
       </div>
       {modalIsOpen && (
-        <CreatePostModal isOpen={modalIsOpen} onClose={closeModal} reload={mutate} />
+        <CreatePostModal
+          isOpen={modalIsOpen}
+          onClose={closeModal}
+          reload={mutate}
+        />
       )}
     </div>
   );

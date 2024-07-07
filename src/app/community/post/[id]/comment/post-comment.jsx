@@ -1,9 +1,8 @@
 "use client";
 import { useState, useEffect } from "react";
 import { classNames } from "@/utils/classNames";
-import ReactStars from "react-rating-stars-component";
 import { useSession } from "next-auth/react";
-import { toast } from "react-toastify";
+import toast from "react-hot-toast";
 
 const reviews = [
   {
@@ -71,13 +70,13 @@ export default function PostComment({ id, data, reload }) {
     }
   };
   return (
-    <div className="bg-white mt-20">
+    <div className="mt-20 bg-white">
       <div>
-        <h2 className="text-2xl font-bold tracking-tight text-gray-900 my-4">
+        <h2 className="my-4 text-2xl font-bold tracking-tight text-gray-900">
           Comment Section
         </h2>
         {session.status === "authenticated" ? (
-          <div className="flex items-start space-x-4 my-6 mb-12">
+          <div className="my-6 mb-12 flex items-start space-x-4">
             <div className="flex-shrink-0">
               <img
                 className="inline-block h-10 w-10 rounded-full"
@@ -87,7 +86,7 @@ export default function PostComment({ id, data, reload }) {
             </div>
             <div className="min-w-0 flex-1">
               <form className="relative w-1/2" onSubmit={handleSubmit}>
-                <div className="grid gap-4 mt-2">
+                <div className="mt-2 grid gap-4">
                   <div className="col-span-1 overflow-hidden rounded-lg shadow-sm ring-1 ring-inset ring-gray-300 focus-within:ring-2 focus-within:ring-indigo-600">
                     <label htmlFor="comment" className="sr-only">
                       Add your comment
@@ -96,7 +95,7 @@ export default function PostComment({ id, data, reload }) {
                       rows={3}
                       name="comment"
                       id="comment"
-                      className="block w-full resize-none border-0 bg-transparent py-1.5 px-1.5 text-gray-900 placeholder:text-gray-400 focus:ring-0 sm:text-sm sm:leading-6"
+                      className="block w-full resize-none border-0 bg-transparent px-1.5 py-1.5 text-gray-900 placeholder:text-gray-400 focus:ring-0 sm:text-sm sm:leading-6"
                       placeholder="Add your comment..."
                       defaultValue={""}
                       onChange={(e) => setContent(e.target.value)}
@@ -109,7 +108,7 @@ export default function PostComment({ id, data, reload }) {
                   <div className="flex-shrink-0">
                     <button
                       type="submit"
-                      className="inline-flex items-center rounded-md bg-indigo-600 px-3 py-2 mr-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
+                      className="mr-2 inline-flex items-center rounded-md bg-indigo-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
                     >
                       Post
                     </button>
@@ -117,7 +116,7 @@ export default function PostComment({ id, data, reload }) {
                 </div>
               </form>
               {uploading && (
-                <div className="font-medium py-1">Uploading...</div>
+                <div className="py-1 font-medium">Uploading...</div>
               )}
             </div>
           </div>
@@ -143,7 +142,7 @@ export default function PostComment({ id, data, reload }) {
                 <div
                   className={classNames(
                     reviewIdx === 0 ? "" : "border-t border-gray-200",
-                    "flex-1 py-10"
+                    "flex-1 py-10",
                   )}
                 >
                   <h3 className="font-medium text-gray-900">{review.name}</h3>

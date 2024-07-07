@@ -70,9 +70,9 @@ export default function Banner({ sessionData }) {
             <Link href="/">
               <div className="relative flex h-1 w-8 cursor-pointer items-center justify-center rounded-full hover:bg-black/[0.05] md:h-12 md:w-12">
                 <HeartIcon className="h-6 w-6 text-gray-600" />
-                <div className="absolute left-5 top-1 flex h-[14px] min-w-[14px] items-center justify-center rounded-full bg-red-600 px-[2px] text-[10px] text-white md:left-7 md:h-[18px] md:min-w-[18px] md:px-[5px] md:text-[12px]">
+                {/* <div className="absolute left-5 top-1 flex h-[14px] min-w-[14px] items-center justify-center rounded-full bg-red-600 px-[2px] text-[10px] text-white md:left-7 md:h-[18px] md:min-w-[18px] md:px-[5px] md:text-[12px]">
                   10
-                </div>
+                </div> */}
               </div>
             </Link>
             {/*cart icon*/}
