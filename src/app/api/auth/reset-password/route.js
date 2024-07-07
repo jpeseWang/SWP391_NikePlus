@@ -19,7 +19,7 @@ export const POST = async (request) => {
   try {
     await existingUser.save();
     return new NextResponse(JSON.stringify({ message: "User's password is updated!" }), { status: 200 });
-  } catch (err: any) {
+  } catch (err) {
     return new NextResponse(err, { status: 500 });
   }
 

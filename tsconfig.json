@@ -22,7 +22,6 @@
     ],
     "strictNullChecks": true
   },
-  "include": ["next-env.d.ts", ".next/types/**/*.ts", "**/*.ts", "**/*.tsx", "src/common/commonUtils.js", "src/services/productService.js", "src/services/orderService.js"],
-  "include": ["next-env.d.ts", ".next/types/**/*.ts", "**/*.ts", "**/*.tsx", "src/common/commonUtils.js", "src/services/productService.js"],
+  "include": ["next-env.d.ts", ".next/types/**/*.ts", "**/*.ts", "**/*.tsx", "src/common/commonUtils.js", "src/services/productService.js", "src/services/orderService.js", "src/app/api/auth/forget-password/route.js", "src/app/api/auth/reset-password/route.js"],
   "exclude": ["node_modules"]
 }
