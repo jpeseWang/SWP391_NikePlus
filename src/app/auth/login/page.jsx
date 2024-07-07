@@ -1,16 +1,22 @@
 "use client";
 
-import React, { useState } from "react";
-import { useRouter } from "next/navigation";
+import React, { useState, useEffect } from "react";
+import { useRouter, useSearchParams } from "next/navigation";
 import { signIn, useSession } from "next-auth/react";
 import { LoginUser } from "@/services/userService";
 import LoadingComponent from "../../loading";
+import { NikePlusLogoDark, NikePlusLogoLight } from "@/assets/svg/NikePlusLogo";
 
 const LoginPage = () => {
+  const params = useSearchParams();
   const router = useRouter();
   const session = useSession();
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
+
+  useEffect(() => {
+    setError(params.get("error"));
+  }, [params]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -24,7 +30,7 @@ const LoginPage = () => {
 
     if (!validatePassword(password)) {
       setError(
-        "Password must contain at least six characters, at least one number, both lower and uppercase letters, and special characters."
+        "Password must contain at least six characters, at least one number, both lower and uppercase letters, and special characters.",
       );
       return;
     }
@@ -46,7 +52,8 @@ const LoginPage = () => {
   };
 
   const validatePassword = (password) => {
-    const regex = /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[!@#$%^&*()_+[\]{}|\\:"';<>?,./-]).{6,}$/;
+    const regex =
+      /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[!@#$%^&*()_+[\]{}|\\:"';<>?,./-]).{6,}$/;
     return regex.test(password);
   };
 
@@ -63,7 +70,7 @@ const LoginPage = () => {
     <>
       <div className="flex min-h-full flex-1 flex-col justify-center px-6 py-12 lg:px-8">
         <div className="sm:mx-auto sm:w-full sm:max-w-sm">
-          <img
+          {/* <img
             alt=""
             loading="lazy"
             width={1200}
@@ -71,8 +78,13 @@ const LoginPage = () => {
             decoding="async"
             className="mx-auto h-8 w-auto"
             src="/nike.webp"
-          ></img>
-          <h2 className="mt-10 text-center font-gothic text-2xl font-normal leading-9 tracking-tight text-gray-900">
+          ></img> */}
+          <div className="ml-[40%]">
+            <NikePlusLogoDark className="dark:hidden" />
+            <NikePlusLogoLight className="light:hidden mx-auto" />
+          </div>
+
+          <h2 className="mt-10 text-center font-gothic text-2xl font-normal leading-9 tracking-tight text-gray-900 dark:text-white">
             YOUR ACCOUNT FOR
             <br></br>
             EVERYTHING NIKE
@@ -146,19 +158,20 @@ const LoginPage = () => {
             <div>
               <button
                 type="submit"
-                className="flex w-full justify-center rounded-md bg-black px-3 py-2 text-sm font-semibold leading-6 text-white shadow-sm hover:bg-gray-600 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
+                className="flex w-full justify-center rounded-md bg-black px-3 py-2 text-sm font-semibold leading-6 text-white shadow-sm hover:bg-gray-600 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 dark:bg-white dark:text-black"
               >
                 {loading ? <span>PROCESSING...</span> : <span>SIGN IN</span>}
               </button>
-              <p className="my-2 font-medium text-red-500">
-                {error && error}
-              </p>
+              <p className="my-2 font-medium text-red-500">{error && error}</p>
             </div>
           </form>
 
           <div className="mt-10">
             <div className="relative">
-              <div className="absolute inset-0 flex items-center" aria-hidden="true">
+              <div
+                className="absolute inset-0 flex items-center"
+                aria-hidden="true"
+              >
                 <div className="w-full border-t border-gray-200"></div>
               </div>
               <div className="relative flex justify-center text-sm font-medium leading-6">
@@ -186,12 +199,11 @@ const LoginPage = () => {
           </div>
 
           <p className="mt-10 text-center text-sm text-gray-500">
-            Not a member?
+            Not a member? &nbsp;
             <button
               onClick={() => router.push("/auth/signup")}
-              className="leading-6 text-black underline"
+              className="leading-6 text-black underline dark:text-white"
             >
-              {" "}
               Join us
             </button>
           </p>
