@@ -68,7 +68,6 @@ export const changePassword = async (userId, currentPassword, newPassword) => {
     if (!res.ok) {
       throw new Error(await res.text());
     }
-
     return res.json();
   } catch (error) {
     console.error("Error changing password:", error);

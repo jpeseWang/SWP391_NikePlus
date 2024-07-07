@@ -24,7 +24,7 @@ export const PATCH = async (request, { params }) => {
         user.password = hashedNewPassword;
         await user.save();
 
-        return new NextResponse("Password has been changed.", { status: 200 });
+        return new NextResponse(JSON.stringify({ message: "Password has been changed." }), { status: 200 });
     } catch (err) {
         return new NextResponse("Database error", { status: 500 });
     }

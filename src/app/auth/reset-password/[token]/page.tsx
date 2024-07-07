@@ -3,11 +3,10 @@
 import React, { useEffect, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { signIn, useSession } from "next-auth/react";
-import emailjs from "@emailjs/browser";
 import LoadingComponent from "../../../loading";
 import { toast } from "react-hot-toast";
 
-const ResetPasswordPage = ({params} : any) => {
+const ResetPasswordPage = ({ params }: any) => {
     console.log(params.token);
     const router = useRouter();
     const [error, setError] = useState("");
@@ -20,57 +19,57 @@ const ResetPasswordPage = ({params} : any) => {
     useEffect(() => {
         const verifyToken = async () => {
             try {
-            const res = await fetch("/api/auth/verify-token", {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
-                },
-                body: JSON.stringify({
-                    token: params.token,
-                }),
-            });
+                const res = await fetch("/api/auth/verify-token", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json",
+                    },
+                    body: JSON.stringify({
+                        token: params.token,
+                    }),
+                });
 
-            if (res.status === 400) {
-                setError("Token are not invalid or has expired.");
-                setVerified(false);
-                return;
-            }
+                if (res.status === 400) {
+                    setError("Token is not valid or has expired.");
+                    setVerified(false);
+                    return;
+                }
 
-            if (res.status === 200) {
-                setError("");
-                setVerified(true);
-                const userData = await res.json();
-                setUser(userData);
+                if (res.status === 200) {
+                    setError("");
+                    setVerified(true);
+                    const userData = await res.json();
+                    setUser(userData);
+                }
+            } catch (error) {
+                setError("Error verifying token. Please try again!");
+                console.error("Error verifying token:", error);
+            } finally {
+                setLoading(false);
             }
-        } catch (error) {
-            setError("Error verifying token. Please try again!");
-            console.error("Error verifying token:", error);
-        } finally {
-            setLoading(false);
-        }
         };
         verifyToken();
-    }, [params.token])
+    }, [params.token]);
 
     useEffect(() => {
         if (sessionStatus === 'authenticated') {
-            router.replace('/marketplace')
+            router.replace('/marketplace');
         }
-    }, [sessionStatus, router])
+    }, [sessionStatus, router]);
 
     const isValidPassword = (password) => {
         const regex = /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[!@#$%^&*()_+[\]{}|\\:"';<>?,./-]).{6,}$/;
         return regex.test(password);
-      };
+    };
 
-    const handleSubmit = async (e : any) => {
+    const handleSubmit = async (e: any) => {
         e.preventDefault();
         const password = e.target[0].value;
 
         if (!isValidPassword(password)) {
             toast.error("Password must contain at least six characters, at least one number, both lower and uppercase letters, and special characters.");
             return;
-          }
+        }
 
         setLoading(true);
 
@@ -82,7 +81,7 @@ const ResetPasswordPage = ({params} : any) => {
                 },
                 body: JSON.stringify({
                     password,
-                    email: user?.email
+                    email: user?.email,
                 }),
             });
 
@@ -93,37 +92,15 @@ const ResetPasswordPage = ({params} : any) => {
             }
 
             if (res.status === 200) {
-                const { to_email, resetUrl } = await res.json();
-                await sendEmail(to_email, resetUrl);
                 setError("");
+                toast.success("Password has been successfully changed!");
                 router.push("/auth/login");
             }
         } catch (error) {
             setError("Error, please try again!");
-            console.error("Error initiating password reset: ", error);
-            router.push("/auth/login");
+            console.error("Error initiating password reset:", error);
         } finally {
             setLoading(false);
-        }
-    };
-
-    const sendEmail = async (toEmail, resetUrl) => {
-        try {
-            const templateParams = {
-                to_email: toEmail,
-                reset_url: resetUrl,
-            };
-
-            const response = await emailjs.send(
-                "service_w7stawa",
-                "template_ujykint",
-                templateParams,
-                "VcQGs4eC_a9lJrzr0"
-            );
-
-            console.log("Email sent successfully:", response);
-        } catch (error) {
-            console.error("Error sending email:", error);
         }
     };
 
@@ -156,8 +133,8 @@ const ResetPasswordPage = ({params} : any) => {
                                     id="password"
                                     name="password"
                                     type="password"
-                                    autoComplete="email"
-                                    placeholder="email@figmafakedomains.net"
+                                    autoComplete="new-password"
+                                    placeholder="New Password"
                                     required
                                     autoFocus
                                     className="block w-full rounded-md border  px-4 py-1.5 text-gray-950 text-gray-950 shadow-sm ring-1 ring-gray-300 placeholder:text-base focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
@@ -169,7 +146,7 @@ const ResetPasswordPage = ({params} : any) => {
                             <button
                                 type="submit"
                                 className="flex w-full justify-center rounded-md bg-black px-3 py-2 text-base font-semibold leading-6 text-white shadow-sm hover:bg-gray-600 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
-                                disabled={error.length > 0}
+                                disabled={loading}
                             >
                                 {loading ? (
                                     <span>PROCESSING...</span>

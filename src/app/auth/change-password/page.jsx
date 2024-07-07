@@ -3,11 +3,14 @@ import { useState } from "react";
 import { useSession } from "next-auth/react";
 import { changePassword } from "@/services/userService";
 import LoadingComponent from "@/app/loading";
+import { useRouter } from "next/navigation";
+import toast from "react-hot-toast";
 
 export default function ChangePassword() {
   const session = useSession();
   const userId = session?.data?.id;
 
+  const router = useRouter();
   const [currentPassword, setCurrentPassword] = useState("");
   const [newPassword, setNewPassword] = useState("");
   const [confirmNewPassword, setConfirmNewPassword] = useState("");
@@ -30,21 +33,18 @@ export default function ChangePassword() {
 
     try {
       const response = await changePassword(userId, currentPassword, newPassword);
-      if (response.ok) {
-        setSuccess("Password updated successfully.");
-        router.push("/marketplace");
-      } else {
-        setError(response.data || "Failed to update password.");
-      }
+      toast.success("Password updated successfully.");
+      router.push("/marketplace");
     } catch (err) {
       setError("Error updating password: " + err.message);
     } finally {
       setLoading(false);
     }
   };
+  
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-100 py-12 px-4 sm:px-6 lg:px-8">
+    <div className="min-h-screen flex items-center justify-center bg-gray-100 py-21 px-4 sm:px-6 lg:px-8">
       {session.status === "loading" ? (
         <LoadingComponent />
       ) : (

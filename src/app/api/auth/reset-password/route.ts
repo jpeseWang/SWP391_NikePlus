@@ -8,7 +8,7 @@ export const POST = async (request) => {
 
   await CommonUtil.connectDB();
 
-  const existingUser = await User.findOne({email});
+  const existingUser = await User.findOne({ email });
 
   const hashedPassword = await bcrypt.hash(password, 5);
   existingUser.password = hashedPassword;
@@ -18,9 +18,9 @@ export const POST = async (request) => {
 
   try {
     await existingUser.save();
-    return new NextResponse("User's password is updated!", { status: 200 });
-  } catch (err: any ) {
+    return new NextResponse(JSON.stringify({ message: "User's password is updated!" }), { status: 200 });
+  } catch (err: any) {
     return new NextResponse(err, { status: 500 });
   }
-  
+
 };
