@@ -6,7 +6,7 @@ import { signIn, useSession } from "next-auth/react";
 import LoadingComponent from "../../../loading";
 import { toast } from "react-hot-toast";
 
-const ResetPasswordPage = ({ params }: any) => {
+const ResetPasswordPage = ({ params }) => {
     console.log(params.token);
     const router = useRouter();
     const [error, setError] = useState("");
@@ -62,7 +62,7 @@ const ResetPasswordPage = ({ params }: any) => {
         return regex.test(password);
     };
 
-    const handleSubmit = async (e: any) => {
+    const handleSubmit = async (e) => {
         e.preventDefault();
         const password = e.target[0].value;
 
@@ -118,10 +118,10 @@ const ResetPasswordPage = ({ params }: any) => {
                         src="/nike.webp"
                     ></img>
                     <h2 className="font-mono mt-10 text-center text-xl font-semibold leading-9 tracking-tight text-gray-900">
-                        Verify your email and enter new password.
+                        Set your new password.
                     </h2>
                     <h3 className="text-center leading-5 tracking-tight">
-                        Enter your email to sign up for this app
+                        Enter your new password 
                     </h3>
                 </div>
 

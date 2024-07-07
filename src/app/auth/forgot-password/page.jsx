@@ -5,6 +5,7 @@ import { useRouter, useSearchParams } from "next/navigation";
 import { useSession } from "next-auth/react";
 import emailjs from "@emailjs/browser";
 import LoadingComponent from "../../loading";
+import toast from "react-hot-toast";
 
 export default function ForgotPasswordPage() {
     const router = useRouter();
@@ -50,7 +51,9 @@ export default function ForgotPasswordPage() {
                 const { to_email, resetUrl } = await res.json();
                 await sendEmail(to_email, resetUrl);
                 setError("");
-                router.push("/auth/login");
+                toast.success("Email sent, please check your email");
+                sessionStorage.setItem("email", email);
+                router.push("/auth/mail-sent");
             }
         } catch (error) {
             setError("Error, please try again!");
