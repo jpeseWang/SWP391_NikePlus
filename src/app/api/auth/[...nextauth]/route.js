@@ -29,7 +29,9 @@ const handler = NextAuth({
             if (isPasswordCorrect) {
               return user;
             } else {
-              throw new Error("Wrong Credentials!");
+              throw new Error(
+                "Wrong email address or password. Please try again!",
+              );
             }
           } else {
             throw new Error("User not found!");
@@ -63,6 +65,7 @@ const handler = NextAuth({
       if (token) {
         session.id = token.id;
         session.role = token.role;
+        session.name = token.name;
         session.email = token.email;
         session.gender = token.gender;
       }

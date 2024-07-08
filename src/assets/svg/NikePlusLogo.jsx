@@ -1,8 +1,8 @@
 import React from "react";
 
-export function NikePlusLogoLight() {
+export function NikePlusLogoLight({ className }) {
   return (
-    <div>
+    <div className={className}>
       <span className="sr-only">Nike+ Logo</span>
       <svg
         xmlns="http://www.w3.org/2000/svg"
@@ -41,9 +41,9 @@ export function NikePlusLogoLight() {
   );
 }
 
-export function NikePlusLogoDark() {
+export function NikePlusLogoDark({ className }) {
   return (
-    <div>
+    <div className={className}>
       <span className="sr-only">Nike+ Logo</span>
       <svg
         xmlns="http://www.w3.org/2000/svg"

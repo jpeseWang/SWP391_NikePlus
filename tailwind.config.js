@@ -9,6 +9,7 @@ module.exports = {
     fontFamily: {
       nike: ["Anton", "sans-serif"],
       gothic: ["Gothic A1", "sans-serif"],
+      prompt: ["Prompt", "sans-serif"],
     },
 
     extend: {

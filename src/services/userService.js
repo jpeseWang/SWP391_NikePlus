@@ -38,17 +38,39 @@ export const DeleteUser = async (id) => {
   }
 };
 
-export const UpdateUser = async (productData) => {
-  const id = productData._id;
+export async function UpdateUser(userId, updateData) {
   try {
-    const response = await fetch(`/api/product/${id}`, {
-      method: "PUT",
-      body: JSON.stringify({
-        productData,
-      }),
+    const response = await fetch(`/api/user/${userId}`, {
+      method: 'PATCH',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(updateData),
     });
-    return response.status;
+    const data = await response.json();
+    return { ok: response.ok, data };
   } catch (error) {
-    console.error(error);
+    console.error("Error in UpdateUser:", error);
+    return { ok: false, error };
+  }
+}
+
+export const changePassword = async (userId, currentPassword, newPassword) => {
+  try {
+    const res = await fetch(`/api/user/changePassword/${userId}`, {
+      method: "PATCH",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ currentPassword, newPassword }),
+    });
+
+    if (!res.ok) {
+      throw new Error(await res.text());
+    }
+    return res.json();
+  } catch (error) {
+    console.error("Error changing password:", error);
+    throw error;
   }
 };

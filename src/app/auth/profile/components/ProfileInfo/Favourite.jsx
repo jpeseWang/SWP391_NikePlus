@@ -1,6 +1,19 @@
-import React from "react";
+import React, { useRef } from "react";
+import { GetAllProduct } from "@/services/productService";
+import CommonUtil from "@/common/commonUtils";
 
 export default function Favourite() {
+  const { productData, isLoading, isError } = GetAllProduct();
+
+  const scrollContainerRef = useRef(null);
+
+  const scrollLeft = () => {
+    scrollContainerRef.current.scrollBy({ left: -300, behavior: "smooth" });
+  };
+
+  const scrollRight = () => {
+    scrollContainerRef.current.scrollBy({ left: 300, behavior: "smooth" });
+  };
   return (
     <section className="mb-8">
       <div className="mb-4 flex items-center justify-between">
