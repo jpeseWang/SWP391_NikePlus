@@ -23,12 +23,9 @@ export default function CreatePostModal({ isOpen, onClose, reload }) {
   const [content, setContent] = useState("");
   const [open, setOpen] = useState(true);
   const [previewImg, setPreviewImg] = useState();
-
   const [post, setPost] = useState();
   const [uploading, setUploading] = useState(false);
 
-  // let date = new Date().toUTCString().slice(5, 16);
-  // let datetime = new Date(date).toISOString().slice(0, 10);
   const session = useSession();
   const router = useRouter();
 

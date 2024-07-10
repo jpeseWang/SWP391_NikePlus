@@ -7,10 +7,7 @@ export function GetAllPost() {
 }
 
 export function GetPostById(id) {
-  const { data, error, isLoading } = useSWR(
-    `/api/post/${id}`,
-    fetcher,
-  );
+  const { data, error, isLoading } = useSWR(`/api/post/${id}`, fetcher);
   return { postData: data, isLoading, isError: error };
 }
 
@@ -33,7 +30,7 @@ export const DeletePost = async (id) => {
     console.error("Error deleting post:", err);
     throw err;
   }
-}
+};
 
 export const UpdatePost = async (postData) => {
   const id = postData._id;
@@ -41,14 +38,50 @@ export const UpdatePost = async (postData) => {
     const response = await fetch(`/api/post/${id}`, {
       method: "PUT",
       headers: {
-        'Content-Type': 'application/json',
+        "Content-Type": "application/json",
       },
       body: JSON.stringify({
-        postData
+        postData,
       }),
     });
     return response.status;
   } catch (error) {
     console.error(error);
+  }
+};
+
+export const UpdatePostReact = async (userId, postId) => {
+  try {
+    const response = await fetch(`/api/post/updatePostReact/${postId}`, {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        authorID: userId,
+      }),
+    });
+    return response.status;
+  } catch (error) {
+    console.error(error);
+    console.error(error.message);
+  }
+};
+
+export const UpdatePostComment = async (commentPayload, postId) => {
+  try {
+    const response = await fetch(`/api/post/updatePostReact/${postId}`, {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        commentPayload,
+      }),
+    });
+    return response.status;
+  } catch (error) {
+    console.error(error);
+    console.error(error.message);
   }
 };
