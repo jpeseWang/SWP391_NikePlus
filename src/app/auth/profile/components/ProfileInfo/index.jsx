@@ -30,8 +30,6 @@ export default function ProfileInfo() {
   const [autoUpdateApplicantDataEnabled, setAutoUpdateApplicantDataEnabled] =
     useState(false);
 
-
-
   const session = useSession();
   const userId = session?.data?.id;
 
@@ -42,6 +40,8 @@ export default function ProfileInfo() {
   const [editGender, setEditGender] = useState(userData?.gender || "");
   const [editCountry, setEditCountry] = useState(userData?.country || "");
   const [editDob, setEditDob] = useState(userData?.dob || "");
+  const [editPhoto, setEditPhoto] = useState(null);
+  const [photoPreview, setPhotoPreview] = useState(userData?.avatarImg || "");
 
 
   console.log(userData);
@@ -67,6 +67,33 @@ export default function ProfileInfo() {
 
   const handleGenderChange = (e) => {
     setEditGender(e.target.value);
+  };
+
+  const handlePhotoChange = (e) => {
+    const file = e.target.files[0];
+    setEditPhoto(file);
+    setPhotoPreview(URL.createObjectURL(file));
+  };
+
+  const handleUpdatePhoto = async () => {
+    if (editPhoto) {
+      const formData = new FormData();
+      formData.append("file", editPhoto);
+      formData.append("upload_preset", "blogscover");
+
+      try {
+        const response = await fetch("https://api.cloudinary.com/v1_1/dfdkflzjs/image/upload", {
+          method: "POST",
+          body: formData,
+        });
+        const data = await response.json();
+        const photoUrl = data.secure_url;
+        await handleUpdate("avatarImg", photoUrl);
+        setEditPhoto(null);
+      } catch (error) {
+        console.error("Error uploading photo:", error);
+      }
+    }
   };
 
   return (
@@ -240,28 +267,22 @@ export default function ProfileInfo() {
                                     <span className="flex-grow">
                                       <img
                                         className="h-8 w-8 rounded-full"
-                                        src="https://images.unsplash.com/photo-1550525811-e5869dd03032?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80"
+                                        src={photoPreview || userData.avatarImg}
                                         alt=""
                                       />
                                     </span>
                                     <span className="ml-4 flex flex-shrink-0 items-start space-x-4">
+                                      <input
+                                        type="file"
+                                        accept="image/*"
+                                        onChange={handlePhotoChange}
+                                      />
                                       <button
                                         type="button"
                                         className="rounded-md bg-white font-medium text-purple-600 hover:text-purple-500 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:ring-offset-2"
+                                        onClick={handleUpdatePhoto}
                                       >
                                         Update
-                                      </button>
-                                      <span
-                                        className="text-gray-300"
-                                        aria-hidden="true"
-                                      >
-                                        |
-                                      </span>
-                                      <button
-                                        type="button"
-                                        className="rounded-md bg-white font-medium text-purple-600 hover:text-purple-500 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:ring-offset-2"
-                                      >
-                                        Remove
                                       </button>
                                     </span>
                                   </dd>
