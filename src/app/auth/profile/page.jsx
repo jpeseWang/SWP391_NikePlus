@@ -10,12 +10,16 @@ import { fetcher } from "@/utils/fetcher";
 import ProfileNav from "./components/ProfileNav";
 import Favourite from './components/ProfileInfo/Favourite';
 import Sales from './components/ProfileInfo/Sales';
+import { GetUserById } from "@/services/userService";
 
 export default function ProfilePage() {
   const { data: session, status } = useSession();
   const { productData, isLoading, isError } = GetAllProduct();
   const router = useRouter();
 
+  const userId = session?.id;
+  const { userData } = GetUserById(userId);
+  console.log(userId);
 
   const saleProductIds = [
     "66763367cb1f2afb06b841bc",
@@ -74,18 +78,15 @@ export default function ProfilePage() {
       <ProfileNav />
       <div className="mb-8 flex items-center">
         <div className="w-19 h-19 flex items-center justify-center rounded-full bg-gray-300">
-          <svg
-            className="h-12 w-12 text-gray-500"
-            fill="currentColor"
-            viewBox="0 0 24 24"
-            xmlns="http://www.w3.org/2000/svg"
+          <img
+            className="h-12 w-12 text-gray-500 rounded-full"
+            src={userData.avatarImg}
           >
-            <path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"></path>
-          </svg>
+          </img>
         </div>
         <div className="ml-6">
           <h1 className="font-serif text-2xl font-semibold">
-            {session.user.name}
+            {userData.name}
           </h1>
           <p className="text-xl text-gray-600">Nike Member Since June 2024</p>
         </div>

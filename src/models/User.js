@@ -13,6 +13,11 @@ const userSchema = new Schema(
       type: String,
       required: true,
     },
+    avatarImg : {
+      type: String,
+      required: true,
+      default: "https://icons.veryicon.com/png/o/miscellaneous/rookie-official-icon-gallery/225-default-avatar.png"
+    },
     name: {
       type: String,
       required: true,
