@@ -84,7 +84,9 @@ export default function Blog() {
                   data
                     .slice()
                     .reverse()
-                    .map((post) => <PostCard postData={post} />)}
+                    .map((post) => (
+                      <PostCard postData={post} reload={mutate} />
+                    ))}
               </>
             )}
           </div>

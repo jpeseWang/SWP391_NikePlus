@@ -1,5 +1,5 @@
 "use client";
-import React from "react";
+import React, { useState } from "react";
 import {
   PhotoIcon,
   GifIcon,
@@ -12,23 +12,65 @@ import {
 import { HeartIcon } from "@heroicons/react/24/solid";
 import Link from "next/link";
 import CommonUtil from "@/common/commonUtils";
+import { UpdatePostReact } from "@/services/postService";
+import toast from "react-hot-toast";
+import { useSession } from "next-auth/react";
+import { UpdatePost } from "@/services/postService";
 
-export default function PostCard({ postData }) {
-  const handleUpdateReact = async (id) => {
-    //Like
+export default function PostCard({ postData, reload }) {
+  const session = useSession();
+  const userID = session?.data?.id;
+  const userEmail = session?.data?.email;
+  const [likeCount, setLikeCount] = useState(postData.like.length);
+  const [isLiked, setIsLiked] = useState(
+    postData.like.some((user) => user.authorID === userID),
+  );
+  const [commentInput, setCommentInput] = useState("");
+  const [comments, setComments] = useState(postData.comment);
+
+  const handleUpdateReact = async (postId) => {
+    const originalIsLiked = isLiked;
+    const originalLikeCount = likeCount;
+
+    setIsLiked(!isLiked);
+    setLikeCount(isLiked ? likeCount - 1 : likeCount + 1);
+
     try {
-      await fetch(`/api/forum/react/${id}`, {
-        method: "PUT",
-        body: JSON.stringify({
-          userID: session.data.id,
-        }),
-        headers: {
-          "Content-Type": "application/json",
-        },
+      await UpdatePostReact(userID, postId);
+      reload();
+    } catch (err) {
+      setIsLiked(originalIsLiked);
+      setLikeCount(originalLikeCount);
+      toast.error(err.message);
+    }
+  };
+
+  const handleAddComment = async () => {
+    if (!commentInput.trim()) return;
+
+    const newComment = {
+      authorInfo: {
+        authorID: userID,
+        authorEmail: session?.data?.email,
+        authorName: session?.data?.name,
+        authorRole: session?.data?.role,
+      },
+      content: commentInput,
+    };
+
+    const updatedComments = [...comments, newComment];
+    setComments(updatedComments);
+    setCommentInput("");
+
+    try {
+      await UpdatePost({
+        ...postData,
+        comment: updatedComments,
       });
-      mutate();
-    } catch (error) {
-      console.error("Error updating rating:", error);
+      reload();
+    } catch (err) {
+      setComments(comments);
+      toast.error(err.message);
     }
   };
 
@@ -63,31 +105,19 @@ export default function PostCard({ postData }) {
             {CommonUtil.getTimeDiff(postData.createdAt)}
           </span>
         </div>
-
         <div className=" mb-2 mt-3 flex items-center justify-between">
           <div className="flex">
-            {/* <span
-                className=" h-6 w-6 cursor-pointer "
-                onClick={() => {
-                  handleUpdateReact(post._id)
-                }}
-              >
-                {post.react.some(
-                  (rating) => rating.userID === session.data.id,
-                ) ? (
-                  <SolidHeartIcon className="h-6 w-6 text-[#FF3140]" />
-                ) : (
-                  <HeartIcon className="h-6 w-6" />
-                )}
-              </span> */}
-            <div></div>
-            <HeartIcon className="h-6 w-6 text-[#969696]" />{" "}
-            <HeartIcon className="h-6 w-6 text-[#FF3140]" />{" "}
-            <div className="ml-2 mr-6 mt-1 text-sm font-semibold dark:text-textDark">
-              99 likes
-            </div>
+            <HeartIcon
+              className={`h-6 w-6 cursor-pointer ${
+                isLiked ? "text-[#FF3140]" : "text-[#969696]"
+              }`}
+              onClick={() => {
+                handleUpdateReact(postData._id);
+              }}
+            />
+
             <ChatBubbleOvalLeftIcon
-              className="h-6 w-6 cursor-pointer text-[#969696]"
+              className="ml-2 h-6 w-6 cursor-pointer text-[#969696]"
               // onClick={() => {
               //   setViewModalParams(post._id)
               //   setViewModalIsOpen(true)
@@ -96,45 +126,60 @@ export default function PostCard({ postData }) {
           </div>
 
           <div className="flex">
-            <PaperAirplaneIcon
-              className="h-6 w-6 -rotate-45 cursor-pointer text-[#969696] hover:text-blue-500"
-              //   onClick={() => {
-              //     handleDelete(post._id)
-              //   }}
-            />
+            <PaperAirplaneIcon className="h-6 w-6 -rotate-45 cursor-pointer text-[#969696] hover:text-blue-500" />
           </div>
         </div>
 
-        {/* Preview comment
-                <div className="flex">
-                    <div className="text-sm font-semibold  antialiased dark:text-gray-400">
-                        jpese_wang
-                    </div>{" "}
-                    <span className="ml-1 text-sm text-gray-800 dark:text-white">
-                        Nice
-                    </span>
-                </div> */}
+        <div className="my-3 mr-6 text-sm font-semibold dark:text-textDark">
+          {likeCount} likes
+        </div>
+
+        <div className="max-h-[120px] overflow-y-scroll">
+          {postData.comment.map((comment, idx) => (
+            <div key={comment._id} className="flex">
+              <div className="text-sm font-semibold antialiased dark:text-white">
+                {comment.authorInfo.authorName}
+              </div>{" "}
+              <span className="dark:ext-gray-400 ml-1 text-sm text-gray-400">
+                {comment.content}
+              </span>
+            </div>
+          ))}
+        </div>
+
+        {/* <div className=" mr-6 mt-1 text-sm font-semibold dark:text-textDark">
+          {postData.comment.length} comments
+        </div> */}
 
         <div className="text-sm font-medium text-gray-500 dark:text-gray-300">
-          <p
-            className="mt-1 cursor-pointer font-normal dark:text-white"
-            // onClick={() => {
-            //   setViewModalParams(post._id)
-            //   setViewModalIsOpen(true)
-            // }}
-          >
-            View all comments
-          </p>
-          <hr className="mx-0 mb-2 mt-4" />
-          <div>
-            <input
+          {postData.comment.length > 3 && (
+            <p
+              className="mt-1 cursor-pointer font-normal dark:text-white"
               // onClick={() => {
               //   setViewModalParams(post._id)
               //   setViewModalIsOpen(true)
               // }}
+            >
+              View all {postData.comment.length} comments
+            </p>
+          )}
+
+          <hr className="mx-0 mb-2 mt-4" />
+          <div className="flex justify-between">
+            <input
+              value={commentInput}
+              onChange={(e) => setCommentInput(e.target.value)}
               placeholder="Add a comment..."
-              className="my-2 bg-transparent font-normal text-gray-800 placeholder-gray-500 focus:outline-none"
+              className="my-2 bg-transparent font-normal text-gray-800 placeholder-gray-500 focus:outline-none dark:text-textDark"
             />
+            {commentInput.length > 0 && (
+              <div
+                className="cursor-pointer text-[#0095F6]"
+                onClick={handleAddComment}
+              >
+                Post
+              </div>
+            )}
           </div>
         </div>
       </div>

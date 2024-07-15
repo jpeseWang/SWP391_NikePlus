@@ -110,79 +110,41 @@ export default function CheckOutPage() {
   };
 
   const submitOrder = async (orderData) => {
-    try {
-      await CreateOrder(orderData);
-      toast.success("Order created successfully!");
+    if (selectedPaymentMethod.id === "paypal") {
+      CommonUtil.setStorageValue("orderDataLs", orderData);
+      router.push("/order/payment");
+    } else {
+      try {
+        await CreateOrder(orderData);
 
-      emailjs
-        .sendForm(
-          "service_p7v3jef",
-          "template_7qldsv1",
-          form.current,
-          "EgKI2lPX0TVNbzTbs",
-        )
-        .then(
-          (result) => {
-            console.log("EmailJS result:", result.text);
-          },
-          (error) => {
-            console.error("EmailJS error:", error.text);
-          },
-        );
-      router.push("/order/summary");
-      // Uncomment and modify the following lines if needed
-      // if (selectedPaymentMethod.id === "paypal") {
-      //   router.push("/payment");
-      // } else {
-      //   router.push("/order/summary");
-      // }
-    } catch (err) {
-      console.error("Error creating order:", err);
-      toast.error("Something went wrong: " + err.message);
+        emailjs
+          .sendForm(
+            "service_p7v3jef",
+            "template_7qldsv1",
+            form.current,
+            "EgKI2lPX0TVNbzTbs",
+          )
+          .then(
+            (result) => {
+              console.log("EmailJS result:", result.text);
+            },
+            (error) => {
+              console.error("EmailJS error:", error.text);
+            },
+          );
+        router.push("/order/summary");
+        toast.success("Order created successfully!");
+      } catch (err) {
+        console.error("Error creating order:", err);
+        toast.error("Something went wrong: " + err.message);
+      }
     }
   };
 
-  // const submitOrder = async (orderData) => {
-  //   try {
-  //     await CreateOrder(orderData)
-  //     toast.success("Create product successfully!");
-
-  //     emailjs
-  //       .sendForm(
-  //         "service_p7v3jef",
-  //         "template_7qldsv1",
-  //         form.current,
-  //         "EgKI2lPX0TVNbzTbs"
-  //       )
-  //       .then(
-  //         (result) => {
-  //           console.log(result.text);
-  //         },
-  //         (error) => {
-  //           console.log(error.text);
-  //         }
-  //       );
-  //     // if (selectedPaymentMethod.id === "paypal") {
-  //     //   router.push("/payment");
-  //     // } else {
-  //     //   router.push("/order/summary");
-  //     // }
-
-  //   } catch (err) {
-  //     console.error("Error creating order:", err);
-  //     toast.error("Something went wrong: " + err.message);
-  //   }
-  // }
-
   const subTotal = totalPrice;
   const deliveryFee = selectedDeliveryMethod.price;
-  const taxes = (totalPrice * 0.1).toFixed(2);
-  const finalPrice = (
-    totalPrice +
-    selectedDeliveryMethod.price +
-    totalPrice * 0.1
-  ).toFixed(2);
-  console.log(order);
+  const taxes = (totalPrice * 0.1).toFixed(0);
+  const finalPrice = (totalPrice + 125 + totalPrice * 0.1).toFixed(0);
 
   return (
     <div className="bg-gray-50">
@@ -417,14 +379,26 @@ export default function CheckOutPage() {
                 </div>
               </div>
               {/* Product price */}
-              <input className="hidden" name="subTotal" value={subTotal} />
+              <input
+                className="hidden"
+                name="subTotal"
+                value={CommonUtil.parsePrice(totalPrice)}
+              />
               <input
                 className="hidden"
                 name="deliveryFee"
-                value={deliveryFee}
+                value={CommonUtil.parsePrice(125)}
               />
-              <input className="hidden" name="taxes" value={taxes} />
-              <input className="hidden" name="finalPrice" value={finalPrice} />
+              <input
+                className="hidden"
+                name="taxes"
+                value={CommonUtil.parsePrice((totalPrice * 0.1).toFixed(0))}
+              />
+              <input
+                className="hidden"
+                name="finalPrice"
+                value={CommonUtil.parsePrice(parseInt(finalPrice).toFixed(0))}
+              />
               <div className="mt-10 border-t border-gray-200 pt-10">
                 <RadioGroup
                   value={selectedDeliveryMethod}
@@ -505,16 +479,19 @@ export default function CheckOutPage() {
                       <div
                         key={paymentMethod.id}
                         className="flex items-center"
-                        defaultValue={selectedPaymentMethod}
-                        onClick={() => {
-                          setSelectedPaymentMethod(paymentMethod);
-                        }}
+                        onClick={() => setSelectedPaymentMethod(paymentMethod)}
                       >
                         <input
                           id={paymentMethod.id}
                           name="payment-type"
                           type="radio"
-                          defaultValue={selectedPaymentMethod}
+                          value={paymentMethod.id}
+                          checked={
+                            selectedPaymentMethod.id === paymentMethod.id
+                          }
+                          onChange={() =>
+                            setSelectedPaymentMethod(paymentMethod)
+                          }
                           className="h-4 w-4 border-gray-300 text-indigo-600 focus:ring-indigo-500"
                         />
                         <label

@@ -13,6 +13,11 @@ const userSchema = new Schema(
       type: String,
       required: true,
     },
+    avatarImg : {
+      type: String,
+      required: true,
+      default: "https://icons.veryicon.com/png/o/miscellaneous/rookie-official-icon-gallery/225-default-avatar.png"
+    },
     name: {
       type: String,
       required: true,
@@ -40,9 +45,9 @@ const userSchema = new Schema(
     resetTokenExpiry: {
       type: Date,
       required: false,
-    }
+    },
   },
-  { timestamps: true }
+  { timestamps: true },
 );
 
 export default mongoose.models.User || mongoose.model("User", userSchema);

@@ -59,15 +59,13 @@ const products = [
 ];
 const callsToAction = [
   { name: "Shop all categories", href: "/marketplace", icon: ShoppingCartIcon },
-  { name: "Auction community", href: "#", icon: GlobeAltIcon },
+  { name: "Auction community", href: "/community/post", icon: GlobeAltIcon },
 ];
 
 export default function Header() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const session = useSession();
   const isAuthenticated = session.status === "authenticated";
-
-  console.log(session);
 
   return (
     <div className="">
@@ -143,7 +141,7 @@ export default function Header() {
                     <a
                       key={item.name}
                       href={item.href}
-                      className="flex items-center justify-center gap-x-2.5 p-3 text-sm font-semibold leading-6 text-gray-900 hover:bg-gray-100 dark:text-textDark"
+                      className="flex items-center justify-center gap-x-2.5 p-3 text-sm font-semibold leading-6 text-gray-900 hover:bg-gray-100 dark:text-black"
                     >
                       <item.icon
                         className="h-5 w-5 flex-none text-gray-400"
@@ -180,7 +178,7 @@ export default function Header() {
                   <div className="z-30 grid grid-cols-2 divide-x divide-gray-900/5 bg-gray-50">
                     <Link
                       href="/auth/profile"
-                      className="flex items-center justify-center gap-x-2.5 p-3 text-sm font-semibold leading-6 text-gray-900 hover:bg-gray-100 dark:text-textDark"
+                      className="flex items-center justify-center gap-x-2.5 p-3 text-sm font-semibold leading-6 text-gray-900 hover:bg-gray-100 dark:text-black"
                     >
                       <UserIcon
                         className="h-5 w-5 flex-none text-gray-400"
@@ -192,7 +190,7 @@ export default function Header() {
                     {session?.data?.role === "admin" && (
                       <Link
                         href="/admin/page?title=Dashboard"
-                        className="flex items-center justify-center gap-x-2.5 p-3 text-sm font-semibold leading-6 text-gray-900 hover:bg-gray-100 dark:text-textDark"
+                        className="flex items-center justify-center gap-x-2.5 p-3 text-sm font-semibold leading-6 text-gray-900 hover:bg-gray-100 dark:text-black"
                       >
                         <AdjustmentsHorizontalIcon
                           className="h-5 w-5 flex-none text-gray-400"

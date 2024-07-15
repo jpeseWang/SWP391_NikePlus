@@ -3,10 +3,9 @@ import useSWR from "swr";
 import { fetcher } from "@/utils/fetcher";
 import { GetAllProduct } from "@/services/productService";
 import CommonUtil from "@/common/commonUtils";
-
+import LoadingComponent from "@/app/loading";
 
 export default function Sales() {
-
   const { productData, isLoading, isError } = GetAllProduct();
 
   const saleProductIds = [
@@ -33,15 +32,6 @@ export default function Sales() {
 
   const saleProducts = [saleProduct1, saleProduct2, saleProduct3];
 
-  if (
-    status === "loading" ||
-    isLoading ||
-    saleLoading1 ||
-    saleLoading2 ||
-    saleLoading3
-  ) {
-    return <LoadingComponent />;
-  }
   return (
     <section>
       <h2 className="mb-4 text-2xl font-semibold">SALES 🔥</h2>

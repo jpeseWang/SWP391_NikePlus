@@ -14,7 +14,6 @@ export const GET = async (request, { params }) => {
   }
 };
 
-
 export const DELETE = async (request, { params }) => {
   const { id } = params;
 
@@ -27,19 +26,16 @@ export const DELETE = async (request, { params }) => {
   }
 };
 
-
 export const PUT = async (request, { params }) => {
   const { id } = params;
-  const newComment = await request.json();
+  const { postData } = await request.json();
 
   try {
     await CommonUtil.connectDB();
-    const post = await Post.findByIdAndUpdate(id);
+    const post = await Post.findByIdAndUpdate(id, postData, { new: true });
     if (!post) {
       return new NextResponse("Post not found", { status: 404 });
     }
-
-    // post.comment = post.comment.concat(newComment);
 
     await post.save();
 

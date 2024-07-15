@@ -4,18 +4,21 @@ import { GetAllProduct } from "@/services/productService";
 import React from "react";
 import { useRouter } from "next/navigation";
 import { useSession } from "next-auth/react";
-import LoadingComponent from "@/app/loading";
 import useSWR from "swr";
 import { fetcher } from "@/utils/fetcher";
 import ProfileNav from "./components/ProfileNav";
-import Favourite from './components/ProfileInfo/Favourite';
-import Sales from './components/ProfileInfo/Sales';
+import Favourite from "./components/ProfileInfo/Favourite";
+import Sales from "./components/ProfileInfo/Sales";
+import LoadingComponent from "@/app/loading";
+import { GetUserById } from "@/services/userService";
 
 export default function ProfilePage() {
-  const { data: session, status } = useSession();
-  const { productData, isLoading, isError } = GetAllProduct();
+  const { data: session } = useSession();
+  const { productData, isError } = GetAllProduct();
   const router = useRouter();
 
+  const userId = session?.id;
+  const { userData, isLoading } = GetUserById(userId);
 
   const saleProductIds = [
     "66763367cb1f2afb06b841bc",
@@ -41,22 +44,8 @@ export default function ProfilePage() {
 
   const saleProducts = [saleProduct1, saleProduct2, saleProduct3];
 
-  if (
-    status === "loading" ||
-    isLoading ||
-    saleLoading1 ||
-    saleLoading2 ||
-    saleLoading3
-  ) {
-    return <LoadingComponent />;
-  }
-
   if (!session) {
     return <p>You need to be authenticated to view this page.</p>;
-  }
-
-  if (isError) {
-    return <p>Error loading products.</p>;
   }
 
   if (saleError1 || saleError2 || saleError3) {
@@ -72,24 +61,24 @@ export default function ProfilePage() {
   return (
     <div className="p-9">
       <ProfileNav />
-      <div className="mb-8 flex items-center">
-        <div className="w-19 h-19 flex items-center justify-center rounded-full bg-gray-300">
-          <svg
-            className="h-12 w-12 text-gray-500"
-            fill="currentColor"
-            viewBox="0 0 24 24"
-            xmlns="http://www.w3.org/2000/svg"
-          >
-            <path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"></path>
-          </svg>
+      {isLoading ? (
+        <LoadingComponent />
+      ) : (
+        <div className="mb-8 flex items-center">
+          <div className="w-19 h-19 flex items-center justify-center rounded-full bg-gray-300">
+            <img
+              className="h-12 w-12 rounded-full text-gray-500"
+              src={userData?.avatarImg}
+            ></img>
+          </div>
+          <div className="ml-6">
+            <h1 className="font-serif text-2xl font-semibold">
+              {userData?.name}
+            </h1>
+            <p className="text-xl text-gray-600">Nike Member Since June 2024</p>
+          </div>
         </div>
-        <div className="ml-6">
-          <h1 className="font-serif text-2xl font-semibold">
-            {session.user.name}
-          </h1>
-          <p className="text-xl text-gray-600">Nike Member Since June 2024</p>
-        </div>
-      </div>
+      )}
 
       {/* Favourites section */}
       <Favourite />

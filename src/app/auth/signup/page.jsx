@@ -49,17 +49,7 @@ const SignupPage = () => {
       toast.error("Password must contain at least six characters, at least one number, both lower and uppercase letters, and special characters.");
       return;
     }
-
-    const userData = {
-      name,
-      email,
-      password,
-      role,
-      dob,
-      country,
-      gender,
-    };
-
+    
     if (!isValidAge(dob)) {
       setDobError("You must be at least 16 years old.");
       return;
@@ -68,8 +58,24 @@ const SignupPage = () => {
     setDobError("");
 
     try {
+      const emailExists = await checkEmailExists(email);
+      if (emailExists) {
+        toast.error("Email is already registered.");
+        return;
+      }
+
       const otp = generateOTP();
       await sendOTPEmail(name, email, otp);
+
+      const userData = {
+        name,
+        email,
+        password,
+        role,
+        dob,
+        country,
+        gender,
+      };
 
       sessionStorage.setItem('otp', otp);
       sessionStorage.setItem('userData', JSON.stringify(userData));
@@ -78,6 +84,24 @@ const SignupPage = () => {
     } catch (err) {
       setErr(true);
       toast.error("Could not send verification email.");
+    }
+  };
+
+  const checkEmailExists = async (email) => {
+    try {
+      const res = await fetch(`/api/auth/check-email`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ email }),
+      });
+      const data = await res.json();
+      return data.exists;
+    } catch (error) {
+      console.error("Error checking email existence:", error);
+      toast.error("Error checking email existence. Please try again.");
+      return false;
     }
   };
 

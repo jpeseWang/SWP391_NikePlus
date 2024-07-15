@@ -14,16 +14,14 @@ export class Entry {
     { name: "Most Popular", href: "#", current: true },
     { name: "Best Rating", href: "#", current: false },
     { name: "Newest", href: "#", current: false },
-    { name: "Price: Low to High", href: "#", current: false },
-    { name: "Price: High to Low", href: "#", current: false },
+    { name: "Price: Low to High", value: "price-asc", current: false },
+    { name: "Price: High to Low", value: "price-desc", current: false },
   ];
   // Sub Categories
   public static readonly SubCategories = [
-    { name: "Totes", href: "#" },
-    { name: "Backpacks", href: "#" },
-    { name: "Travel Bags", href: "#" },
-    { name: "Hip Bags", href: "#" },
-    { name: "Laptop Sleeves", href: "#" },
+    { name: "Shoes", href: "#" },
+    { name: "Clothings", href: "#" },
+    { name: "Accessories and Equipment", href: "#" },
   ];
   // Filters
   public static readonly Filters = [

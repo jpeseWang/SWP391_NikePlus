@@ -7,8 +7,7 @@ import { useSession } from "next-auth/react";
 import { GetUserById, UpdateUser } from "@/services/userService";
 import LoadingComponent from "@/app/loading";
 import { mutate } from "swr";
-import { CountrySelector } from '@/utils/data/country-options';
-
+import { CountrySelector } from "@/utils/data/country-options";
 
 const tabs = [
   { name: "General", href: "#", current: true },
@@ -30,10 +29,12 @@ export default function ProfileInfo() {
   const [autoUpdateApplicantDataEnabled, setAutoUpdateApplicantDataEnabled] =
     useState(false);
 
-
-
   const session = useSession();
   const userId = session?.data?.id;
+
+  if (!session) {
+    return <p>You need to be authenticated to view this page.</p>;
+  }
 
   const { userData, isLoading, isError } = GetUserById(userId);
 
@@ -42,7 +43,8 @@ export default function ProfileInfo() {
   const [editGender, setEditGender] = useState(userData?.gender || "");
   const [editCountry, setEditCountry] = useState(userData?.country || "");
   const [editDob, setEditDob] = useState(userData?.dob || "");
-
+  const [editPhoto, setEditPhoto] = useState(null);
+  const [photoPreview, setPhotoPreview] = useState(userData?.avatarImg || "");
 
   console.log(userData);
 
@@ -54,7 +56,10 @@ export default function ProfileInfo() {
         mutate(`/api/user/${userId}`);
         console.log("User updated successfully:", response.data);
       } else {
-        console.error("Failed to update user:", response.data || response.error);
+        console.error(
+          "Failed to update user:",
+          response.data || response.error,
+        );
       }
     } catch (error) {
       console.error("Error updating user:", error);
@@ -67,6 +72,36 @@ export default function ProfileInfo() {
 
   const handleGenderChange = (e) => {
     setEditGender(e.target.value);
+  };
+
+  const handlePhotoChange = (e) => {
+    const file = e.target.files[0];
+    setEditPhoto(file);
+    setPhotoPreview(URL.createObjectURL(file));
+  };
+
+  const handleUpdatePhoto = async () => {
+    if (editPhoto) {
+      const formData = new FormData();
+      formData.append("file", editPhoto);
+      formData.append("upload_preset", "blogscover");
+
+      try {
+        const response = await fetch(
+          "https://api.cloudinary.com/v1_1/dfdkflzjs/image/upload",
+          {
+            method: "POST",
+            body: formData,
+          },
+        );
+        const data = await response.json();
+        const photoUrl = data.secure_url;
+        await handleUpdate("avatarImg", photoUrl);
+        setEditPhoto(null);
+      } catch (error) {
+        console.error("Error uploading photo:", error);
+      }
+    }
   };
 
   return (
@@ -218,13 +253,16 @@ export default function ProfileInfo() {
                                       type="text"
                                       value={editName}
                                       placeholder={userData.name}
-                                      onChange={(e) => setEditName(e.target.value)}
-                                      
+                                      onChange={(e) =>
+                                        setEditName(e.target.value)
+                                      }
                                     />
                                     <span className="ml-12 flex-shrink-0">
                                       <button
                                         type="button"
-                                        onClick={() => handleUpdate("name", editName)}
+                                        onClick={() =>
+                                          handleUpdate("name", editName)
+                                        }
                                         className="rounded-md bg-white font-medium text-purple-600 hover:text-purple-500 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:ring-offset-2"
                                       >
                                         Update
@@ -240,28 +278,22 @@ export default function ProfileInfo() {
                                     <span className="flex-grow">
                                       <img
                                         className="h-8 w-8 rounded-full"
-                                        src="https://images.unsplash.com/photo-1550525811-e5869dd03032?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80"
+                                        src={photoPreview || userData.avatarImg}
                                         alt=""
                                       />
                                     </span>
                                     <span className="ml-4 flex flex-shrink-0 items-start space-x-4">
+                                      <input
+                                        type="file"
+                                        accept="image/*"
+                                        onChange={handlePhotoChange}
+                                      />
                                       <button
                                         type="button"
                                         className="rounded-md bg-white font-medium text-purple-600 hover:text-purple-500 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:ring-offset-2"
+                                        onClick={handleUpdatePhoto}
                                       >
                                         Update
-                                      </button>
-                                      <span
-                                        className="text-gray-300"
-                                        aria-hidden="true"
-                                      >
-                                        |
-                                      </span>
-                                      <button
-                                        type="button"
-                                        className="rounded-md bg-white font-medium text-purple-600 hover:text-purple-500 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:ring-offset-2"
-                                      >
-                                        Remove
                                       </button>
                                     </span>
                                   </dd>
@@ -275,12 +307,16 @@ export default function ProfileInfo() {
                                       type="text"
                                       value={editEmail}
                                       placeholder={userData.email}
-                                      onChange={(e) => setEditEmail(e.target.value)}
+                                      onChange={(e) =>
+                                        setEditEmail(e.target.value)
+                                      }
                                     />
                                     <span className="ml-12 flex-shrink-0">
                                       <button
                                         type="button"
-                                        onClick={() => handleUpdate("email", editEmail)}
+                                        onClick={() =>
+                                          handleUpdate("email", editEmail)
+                                        }
                                         className="rounded-md bg-white font-medium text-purple-600 hover:text-purple-500 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:ring-offset-2"
                                       >
                                         Update
@@ -299,7 +335,7 @@ export default function ProfileInfo() {
                                       value={editGender}
                                       onChange={handleGenderChange}
                                       placeholder={userData.gender}
-                                      className="block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm px-2 py-2"
+                                      className="block w-full rounded-md border-gray-300 px-2 py-2 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
                                     >
                                       <option value="Male">Male</option>
                                       <option value="Female">Female</option>
@@ -307,7 +343,9 @@ export default function ProfileInfo() {
                                     <span className="ml-12 flex-shrink-0">
                                       <button
                                         type="button"
-                                        onClick={() => handleUpdate("gender", editGender)}
+                                        onClick={() =>
+                                          handleUpdate("gender", editGender)
+                                        }
                                         className="rounded-md bg-white font-medium text-purple-600 hover:text-purple-500 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:ring-offset-2"
                                       >
                                         Update
@@ -343,7 +381,9 @@ export default function ProfileInfo() {
                                     <span className="ml-12 flex-shrink-0">
                                       <button
                                         type="button"
-                                        onClick={() => handleUpdate("country", editCountry)}
+                                        onClick={() =>
+                                          handleUpdate("country", editCountry)
+                                        }
                                         className="rounded-md bg-white font-medium text-purple-600 hover:text-purple-500 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:ring-offset-2"
                                       >
                                         Update
@@ -360,12 +400,16 @@ export default function ProfileInfo() {
                                       type="text"
                                       value={editDob}
                                       placeholder={userData.dob}
-                                      onChange={(e) => setEditDob(e.target.value)}
+                                      onChange={(e) =>
+                                        setEditDob(e.target.value)
+                                      }
                                     />
                                     <span className="ml-12 flex flex-shrink-0 items-start space-x-4">
                                       <button
                                         type="button"
-                                        onClick={() => handleUpdate("dob", editDob)}
+                                        onClick={() =>
+                                          handleUpdate("dob", editDob)
+                                        }
                                         className="rounded-md bg-white font-medium text-purple-600 hover:text-purple-500 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:ring-offset-2"
                                       >
                                         Update
