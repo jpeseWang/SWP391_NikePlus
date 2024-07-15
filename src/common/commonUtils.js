@@ -19,6 +19,10 @@ export default class CommonUtil {
   };
 
   static parsePrice(input) {
+    if (input === undefined || input === null) {
+      return "0,000₫";
+  }
+
     let numberStr = input.toString();
     let reversedStr = numberStr.split("").reverse().join("");
     let formattedReversedStr = "";

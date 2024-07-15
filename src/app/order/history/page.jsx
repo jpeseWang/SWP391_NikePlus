@@ -106,7 +106,7 @@ export default function OrderHistoryPage() {
                                 </div>
                                 <div className="mt-2 flex text-sm font-medium sm:mt-4">
                                   <a
-                                    href={product.href}
+                                    href={`/marketplace/product-overviews/${product._id}`}
                                     className="text-indigo-600 hover:text-indigo-500"
                                   >
                                     View Product
