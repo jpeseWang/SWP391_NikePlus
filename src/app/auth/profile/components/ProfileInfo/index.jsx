@@ -29,12 +29,9 @@ export default function ProfileInfo() {
   const [autoUpdateApplicantDataEnabled, setAutoUpdateApplicantDataEnabled] =
     useState(false);
 
-  const { data: session, status } = useSession();
+  const session = useSession();
   const userId = session?.data?.id;
-
-  if (status === 'loading') {
-    return <LoadingComponent />;
-  }
+  console.log(userId)
 
   if (!session) {
     return <p>You need to be authenticated to view this page.</p>;
