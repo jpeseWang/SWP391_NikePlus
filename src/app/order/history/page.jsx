@@ -75,13 +75,18 @@ export default function OrderHistoryPage() {
                           View Order
                           <span className="sr-only">{order.number}</span>
                         </a>
-                        <a
-                          href={order.invoiceHref}
-                          className="flex w-full items-center justify-center rounded-md border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 md:w-auto"
-                        >
-                          View Invoice
-                          <span className="sr-only">for order {order.id}</span>
-                        </a>
+
+                        {order.orderInfo.paymentStatus === "Paid" ? (
+                          <div className="flex w-full items-center justify-center rounded-md border border-green-600/20 bg-green-50 px-4 py-2 text-sm font-medium  text-green-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 md:w-auto">
+                            Paid
+                            <span className="sr-only">{order.number}</span>
+                          </div>
+                        ) : (
+                          <div className="flex w-full items-center justify-center rounded-md border border-yellow-600/20 bg-yellow-50 px-4 py-2 text-sm font-medium  text-yellow-800 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 md:w-auto">
+                            Unpaid
+                            <span className="sr-only">{order.number}</span>
+                          </div>
+                        )}
                       </div>
                     </div>
 

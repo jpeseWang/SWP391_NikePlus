@@ -3,8 +3,9 @@ import React, { useEffect, useState } from "react";
 import PaypalButton from "./paypal";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
+import { CreateOrder } from "@/services/orderService";
 
-const VND_TO_USD_RATE = 23;
+const VND_TO_USD_RATE = 26;
 
 export default function Page() {
   const [price, setPrice] = useState(10); // Default price in USD
@@ -41,21 +42,6 @@ export default function Page() {
           <div className="mt-10 flex items-center justify-center">
             <PaypalButton price={price} />
           </div>
-
-          <Link
-            href="/order/summary"
-            className="border-t border-gray-200 px-4 py-6 sm:px-6"
-          >
-            <button
-              className="w-1/2 rounded-md border border-transparent bg-indigo-600 px-2 py-2 text-base font-medium text-white shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 focus:ring-offset-gray-50"
-              // onClick={router.push("/order/summary")}
-            >
-              Confirm order
-            </button>
-            <p className="text-slate-600 italic mt-2">
-              *Confirm Order after payment is successfully
-            </p>
-          </Link>
         </div>
       </div>
     </div>

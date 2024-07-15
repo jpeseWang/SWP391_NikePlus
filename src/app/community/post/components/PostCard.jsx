@@ -134,8 +134,8 @@ export default function PostCard({ postData, reload }) {
           {likeCount} likes
         </div>
 
-        <div>
-          {postData.comment.slice(0, 3).map((comment, idx) => (
+        <div className="max-h-[120px] overflow-y-scroll">
+          {postData.comment.map((comment, idx) => (
             <div key={comment._id} className="flex">
               <div className="text-sm font-semibold antialiased dark:text-white">
                 {comment.authorInfo.authorName}

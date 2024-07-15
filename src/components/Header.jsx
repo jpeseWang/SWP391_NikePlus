@@ -67,8 +67,6 @@ export default function Header() {
   const session = useSession();
   const isAuthenticated = session.status === "authenticated";
 
-  console.log(session);
-
   return (
     <div className="">
       <div

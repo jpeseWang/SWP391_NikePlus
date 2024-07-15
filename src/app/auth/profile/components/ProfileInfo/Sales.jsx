@@ -3,10 +3,9 @@ import useSWR from "swr";
 import { fetcher } from "@/utils/fetcher";
 import { GetAllProduct } from "@/services/productService";
 import CommonUtil from "@/common/commonUtils";
-
+import LoadingComponent from "@/app/loading";
 
 export default function Sales() {
-
   const { productData, isLoading, isError } = GetAllProduct();
 
   const saleProductIds = [

@@ -16,7 +16,7 @@ import Image from "next/image";
 import bg from "@/assets/images/nkPlsBg.jpg";
 import toast from "react-hot-toast";
 import HorizontalLoading from "@/components/UI/HorizontalLoading/index";
-
+import { GetUserById } from "@/services/userService";
 import { CreatePost } from "@/services/postService";
 
 export default function CreatePostModal({ isOpen, onClose, reload }) {
@@ -28,7 +28,8 @@ export default function CreatePostModal({ isOpen, onClose, reload }) {
 
   const session = useSession();
   const router = useRouter();
-
+  const userId = session?.data?.id;
+  const { userData, isLoading, isError } = GetUserById(userId);
   if (session.status === "unauthenticated") {
     router?.push("/auth/login");
   }
@@ -146,18 +147,20 @@ export default function CreatePostModal({ isOpen, onClose, reload }) {
                         <>
                           <div className="px-4 py-6 sm:p-8">
                             <div className="grid max-w-2xl grid-cols-1 gap-x-6 gap-y-8 sm:grid-cols-6">
-                              <div className="flex ">
+                              <div className="flex items-center">
                                 <img
                                   className="h-10 w-10 rounded-full"
-                                  src="https://images.unsplash.com/photo-1701589623520-4fb55453094c?q=80&w=3387&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
+                                  src={userData?.avatarImg}
+                                  alt="User Avatar"
                                 />
                                 <div className="ml-3 block">
                                   <div className="text-sm font-semibold leading-tight antialiased dark:text-gray-400">
-                                    <span>{session.data.name}</span>
+                                    <span className="whitespace-nowrap">
+                                      {session?.data?.name}
+                                    </span>
                                   </div>
-
                                   <div className="mt-1 text-sm text-gray-600 dark:text-gray-400">
-                                    <GlobeEuropeAfricaIcon className=" mb-1 inline h-4 w-4" />{" "}
+                                    <GlobeEuropeAfricaIcon className="mb-1 inline h-4 w-4" />{" "}
                                     Public
                                   </div>
                                 </div>

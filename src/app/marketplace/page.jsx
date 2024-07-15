@@ -1,5 +1,5 @@
 "use client";
-import { Fragment, useState } from "react";
+import { Fragment, useState, useEffect } from "react";
 import { Dialog, Disclosure, Menu, Transition } from "@headlessui/react";
 import { XMarkIcon } from "@heroicons/react/24/outline";
 import {
@@ -15,11 +15,50 @@ import { classNames } from "@/utils/classNames";
 import { GetAllProduct } from "@/services/productService";
 import { Entry } from "@/common/entry";
 import CommonUtil from "@/common/commonUtils";
+import { useParams } from "next/navigation";
 
 export default function MarketplacePage() {
+  const { subCategories, sortCriteria } = useParams();
+
   const [mobileFiltersOpen, setMobileFiltersOpen] = useState(false);
+  const [selectedSubCategories, setSelectedSubCategories] = useState(
+    subCategories ? subCategories.split(",") : [],
+  );
+  const [sortOption, setSortOption] = useState(sortCriteria || "price-asc");
 
   const { productData, isLoading, isError } = GetAllProduct();
+
+  // Handle subcategory selection
+  const handleSubCategoryChange = (category) => {
+    setSelectedSubCategories((prev) =>
+      prev.includes(category)
+        ? prev.filter((c) => c !== category)
+        : [...prev, category],
+    );
+  };
+
+  // Handle sorting option change
+  const handleSortChange = (sortOption) => {
+    setSortOption(sortOption);
+  };
+
+  // Filter and sort products
+  const filteredAndSortedProducts = productData
+    ? productData
+        .filter((product) =>
+          selectedSubCategories.length > 0
+            ? selectedSubCategories.includes(product.subCategory)
+            : true,
+        )
+        .sort((a, b) => {
+          if (sortOption === "price-asc") {
+            return a.price - b.price;
+          } else if (sortOption === "price-desc") {
+            return b.price - a.price;
+          }
+          return 0;
+        })
+    : [];
 
   return (
     <div className="bg-white">
@@ -80,9 +119,27 @@ export default function MarketplacePage() {
                       >
                         {Entry.SubCategories.map((category) => (
                           <li key={category.name}>
-                            <a href={category.href} className="block px-2 py-3">
-                              {category.name}
-                            </a>
+                            <div className="block px-2 py-3">
+                              <input
+                                type="checkbox"
+                                id={`filter-mobile-${category.name}`}
+                                name="subCategories"
+                                value={category.name}
+                                checked={selectedSubCategories.includes(
+                                  category.name,
+                                )}
+                                onChange={() =>
+                                  handleSubCategoryChange(category.name)
+                                }
+                                className="h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-500"
+                              />
+                              <label
+                                htmlFor={`filter-mobile-${category.name}`}
+                                className="ml-3 text-gray-500"
+                              >
+                                {category.name}
+                              </label>
+                            </div>
                           </li>
                         ))}
                       </ul>
@@ -115,6 +172,7 @@ export default function MarketplacePage() {
                                   </span>
                                 </Disclosure.Button>
                               </h3>
+
                               <Disclosure.Panel className="pt-6">
                                 <div className="space-y-6">
                                   {section.options.map((option, optionIdx) => (
@@ -150,6 +208,7 @@ export default function MarketplacePage() {
               </div>
             </Dialog>
           </Transition.Root>
+
           <main className="mx-4 px-4 sm:px-6 lg:px-8">
             <div className="flex items-baseline justify-between border-b border-gray-200 pb-6 pt-20">
               <h1 className="text-4xl font-bold tracking-tight text-gray-900">
@@ -183,14 +242,15 @@ export default function MarketplacePage() {
                           <Menu.Item key={option.name}>
                             {({ active }) => (
                               <a
-                                href={option.href}
+                                href="#"
                                 className={classNames(
-                                  option.current
+                                  sortOption === option.value
                                     ? "font-medium text-gray-900"
                                     : "text-gray-500",
                                   active ? "bg-gray-100" : "",
                                   "block px-4 py-2 text-sm",
                                 )}
+                                onClick={() => handleSortChange(option.value)}
                               >
                                 {option.name}
                               </a>
@@ -235,7 +295,27 @@ export default function MarketplacePage() {
                   >
                     {Entry.SubCategories.map((category) => (
                       <li key={category.name}>
-                        <a href={category.href}>{category.name}</a>
+                        <div className="block px-2 py-3">
+                          <input
+                            type="checkbox"
+                            id={`filter-desktop-${category.name}`}
+                            name="subCategories"
+                            value={category.name}
+                            checked={selectedSubCategories.includes(
+                              category.name,
+                            )}
+                            onChange={() =>
+                              handleSubCategoryChange(category.name)
+                            }
+                            className="h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-500"
+                          />
+                          <label
+                            htmlFor={`filter-desktop-${category.name}`}
+                            className="ml-3 text-gray-500"
+                          >
+                            {category.name}
+                          </label>
+                        </div>
                       </li>
                     ))}
                   </ul>
@@ -303,7 +383,7 @@ export default function MarketplacePage() {
                 {productData ? (
                   <>
                     <div className="grid grid-cols-1 gap-x-6 gap-y-10 sm:grid-cols-3 lg:col-span-4">
-                      {productData?.map((product) => (
+                      {filteredAndSortedProducts?.map((product) => (
                         <a
                           key={product._id}
                           href={`/marketplace/product-overviews/${product._id}`}
@@ -313,7 +393,7 @@ export default function MarketplacePage() {
                             <img
                               src={product.specs[0]?.imgList[0]}
                               alt={product.imageAlt}
-                              className="h-full w-full aspect-square object-cover object-center"
+                              className="aspect-square h-full w-full object-cover object-center"
                             />
                           </div>
                           <h3 className="mt-4 text-base font-medium text-gray-900">
