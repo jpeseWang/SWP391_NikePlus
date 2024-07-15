@@ -136,7 +136,7 @@ export default function CreateAuctionModal({ isOpen, onClose }) {
               leaveTo="opacity-0 scale-95"
             >
               <Dialog.Panel className="mx-auto max-w-2xl transform divide-y divide-gray-100 overflow-hidden rounded-xl bg-white shadow-2xl ring-1 ring-black ring-opacity-5 transition-all">
-                <Combobox onChange={(item) => (window?.location = item.url)}>
+                <Combobox onChange={(item) => (window.location = item.url)}>
                   <div>
                     <form
                       className="bg-white shadow-sm ring-1 ring-gray-900/5 sm:rounded-xl md:col-span-2"

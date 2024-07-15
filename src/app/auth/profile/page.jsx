@@ -19,7 +19,6 @@ export default function ProfilePage() {
 
   const userId = session?.id;
   const { userData, isLoading } = GetUserById(userId);
-  console.log(userId);
 
   const saleProductIds = [
     "66763367cb1f2afb06b841bc",
@@ -49,10 +48,6 @@ export default function ProfilePage() {
     return <p>You need to be authenticated to view this page.</p>;
   }
 
-  if (isError) {
-    return <p>Error loading products.</p>;
-  }
-
   if (saleError1 || saleError2 || saleError3) {
     console.error(
       "Error fetching sale products:",
@@ -73,12 +68,12 @@ export default function ProfilePage() {
           <div className="w-19 h-19 flex items-center justify-center rounded-full bg-gray-300">
             <img
               className="h-12 w-12 rounded-full text-gray-500"
-              src={userData.avatarImg}
+              src={userData?.avatarImg}
             ></img>
           </div>
           <div className="ml-6">
             <h1 className="font-serif text-2xl font-semibold">
-              {userData.name}
+              {userData?.name}
             </h1>
             <p className="text-xl text-gray-600">Nike Member Since June 2024</p>
           </div>
