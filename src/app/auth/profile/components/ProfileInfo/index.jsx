@@ -9,7 +9,6 @@ import LoadingComponent from "@/app/loading";
 import { mutate } from "swr";
 import { CountrySelector } from '@/utils/data/country-options';
 
-
 const tabs = [
   { name: "General", href: "#", current: true },
   { name: "Password", href: "/auth/change-password", current: false },
@@ -30,9 +29,17 @@ export default function ProfileInfo() {
   const [autoUpdateApplicantDataEnabled, setAutoUpdateApplicantDataEnabled] =
     useState(false);
 
-  const session = useSession();
+  const { data: session, status } = useSession();
   const userId = session?.data?.id;
 
+  if (status === 'loading') {
+    return <LoadingComponent />;
+  }
+
+  if (!session) {
+    return <p>You need to be authenticated to view this page.</p>;
+  }
+  
   const { userData, isLoading, isError } = GetUserById(userId);
 
   const [editName, setEditName] = useState(userData?.name || "");
