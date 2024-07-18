@@ -18,7 +18,7 @@ export const LoginUser = async (email, password) => {
 };
 
 export function GetAllUser() {
-  const { data, error, isLoading, mutate } = useSWR(`/api/product`, fetcher);
+  const { data, error, isLoading, mutate } = useSWR(`/api/user/getAll`, fetcher);
   return { userData: data, isLoading, isError: error, mutate };
 }
 
@@ -29,7 +29,7 @@ export function GetUserById(id) {
 
 export const DeleteUser = async (id) => {
   try {
-    await fetch(`/api/product/${id}`, {
+    await fetch(`/api/user/${id}`, {
       method: "DELETE",
     });
   } catch (err) {

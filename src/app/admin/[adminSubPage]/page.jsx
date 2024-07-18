@@ -3,7 +3,7 @@ import React from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import ApiConfiguration from "../components/ApiConfiguration";
 import DashBoard from "../components/DashBoard";
-import UserManagement from "../components/UserManagement";
+import UserManagement from "../components/User/ListAll";
 import ProductManagement from "../components/ProductManagement";
 const navigation = [
   {

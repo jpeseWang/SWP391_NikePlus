@@ -8,6 +8,7 @@ import { GetUserById, UpdateUser } from "@/services/userService";
 import LoadingComponent from "@/app/loading";
 import { mutate } from "swr";
 import { CountrySelector } from "@/utils/data/country-options";
+import toast from "react-hot-toast";
 
 const tabs = [
   { name: "General", href: "#", current: true },
@@ -53,16 +54,15 @@ export default function ProfileInfo() {
       console.log("Updating user:", userId, field, value);
       const response = await UpdateUser(userId, { [field]: value });
       if (response.ok) {
-        mutate(`/api/user/${userId}`);
-        console.log("User updated successfully:", response.data);
+        mutate();
+        toast.success("User updated successfully!");
       } else {
-        console.error(
-          "Failed to update user:",
-          response.data || response.error,
-        );
+        console.error("Failed to update user:", response.data || response.error);
+        toast.error("Failed to update user: " + (response.data?.message || response.error.message));
       }
     } catch (error) {
       console.error("Error updating user:", error);
+      toast.error("Error updating user: " + error.message);
     }
   };
 
