@@ -45,6 +45,7 @@ export default function CartPage() {
               return {
                 ...productDetails,
                 quantity: productData.quantity,
+                size: productData.size,
               };
             } catch (error) {
               console.error("Error fetching product data:", error);
@@ -178,7 +179,7 @@ export default function CartPage() {
                                         e.target.value,
                                         10,
                                       );
-                                      updateProduct(product._id, newQuantity);
+                                      updateProduct(product._id,product.size, newQuantity,);
                                     }}
                                   >
                                     <option value={1}>1</option>
@@ -196,7 +197,7 @@ export default function CartPage() {
                                       type="button"
                                       className="-m-2 inline-flex p-2 text-gray-400 hover:text-gray-500"
                                       onClick={() => {
-                                        removeProduct(product._id);
+                                        removeProduct(product._id, product.size);
                                       }}
                                     >
                                       <span className="sr-only">Remove</span>
