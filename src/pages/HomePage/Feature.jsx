@@ -8,20 +8,18 @@ export default function Feature() {
     <div className=" py-24 sm:py-32">
       <div className="mx-auto max-w-7xl px-6 lg:px-8">
         <div className="mx-auto max-w-2xl sm:text-center">
-          <h3 className="text-4xl md:text-8xl font-medium dark:text-textDark">
-            Save hours.
+          <h3 className="text-4xl font-medium md:text-8xl dark:text-textDark">
+            Win On Air
           </h3>
-          <p className="mt-4 md:mt-8 text-[#878787] max-w-[600px] mx-auto">
-            From automated receipt-to-transaction mapping to conversing with
-            your financials and consolidating all your files, Midday not only
-            assists you with your most tiresome business tasks but also enhances
-            your ability to gain valuable business insights.
+          <p className="mx-auto mt-4 max-w-[600px] text-[#878787] md:mt-8">
+            Meet the next generation of Nike Air. Engineered to the exact
+            specifications of championship athletes.
           </p>
         </div>
       </div>
 
-      <section className="mx-auto max-w-[1504px] border border-[#2b2b2b] rounded-2xl container bg-white dark:bg-[#121212] p-8 md:p-10 md:pb-0 overflow-hidden mb-12 mt-16">
-        <div className="flex flex-col md:space-x-12 md:flex-row">
+      <section className="container mx-auto mb-12 mt-16 max-w-[1504px] overflow-hidden rounded-2xl border border-[#2b2b2b] bg-white p-8 md:p-10 md:pb-0 dark:bg-[#121212]">
+        <div className="flex flex-col md:flex-row md:space-x-12">
           <div className="">
             <motion.div
               whileInView={{ y: -10, x: 10 }}
@@ -33,24 +31,24 @@ export default function Feature() {
                 height="400"
                 decoding="async"
                 data-nimg="1"
-                className="hidden dark:block -mb-[1px] object-contain"
+                className="-mb-[1px] hidden object-contain dark:block"
                 src={image1}
               />
             </motion.div>
           </div>
-          <div className="mt-6 md:max-w-[40%] md:ml-8 md:mb-8">
-            <h3 className="font-medium text-xl md:text-2xl mb-4 dark:text-textDark">
+          <div className="mt-6 md:mb-8 md:ml-8 md:max-w-[40%]">
+            <h3 className="mb-4 text-xl font-medium md:text-2xl dark:text-textDark">
               Financial overview
             </h3>
 
-            <p className="text-[#878787] mb-4">
+            <p className="mb-4 text-[#878787]">
               Bring your own bank. We connect to over 20 000+ banks in 33
               countries across US, Canada, UK and Europe. Keep tabs on your
               expenses and income, and gain a clearer picture of your
               business&apos;s financial track record and current situation.
             </p>
 
-            <div className="flex space-x-2 items-center mt-8">
+            <div className="mt-8 flex items-center space-x-2">
               <svg
                 xmlns="http://www.w3.org/2000/svg"
                 width="18"
@@ -68,20 +66,20 @@ export default function Feature() {
         </div>
       </section>
 
-      <section className="relative mb-12 max-w-[1504px] mx-auto">
-        <div className="mx-auto border border-[#2b2b2b] rounded-2xl container bg-white dark:bg-[#121212] p-8 md:p-10 md:pb-0 overflow-hidden">
-          <div className="flex flex-col md:space-x-12 md:flex-row">
-            <div className="mt-6 md:max-w-[40%] md:mr-8 md:mb-8">
-              <h3 className="font-medium text-xl md:text-2xl mb-4 dark:text-textDark">
+      <section className="relative mx-auto mb-12 max-w-[1504px]">
+        <div className="container mx-auto overflow-hidden rounded-2xl border border-[#2b2b2b] bg-white p-8 md:p-10 md:pb-0 dark:bg-[#121212]">
+          <div className="flex flex-col md:flex-row md:space-x-12">
+            <div className="mt-6 md:mb-8 md:mr-8 md:max-w-[40%]">
+              <h3 className="mb-4 text-xl font-medium md:text-2xl dark:text-textDark">
                 Time track your projects
               </h3>
-              <p className="text-[#878787] mb-4">
+              <p className="mb-4 text-[#878787]">
                 Effortlessly boost productivity and collaboration with our
                 advanced time tracking solution: gain insightful project
                 overviews and foster seamless collaboration amongst your team
                 for optimal efficiency and success.
               </p>
-              <div className="flex space-x-2 items-center mt-8">
+              <div className="mt-8 flex items-center space-x-2">
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
                   width="18"
@@ -95,7 +93,7 @@ export default function Feature() {
                 </svg>
                 <span className="text-[#878787]">Live time tracking</span>
               </div>
-              <div className="flex space-x-2 items-center mt-1">
+              <div className="mt-1 flex items-center space-x-2">
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
                   width="18"
@@ -122,14 +120,14 @@ export default function Feature() {
                   height="400"
                   decoding="async"
                   data-nimg="1"
-                  className="hidden dark:block -mb-[1px] object-contain"
+                  className="-mb-[1px] hidden object-contain dark:block"
                 />
               </motion.div>
             </div>
           </div>
         </div>
-        <div className="w-[216px] h-[216px] rounded-full blur-2xl absolute -top-50 -left-100 bg-[#F59F95]/5 z-[-10]"></div>
-        <div className="w-[216px] h-[216px] rounded-full blur-2xl absolute -bottom-50 -right-100 bg-[#A1F5CD]/5 z-[-10]"></div>
+        <div className="-top-50 -left-100 absolute z-[-10] h-[216px] w-[216px] rounded-full bg-[#F59F95]/5 blur-2xl"></div>
+        <div className="-bottom-50 -right-100 absolute z-[-10] h-[216px] w-[216px] rounded-full bg-[#A1F5CD]/5 blur-2xl"></div>
       </section>
     </div>
   );

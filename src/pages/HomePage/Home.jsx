@@ -15,14 +15,6 @@ export default function HomePage() {
       <HeroSection />
       <Dock />
       <Feature />
-      Horizontal Section
-      <br></br>
-      Parallax Scroll
-      <br></br>
-      Zoom Parallax
-      <br></br>
-      Horizontal Scroll
-      <br></br>
       <QuoteSection />
       <CardLink
         imgSrc="https://static.nike.com/a/images/f_auto/dpr_1.3,cs_srgb/w_1824,c_limit/b165c418-4f83-4cd2-82b7-91a9c4251a6c/nike-just-do-it.jpg"
@@ -33,7 +25,6 @@ export default function HomePage() {
       />
       <ZoomParallaxPage />
       <InfinitiveCarousel />
-      <TextOpacityScrollSection />
     </div>
   );
 }

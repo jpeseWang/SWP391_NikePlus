@@ -1,16 +1,16 @@
+"use client";
 import { useContext } from "react";
 import { CartContext } from "@/context/Provider/CartContext";
 import { XMarkIcon } from "@heroicons/react/20/solid";
 import Link from "next/link";
 import { ShoppingCartIcon, HeartIcon } from "@heroicons/react/24/outline";
+import { useSession } from "next-auth/react";
 
 export default function Banner({ sessionData }) {
   const { cartProducts } = useContext(CartContext);
+  const session = useSession();
   const subtotal = cartProducts.length;
-  const isAuthenticated = sessionData.status === "authenticated";
-  if (isAuthenticated === "authenticated") {
-    console.log(sessionData?.data.user?.name);
-  }
+  const isAuthenticated = session.status === "authenticated";
 
   return (
     <div className="relative isolate mt-9 flex items-center gap-x-6 overflow-hidden bg-gray-50 px-6 py-2.5 sm:px-3.5 sm:before:flex-1">
@@ -46,7 +46,7 @@ export default function Banner({ sessionData }) {
           <p className="text-sm leading-6 text-gray-900">
             Welcome back,{" "}
             <strong className="font-semibold">
-              {sessionData?.data.user?.name}!
+              {session?.data.user?.name}!
             </strong>
           </p>
         ) : (

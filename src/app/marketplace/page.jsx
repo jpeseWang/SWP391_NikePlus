@@ -47,7 +47,7 @@ export default function MarketplacePage() {
     ? productData
         .filter((product) =>
           selectedSubCategories.length > 0
-            ? selectedSubCategories.includes(product.subCategory)
+            ? selectedSubCategories.includes(product.category)
             : true,
         )
         .sort((a, b) => {
@@ -59,6 +59,8 @@ export default function MarketplacePage() {
           return 0;
         })
     : [];
+
+  console.log(selectedSubCategories);
 
   return (
     <div className="bg-white">
@@ -120,6 +122,7 @@ export default function MarketplacePage() {
                         {Entry.SubCategories.map((category) => (
                           <li key={category.name}>
                             <div className="block px-2 py-3">
+                              2{" "}
                               <input
                                 type="checkbox"
                                 id={`filter-mobile-${category.name}`}
@@ -286,7 +289,7 @@ export default function MarketplacePage() {
               </h2>
 
               <div className="grid grid-cols-1 gap-x-8 gap-y-10 lg:grid-cols-5">
-                {/* Filters */}
+                {/* Desktop Filters */}
                 <form className="col-span-1 hidden lg:col-span-1 lg:block">
                   <h3 className="sr-only">Categories</h3>
                   <ul
@@ -295,7 +298,8 @@ export default function MarketplacePage() {
                   >
                     {Entry.SubCategories.map((category) => (
                       <li key={category.name}>
-                        <div className="block px-2 py-3">
+                        <div className="block  px-2 py-1">
+                          {" "}
                           <input
                             type="checkbox"
                             id={`filter-desktop-${category.name}`}
@@ -307,7 +311,7 @@ export default function MarketplacePage() {
                             onChange={() =>
                               handleSubCategoryChange(category.name)
                             }
-                            className="h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-500"
+                            className="h-4 w-4 cursor-pointer rounded border-gray-300 text-indigo-600 focus:ring-indigo-500"
                           />
                           <label
                             htmlFor={`filter-desktop-${category.name}`}

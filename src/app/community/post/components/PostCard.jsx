@@ -17,7 +17,12 @@ import toast from "react-hot-toast";
 import { useSession } from "next-auth/react";
 import { UpdatePost } from "@/services/postService";
 
-export default function PostCard({ postData, reload }) {
+export default function PostCard({
+  postData,
+  reload,
+  setViewModalParams,
+  setViewModalIsOpen,
+}) {
   const session = useSession();
   const userID = session?.data?.id;
   const userEmail = session?.data?.email;
@@ -134,7 +139,7 @@ export default function PostCard({ postData, reload }) {
           {likeCount} likes
         </div>
 
-        <div className="max-h-[120px] overflow-y-scroll">
+        <div className="max-h-[120px] ">
           {postData.comment.map((comment, idx) => (
             <div key={comment._id} className="flex">
               <div className="text-sm font-semibold antialiased dark:text-white">
@@ -147,21 +152,17 @@ export default function PostCard({ postData, reload }) {
           ))}
         </div>
 
-        {/* <div className=" mr-6 mt-1 text-sm font-semibold dark:text-textDark">
-          {postData.comment.length} comments
-        </div> */}
-
         <div className="text-sm font-medium text-gray-500 dark:text-gray-300">
           {postData.comment.length > 3 && (
-            <p
+            <div
               className="mt-1 cursor-pointer font-normal dark:text-white"
-              // onClick={() => {
-              //   setViewModalParams(post._id)
-              //   setViewModalIsOpen(true)
-              // }}
+              onClick={() => {
+                setViewModalParams(postData._id);
+                setViewModalIsOpen(true);
+              }}
             >
               View all {postData.comment.length} comments
-            </p>
+            </div>
           )}
 
           <hr className="mx-0 mb-2 mt-4" />
