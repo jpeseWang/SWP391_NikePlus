@@ -16,6 +16,8 @@ const ResetPasswordPage = ({ params }) => {
     const [user, setUser] = useState(null);
     const { data: session, status: sessionStatus } = useSession();
 
+    console.log(sessionStatus)
+
     useEffect(() => {
         const verifyToken = async () => {
             try {
