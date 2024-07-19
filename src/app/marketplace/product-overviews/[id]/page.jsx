@@ -1,7 +1,6 @@
 "use client";
 import Link from "next/link";
-import useSWR from "swr";
-import { useState, useEffect, useContext } from "react";
+import { useState, useContext } from "react";
 import { Disclosure, RadioGroup, Tab } from "@headlessui/react";
 import { HeartIcon, MinusIcon, PlusIcon } from "@heroicons/react/24/outline";
 import { StarIcon } from "@heroicons/react/20/solid";
@@ -11,6 +10,7 @@ import CommonUtil from "@/common/commonUtils";
 import { CartContext } from "@/context/Provider/CartContext";
 import { classNames } from "@/utils/classNames";
 import { GetProductById } from "@/services/productService";
+import { useSession } from "next-auth/react";
 
 const colorVariants = ["Black", "White", "Blue"];
 const sizeVariants = ["37", "38", "39", "40", "41", "42", "43", "44", "45"];
@@ -33,14 +33,17 @@ export default function ProductOverview({ params }) {
   const { addProduct } = useContext(CartContext);
   const [selectedColor, setSelectedColor] = useState(0);
   const [selectedSize, setSelectedSize] = useState(null);
-  const searchParams = useSearchParams();
-  // const selectedColor = searchParams.get("color");
-  // const selectedSize = searchParams.get("size");
   const router = useRouter();
+  const { data: session, status } = useSession();
 
   const { productData, isLoading, isError } = GetProductById(params.id);
 
   const addFeaturedToCart = () => {
+    if (status === "unauthenticated") {
+      alert("Please log in to add items to the cart.");
+      router.push("/auth/login");
+      return;
+    }
     if (!selectedSize) {
       alert("Please select a size before adding to the cart.");
       return;
@@ -91,14 +94,14 @@ export default function ProductOverview({ params }) {
                                     selected
                                       ? "ring-indigo-500"
                                       : "ring-transparent",
-                                    "pointer-events-none absolute inset-0 rounded-md ring-2 ring-offset-2",
+                                    "pointer-events-none absolute inset-0 rounded-md ring-2 ring-offset-2"
                                   )}
                                   aria-hidden="true"
                                 />
                               </>
                             )}
                           </Tab>
-                        ),
+                        )
                       )}
                     </Tab.List>
                   </div>
@@ -143,7 +146,7 @@ export default function ProductOverview({ params }) {
                               productData.rating > rating
                                 ? "text-black"
                                 : "text-gray-300",
-                              "h-5 w-5 flex-shrink-0",
+                              "h-5 w-5 flex-shrink-0"
                             )}
                             aria-hidden="true"
                           />
@@ -197,7 +200,7 @@ export default function ProductOverview({ params }) {
                                         selected
                                           ? "ring-indigo-500"
                                           : "ring-transparent",
-                                        "pointer-events-none absolute inset-0 rounded-md ring-2 ring-offset-2",
+                                        "pointer-events-none absolute inset-0 rounded-md ring-2 ring-offset-2"
                                       )}
                                       aria-hidden="true"
                                     />
@@ -228,17 +231,17 @@ export default function ProductOverview({ params }) {
                               value={size}
                               className={({ active, checked }) =>
                                 classNames(
-                                  active
-                                    ? "ring-2 ring-indigo-500"
-                                    : "",
                                   checked
-                                    ? "bg-indigo-600 text-white hover:bg-indigo-700"
-                                    : "bg-white text-gray-900 hover:bg-gray-50",
-                                  "cursor-pointer rounded-md py-3 px-3 text-sm font-medium uppercase sm:flex-1",
+                                    ? "border-transparent bg-indigo-600 text-white hover:bg-indigo-700"
+                                    : "border-gray-200 bg-white text-gray-900 hover:bg-gray-50",
+                                  active
+                                    ? "ring-2 ring-indigo-500 ring-offset-2"
+                                    : "",
+                                  "flex cursor-pointer items-center justify-center rounded-md border py-3 px-3 text-sm font-medium uppercase sm:flex-1"
                                 )
                               }
                             >
-                              <RadioGroup.Label as="p">
+                              <RadioGroup.Label as="span">
                                 {size}
                               </RadioGroup.Label>
                             </RadioGroup.Option>
@@ -246,98 +249,50 @@ export default function ProductOverview({ params }) {
                         </div>
                       </RadioGroup>
                     </div>
-                  </div>
 
-                  <div className="mt-10 flex flex-col items-center justify-center">
                     <button
-                      className="mt-4 flex w-full items-center justify-center rounded-md border border-transparent bg-black py-3 px-8 text-base font-medium text-white hover:bg-opacity-70 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
+                      className="mt-10 flex w-full items-center justify-center rounded-md border border-transparent bg-indigo-600 px-8 py-3 text-base font-medium text-white hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
                       onClick={addFeaturedToCart}
                     >
-                      Add to Cart
-                    </button>
-
-                    <button
-                      type="button"
-                      className="flex w-full items-center justify-center rounded-md border border-transparent py-3 px-8 text-base font-medium text-black hover:bg-gray-200 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
-                    >
-                      <HeartIcon
-                        className="mr-2 h-6 w-6 flex-shrink-0 text-black"
-                        aria-hidden="true"
-                      />
-                      Add to Favorite
+                      Add to cart
                     </button>
                   </div>
-
-                  <section aria-labelledby="details-heading" className="mt-12">
-                    <h2 id="details-heading" className="sr-only">
-                      Additional details
-                    </h2>
-
-                    <Disclosure as="div" defaultOpen>
-                      {({ open }) => (
-                        <>
-                          <h3>
-                            <Disclosure.Button className="flex w-full items-center justify-between py-6 text-sm font-medium text-left text-gray-400 border-b border-gray-200">
-                              <span>Features</span>
-                              <span className="ml-6 flex items-center">
-                                {open ? (
-                                  <MinusIcon
-                                    className="block w-6 h-6"
-                                    aria-hidden="true"
-                                  />
-                                ) : (
-                                  <PlusIcon
-                                    className="block w-6 h-6"
-                                    aria-hidden="true"
-                                  />
-                                )}
-                              </span>
-                            </Disclosure.Button>
-                          </h3>
-                          <Disclosure.Panel className="pt-6">
-                            <div className="space-y-6">
-                              <p className="text-sm text-gray-600">
-                                {productData.features}
-                              </p>
-                            </div>
-                          </Disclosure.Panel>
-                        </>
-                      )}
-                    </Disclosure>
-                  </section>
                 </div>
               </div>
-
               <section aria-labelledby="related-heading" className="mt-16">
-                <h2
-                  id="related-heading"
-                  className="text-lg font-semibold text-gray-900"
-                >
-                  Customers also bought
+                <h2 id="related-heading" className="text-lg font-medium text-gray-900">
+                  Customers also viewed
                 </h2>
 
-                <div className="mt-6 grid grid-cols-1 gap-x-6 gap-y-10 sm:grid-cols-2 lg:grid-cols-4 xl:gap-x-8">
+                <div className="mt-8 grid grid-cols-1 gap-x-6 gap-y-10 sm:grid-cols-2 lg:grid-cols-4 xl:gap-x-8">
                   {relatedProducts.map((product) => (
-                    <div key={product.id} className="group relative">
-                      <div className="w-full min-h-80 overflow-hidden rounded-md bg-gray-200 group-hover:opacity-75 lg:h-80">
+                    <div
+                      key={product.id}
+                      className="group relative border p-3"
+                    >
+                      <div className="aspect-h-1 aspect-w-1 w-full overflow-hidden rounded-md bg-gray-200 group-hover:opacity-75 lg:aspect-none lg:h-80">
                         <img
                           src={product.imageSrc}
                           alt={product.imageAlt}
-                          className="w-full h-full object-cover object-center lg:h-full lg:w-full"
+                          className="h-full w-full object-cover object-center lg:h-full lg:w-full"
                         />
                       </div>
-                      <h3 className="mt-4 text-sm text-gray-700">
-                        <Link href={product.href}>
-                          <span className="absolute inset-0" />
-                          {product.name}
-                        </Link>
-                      </h3>
-                      <p className="mt-1 text-sm text-gray-500">
-                        {product.color}
-                      </p>
-                      <p className="mt-1 text-sm font-medium text-gray-900">
-                        {product.price}
-                      </p>
+                      <div className="mt-4 flex justify-between">
+                        <div>
+                          <h3 className="text-sm text-gray-700">
+                            <Link href={product.href}>
+                              <span aria-hidden="true" className="absolute inset-0" />
+                              {product.name}
+                            </Link>
+                          </h3>
+                          <p className="mt-1 text-sm text-gray-500">
+                            {product.color}
+                          </p>
+                        </div>
+                        <p className="text-sm font-medium text-gray-900">
+                          {product.price}
+                        </p>
+                      </div>
                     </div>
                   ))}
                 </div>

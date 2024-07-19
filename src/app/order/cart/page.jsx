@@ -54,13 +54,14 @@ export default function CartPage() {
           }),
         );
         setCartProducts(updateProducts.filter((product) => product !== null));
+        console.log(updateProducts);
       }
       setIsLoading(false);
     };
 
     loadCartProducts();
   }, [updateProduct, removeProduct]);
-
+ 
   let totalPrice;
   if (cartProducts.length > 0) {
     totalPrice = cartProducts.reduce((total, product) => {
