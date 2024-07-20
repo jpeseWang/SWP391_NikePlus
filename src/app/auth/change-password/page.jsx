@@ -18,12 +18,20 @@ export default function ChangePassword() {
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
 
-  console.log("UID", userId);
+  const validatePassword = (password) => {
+    const regex = /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[!@#$%^&*()_+[\]{}|\\:"';<>?,./-]).{6,}$/;
+    return regex.test(password);
+  };
 
   const handlePasswordChange = async (e) => {
     e.preventDefault();
     if (newPassword !== confirmNewPassword) {
       setError("New passwords do not match.");
+      return;
+    }
+
+    if (!validatePassword(newPassword)) {
+      setError("Password must contain at least six characters, at least one number, both lower and uppercase letters, and special characters.");
       return;
     }
 
@@ -41,7 +49,6 @@ export default function ChangePassword() {
       setLoading(false);
     }
   };
-  
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-100 py-21 px-4 sm:px-6 lg:px-8">
