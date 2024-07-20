@@ -49,9 +49,48 @@ export default function ProfileInfo() {
 
   console.log(userData);
 
+  const isValidAge = (dob) => {
+    const today = new Date();
+    const birthDate = new Date(dob);
+    const age = today.getFullYear() - birthDate.getFullYear();
+    const monthDifference = today.getMonth() - birthDate.getMonth();
+    if (
+      monthDifference < 0 ||
+      (monthDifference === 0 && today.getDate() < birthDate.getDate())
+    ) {
+      return age - 1 >= 16;
+    }
+    return age >= 16;
+  };
+
+  const validateEmail = (email) => {
+    const regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    return regex.test(email);
+  };
+
+  const validateName = (name) => {
+    const regex = /^[a-zA-Z\s]+$/;
+    return regex.test(name);
+  };
+
   const handleUpdate = async (field, value) => {
     try {
       console.log("Updating user:", userId, field, value);
+
+      if (field === "name" && !validateName(value)) {
+        toast.error("Name should contain only letters and spaces.");
+        return;
+      }
+
+      if (field === "email" && !validateEmail(value)) {
+        toast.error("Invalid email format");
+        return;
+      }
+
+      if (field === "dob" && !isValidAge(value)) {
+        toast.error("You must be at least 16 years old");
+        return;
+      }
       const response = await UpdateUser(userId, { [field]: value });
       if (response.ok) {
         mutate();

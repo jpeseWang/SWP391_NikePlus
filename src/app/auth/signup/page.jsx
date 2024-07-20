@@ -26,6 +26,7 @@ const SignupPage = () => {
   const [inputType, setInputType] = useState("");
   const [err, setErr] = useState(false);
   const [dobError, setDobError] = useState("");
+  const [nameError, setNameError] = useState("");
   const router = useRouter();
   const session = useSession();
 
@@ -49,12 +50,18 @@ const SignupPage = () => {
       toast.error("Password must contain at least six characters, at least one number, both lower and uppercase letters, and special characters.");
       return;
     }
-    
+
+    if (!validateName(name)) {
+      setNameError("Name should contain only letters and spaces.");
+      return;
+    }
+
     if (!isValidAge(dob)) {
       setDobError("You must be at least 16 years old.");
       return;
     }
 
+    setNameError("");
     setDobError("");
 
     try {
@@ -129,6 +136,11 @@ const SignupPage = () => {
     return regex.test(password);
   };
 
+  const validateName = (name) => {
+    const regex = /^[a-zA-Z\s]+$/;
+    return regex.test(name);
+  };
+
   const generateOTP = () => {
     return Math.floor(1000 + Math.random() * 9000).toString();
   };
@@ -189,6 +201,7 @@ const SignupPage = () => {
                 required
                 className="my-4 block w-full rounded border-0 px-4 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
               />
+              {nameError && <p className="text-red-500 text-base mb-5">{nameError}</p>}
 
               {/* Birth day */}
               <input
