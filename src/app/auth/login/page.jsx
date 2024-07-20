@@ -30,7 +30,7 @@ const LoginPage = () => {
 
     if (!validatePassword(password)) {
       setError(
-        "Password must contain at least six characters, at least one number, both lower and uppercase letters, and special characters.",
+        "Password must contain at least six characters, at least one number, both lower and uppercase letters, and special characters."
       );
       return;
     }
@@ -40,7 +40,7 @@ const LoginPage = () => {
       await LoginUser(email, password);
     } catch (error) {
       console.error(error);
-      setError("Incorrect email or password. Please try again.");
+      setError(error.message || "Incorrect email or password. Please try again.");
     } finally {
       setLoading(false);
     }
@@ -70,15 +70,6 @@ const LoginPage = () => {
     <>
       <div className="flex min-h-full flex-1 flex-col justify-center px-6 py-12 lg:px-8">
         <div className="sm:mx-auto sm:w-full sm:max-w-sm">
-          {/* <img
-            alt=""
-            loading="lazy"
-            width={1200}
-            height={427}
-            decoding="async"
-            className="mx-auto h-8 w-auto"
-            src="/nike.webp"
-          ></img> */}
           <div className="ml-[40%]">
             <NikePlusLogoDark className="dark:hidden" />
             <NikePlusLogoLight className="light:hidden mx-auto" />

@@ -14,7 +14,19 @@ export const CreateUser = async (userData) => {
 };
 
 export const LoginUser = async (email, password) => {
-  signIn("credentials", { email, password });
+  try {
+    const result = await signIn("credentials", {
+      email,
+      password,
+      redirect: false,
+    });
+
+    if (result.error) {
+      throw new Error(result.error);
+    }
+  } catch (error) {
+    throw new Error(error.message || "An unexpected error occurred.");
+  }
 };
 
 export function GetAllUser() {
