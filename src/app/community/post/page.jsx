@@ -14,6 +14,7 @@ import {
   AdjustmentsHorizontalIcon,
   ChatBubbleLeftIcon,
 } from "@heroicons/react/24/outline";
+import CommunityTabs from "../components/CommunityTabs";
 
 export default function Blog() {
   const [modalIsOpen, setIsOpen] = useState(false);
@@ -36,6 +37,7 @@ export default function Blog() {
     <div className=" sm:py-22 py-14">
       <div className="mx-auto max-w-7xl px-6 lg:px-8">
         <div className="mx-auto max-w-2xl lg:max-w-4xl">
+          <CommunityTabs />
           {session.status === "authenticated" &&
             typeof document !== "undefined" && (
               // <div className="mb-10 rounded px-2 py-4 text-center ring-2 ring-gray-200">
@@ -127,6 +129,7 @@ export default function Blog() {
                     .reverse()
                     .map((post) => (
                       <PostCard
+                        key={post._id}
                         postData={post}
                         reload={mutate}
                         setViewModalIsOpen={setViewModalIsOpen}

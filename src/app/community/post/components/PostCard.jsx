@@ -1,16 +1,11 @@
 "use client";
 import React, { useState } from "react";
 import {
-  PhotoIcon,
-  GifIcon,
-  AdjustmentsHorizontalIcon,
-  ChatBubbleLeftIcon,
   ChatBubbleOvalLeftIcon,
   PaperAirplaneIcon,
   TrashIcon,
 } from "@heroicons/react/24/outline";
 import { HeartIcon } from "@heroicons/react/24/solid";
-import Link from "next/link";
 import CommonUtil from "@/common/commonUtils";
 import { UpdatePostReact } from "@/services/postService";
 import toast from "react-hot-toast";
@@ -25,7 +20,7 @@ export default function PostCard({
 }) {
   const session = useSession();
   const userID = session?.data?.id;
-  const userEmail = session?.data?.email;
+
   const [likeCount, setLikeCount] = useState(postData.like.length);
   const [isLiked, setIsLiked] = useState(
     postData.like.some((user) => user.authorID === userID),
@@ -68,6 +63,7 @@ export default function PostCard({
     setCommentInput("");
 
     try {
+      console.log({ ...postData, comment: updatedComments });
       await UpdatePost({
         ...postData,
         comment: updatedComments,
@@ -140,10 +136,10 @@ export default function PostCard({
         </div>
 
         <div className="max-h-[120px] ">
-          {postData.comment.map((comment, idx) => (
+          {postData?.comment.map((comment, idx) => (
             <div key={comment._id} className="flex">
               <div className="text-sm font-semibold antialiased dark:text-white">
-                {comment.authorInfo.authorName}
+                {comment?.authorInfo?.authorName}
               </div>{" "}
               <span className="dark:ext-gray-400 ml-1 text-sm text-gray-400">
                 {comment.content}

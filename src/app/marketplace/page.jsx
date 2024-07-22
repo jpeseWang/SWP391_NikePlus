@@ -1,7 +1,7 @@
 "use client";
 import { Fragment, useState, useEffect } from "react";
 import { Dialog, Disclosure, Menu, Transition } from "@headlessui/react";
-import { XMarkIcon } from "@heroicons/react/24/outline";
+import { XMarkIcon, MagnifyingGlassIcon } from "@heroicons/react/24/outline";
 import {
   ChevronDownIcon,
   FunnelIcon,
@@ -217,6 +217,31 @@ export default function MarketplacePage() {
               <h1 className="text-4xl font-bold tracking-tight text-gray-900">
                 New Arrivals
               </h1>
+
+              {/* Search section */}
+              <div className="my-4 h-[50px] gap-x-4 self-stretch lg:gap-x-6">
+                <form className="flex w-[250px] flex-1 rounded-full bg-[#F5F5F5]">
+                  <label
+                    htmlFor="search-field"
+                    className="sr-only text-[#6D6D6D]"
+                  >
+                    Search
+                  </label>
+                  <div className="relative w-full ">
+                    <MagnifyingGlassIcon
+                      className="pointer-events-none absolute inset-y-0 left-1.5 h-full w-5 text-gray-900"
+                      aria-hidden="true"
+                    />
+                    <input
+                      id="search-field"
+                      className="block h-full w-full border-0 bg-transparent py-2 pl-8 pr-0 focus:outline-none sm:text-sm dark:text-white"
+                      placeholder="Search..."
+                      type="search"
+                      name="search"
+                    />
+                  </div>
+                </form>
+              </div>
 
               <div className="flex items-center">
                 <Menu as="div" className="relative inline-block text-left">

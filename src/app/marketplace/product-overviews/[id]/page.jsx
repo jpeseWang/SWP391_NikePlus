@@ -1,6 +1,6 @@
 "use client";
 import Link from "next/link";
-import { useState, useContext } from "react";
+import { useState, useContext, useEffect } from "react";
 import { Disclosure, RadioGroup, Tab } from "@headlessui/react";
 import { HeartIcon, MinusIcon, PlusIcon } from "@heroicons/react/24/outline";
 import { StarIcon } from "@heroicons/react/20/solid";
@@ -11,32 +11,30 @@ import { CartContext } from "@/context/Provider/CartContext";
 import { classNames } from "@/utils/classNames";
 import { GetProductById } from "@/services/productService";
 import { useSession } from "next-auth/react";
-
-const colorVariants = ["Black", "White", "Blue"];
-const sizeVariants = ["37", "38", "39", "40", "41", "42", "43", "44", "45"];
-const relatedProducts = [
-  {
-    id: 1,
-    name: "Air Jordan 1 Mid SE",
-    color: "Men's Shoes",
-    href: "#",
-    imageSrc:
-      "https://static.nike.com/a/images/t_PDP_1728_v1/f_auto,q_auto:eco/22b7ce96-431b-432a-bd1a-ed32894a4430/air-jordan-1-mid-se-mens-shoes-vw6Hxn.png",
-    imageAlt:
-      "Front of zip tote bag with white canvas, black canvas straps and handle, and black zipper pulls.",
-    price: "$135",
-  },
-  // More products...
-];
+import { productsSizes } from "@/utils/data/products-sizes";
 
 export default function ProductOverview({ params }) {
   const { addProduct } = useContext(CartContext);
   const [selectedColor, setSelectedColor] = useState(0);
   const [selectedSize, setSelectedSize] = useState(null);
+  const [sizeRange, setSizeRange] = useState(productsSizes[0].sizes);
   const router = useRouter();
   const { data: session, status } = useSession();
 
   const { productData, isLoading, isError } = GetProductById(params.id);
+
+  useEffect(() => {
+    if (productData) {
+      const categorySizes = productsSizes.find(
+        (item) => item.name === productData.category,
+      )?.sizes;
+      if (categorySizes) {
+        setSizeRange(categorySizes);
+      } else {
+        setSizeRange([]);
+      }
+    }
+  }, [productData]);
 
   const addFeaturedToCart = () => {
     if (status === "unauthenticated") {
@@ -65,7 +63,7 @@ export default function ProductOverview({ params }) {
         </button>
         {isLoading && <LoadingComponent />}
 
-        <div className="mx-auto max-w-2xl lg:max-w-none">
+        <div className="mx-auto my-12 max-w-2xl lg:max-w-none">
           {!isLoading && (
             <>
               <div className="lg:grid lg:grid-cols-2 lg:items-start lg:gap-x-8">
@@ -94,14 +92,14 @@ export default function ProductOverview({ params }) {
                                     selected
                                       ? "ring-indigo-500"
                                       : "ring-transparent",
-                                    "pointer-events-none absolute inset-0 rounded-md ring-2 ring-offset-2"
+                                    "pointer-events-none absolute inset-0 rounded-md ring-2 ring-offset-2",
                                   )}
                                   aria-hidden="true"
                                 />
                               </>
                             )}
                           </Tab>
-                        )
+                        ),
                       )}
                     </Tab.List>
                   </div>
@@ -146,7 +144,7 @@ export default function ProductOverview({ params }) {
                               productData.rating > rating
                                 ? "text-black"
                                 : "text-gray-300",
-                              "h-5 w-5 flex-shrink-0"
+                              "h-5 w-5 flex-shrink-0",
                             )}
                             aria-hidden="true"
                           />
@@ -200,7 +198,7 @@ export default function ProductOverview({ params }) {
                                         selected
                                           ? "ring-indigo-500"
                                           : "ring-transparent",
-                                        "pointer-events-none absolute inset-0 rounded-md ring-2 ring-offset-2"
+                                        "pointer-events-none absolute inset-0 rounded-md ring-2 ring-offset-2",
                                       )}
                                       aria-hidden="true"
                                     />
@@ -224,8 +222,10 @@ export default function ProductOverview({ params }) {
                         <RadioGroup.Label className="sr-only">
                           Choose a size
                         </RadioGroup.Label>
+                        {/* {renderProductSize(productData?.category)} */}
+
                         <div className="grid grid-cols-3 gap-3 sm:grid-cols-4 lg:grid-cols-3">
-                          {sizeVariants.map((size) => (
+                          {sizeRange.map((size) => (
                             <RadioGroup.Option
                               key={size}
                               value={size}
@@ -237,7 +237,7 @@ export default function ProductOverview({ params }) {
                                   active
                                     ? "ring-2 ring-indigo-500 ring-offset-2"
                                     : "",
-                                  "flex cursor-pointer items-center justify-center rounded-md border py-3 px-3 text-sm font-medium uppercase sm:flex-1"
+                                  "flex cursor-pointer items-center justify-center rounded-md border px-3 py-3 text-sm font-medium uppercase sm:flex-1",
                                 )
                               }
                             >
@@ -259,44 +259,6 @@ export default function ProductOverview({ params }) {
                   </div>
                 </div>
               </div>
-              <section aria-labelledby="related-heading" className="mt-16">
-                <h2 id="related-heading" className="text-lg font-medium text-gray-900">
-                  Customers also viewed
-                </h2>
-
-                <div className="mt-8 grid grid-cols-1 gap-x-6 gap-y-10 sm:grid-cols-2 lg:grid-cols-4 xl:gap-x-8">
-                  {relatedProducts.map((product) => (
-                    <div
-                      key={product.id}
-                      className="group relative border p-3"
-                    >
-                      <div className="aspect-h-1 aspect-w-1 w-full overflow-hidden rounded-md bg-gray-200 group-hover:opacity-75 lg:aspect-none lg:h-80">
-                        <img
-                          src={product.imageSrc}
-                          alt={product.imageAlt}
-                          className="h-full w-full object-cover object-center lg:h-full lg:w-full"
-                        />
-                      </div>
-                      <div className="mt-4 flex justify-between">
-                        <div>
-                          <h3 className="text-sm text-gray-700">
-                            <Link href={product.href}>
-                              <span aria-hidden="true" className="absolute inset-0" />
-                              {product.name}
-                            </Link>
-                          </h3>
-                          <p className="mt-1 text-sm text-gray-500">
-                            {product.color}
-                          </p>
-                        </div>
-                        <p className="text-sm font-medium text-gray-900">
-                          {product.price}
-                        </p>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              </section>
             </>
           )}
         </div>

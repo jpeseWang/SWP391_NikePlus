@@ -67,7 +67,7 @@ function AuctionPost({ post }) {
           </h3>
           <div className="my-4 flex justify-between">
             <span className="text-lg font-bold text-[#F73E91]">
-              {post.startingBid} USD
+              {CommonUtil.parsePrice(post.startingBid)} VND
             </span>
             <span className="font-medium text-gray-500">Highest Bid</span>
           </div>
@@ -76,7 +76,7 @@ function AuctionPost({ post }) {
           <div className="leading-6">
             <p className="font-semibold text-gray-900">
               <a href="#">
-                <span className="font-prompt absolute inset-0 text-lg" />
+                <span className="absolute inset-0 font-prompt text-lg" />
                 {timeLeft}
               </a>
             </p>

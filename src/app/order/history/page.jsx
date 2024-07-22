@@ -5,6 +5,7 @@ import { useSession } from "next-auth/react";
 import LoadingComponent from "@/app/loading";
 import CommonUtil from "@/common/commonUtils";
 import ProfileNav from "@/app/auth/profile/components/ProfileNav";
+import Link from "next/link";
 
 export default function OrderHistoryPage() {
   const session = useSession();
@@ -68,13 +69,13 @@ export default function OrderHistoryPage() {
                         </div>
                       </dl>
                       <div className="mt-6 space-y-4 sm:flex sm:space-x-4 sm:space-y-0 md:mt-0">
-                        <a
-                          href={order.href}
+                        <Link
+                          href={`/order/detail/${order._id}`}
                           className="flex w-full items-center justify-center rounded-md border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 md:w-auto"
                         >
                           View Order
                           <span className="sr-only">{order.number}</span>
-                        </a>
+                        </Link>
 
                         {order.orderInfo.paymentStatus === "Paid" ? (
                           <div className="flex w-full items-center justify-center rounded-md border border-green-600/20 bg-green-50 px-4 py-2 text-sm font-medium  text-green-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 md:w-auto">
