@@ -5,7 +5,7 @@ import { CartContextProvider } from "@/context/Provider/CartContext";
 import { SessionProvider } from "next-auth/react";
 import useInactivityLogout from "@/hooks/useInactivityLogout";
 
-export function Providers({ children }) {
+export function Providers({ children, session }) {
   useInactivityLogout();
   return (
     <SessionProvider session={session}>
