@@ -7,8 +7,10 @@ import { useRouter } from "next/navigation";
 import toast from "react-hot-toast";
 
 export default function ChangePassword() {
-  const { data: session, status } = useSession();
   const router = useRouter();
+  const session = useSession();
+  const userId = session?.data?.id;
+  console.log(userId)
 
   const [currentPassword, setCurrentPassword] = useState("");
   const [newPassword, setNewPassword] = useState("");
@@ -42,7 +44,7 @@ export default function ChangePassword() {
     setSuccess("");
 
     try {
-      const response = await changePassword(session?.user?.id, currentPassword, newPassword);
+      const response = await changePassword(userId, currentPassword, newPassword);
       toast.success("Password updated successfully.");
       router.push("/marketplace");
     } catch (err) {
@@ -51,10 +53,6 @@ export default function ChangePassword() {
       setLoading(false);
     }
   };
-
-  if (status === "loading") {
-    return <LoadingComponent />;
-  }
 
   if (!session) {
     return <p>You need to be authenticated to view this page.</p>;

@@ -36,9 +36,9 @@ const SignupPage = () => {
 
     const email = e.target[0].value;
     const password = e.target[1].value;
-    const name = e.target[2].value;
-    const dob = e.target[3].value;
-    const country = e.target[4].value;
+    const name = e.target[3].value;
+    const dob = e.target[4].value;
+    const country = e.target[5].value;
     const gender = genderOption;
     const role = "user";
 
