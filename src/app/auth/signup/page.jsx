@@ -27,6 +27,7 @@ const SignupPage = () => {
   const [err, setErr] = useState(false);
   const [dobError, setDobError] = useState("");
   const [nameError, setNameError] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
   const router = useRouter();
   const session = useSession();
 
@@ -35,9 +36,9 @@ const SignupPage = () => {
 
     const email = e.target[0].value;
     const password = e.target[1].value;
-    const name = e.target[2].value;
-    const dob = e.target[3].value;
-    const country = e.target[4].value;
+    const name = e.target[3].value;
+    const dob = e.target[4].value;
+    const country = e.target[5].value;
     const gender = genderOption;
     const role = "user";
 
@@ -154,7 +155,7 @@ const SignupPage = () => {
   };
 
   if (session.status === "loading") {
-    return <LoadingComponent></LoadingComponent>;
+    return <LoadingComponent />;
   }
 
   if (session.status === "authenticated") {
@@ -165,7 +166,7 @@ const SignupPage = () => {
     <>
       <div className="flex min-h-full flex-1 flex-col justify-center px-6 py-12 lg:px-8">
         <div className="sm:mx-auto sm:w-full sm:max-w-sm">
-          <img className="mx-auto h-8 w-auto" src="/nike.webp" alt=""></img>
+          <img className="mx-auto h-8 w-auto" src="/nike.webp" alt="" />
           <h2 className="mt-10 text-center font-gothic text-2xl font-extrabold leading-9 tracking-tight text-gray-900">
             BECOME A NIKE MEMBER
           </h2>
@@ -182,17 +183,37 @@ const SignupPage = () => {
                 autoComplete="email"
                 placeholder="Email address"
                 required
-                className="my-4 block w-full items-center rounded border-0 px-4 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+                className="my-4 block w-full rounded border-0 px-4 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
               />
 
-              {/* password */}
-              <input
-                type="password"
-                autoComplete="current-password"
-                placeholder="Password"
-                required
-                className="my-4 block w-full rounded border-0 px-4 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
-              />
+              {/* Password */}
+              <div className="relative">
+                <input
+                  type={showPassword ? "text" : "password"}
+                  autoComplete="current-password"
+                  placeholder="Password"
+                  required
+                  className="my-4 block w-full rounded border-0 px-4 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+                />
+                <button
+                  type="button"
+                  onClick={() => setShowPassword(!showPassword)}
+                  className="absolute inset-y-0 right-0 flex items-center pr-3"
+                >
+                  {showPassword ? (
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="size-6">
+                      <path strokeLinecap="round" strokeLinejoin="round" d="M3.98 8.223A10.477 10.477 0 0 0 1.934 12C3.226 16.338 7.244 19.5 12 19.5c.993 0 1.953-.138 2.863-.395M6.228 6.228A10.451 10.451 0 0 1 12 4.5c4.756 0 8.773 3.162 10.065 7.498a10.522 10.522 0 0 1-4.293 5.774M6.228 6.228 3 3m3.228 3.228 3.65 3.65m7.894 7.894L21 21m-3.228-3.228-3.65-3.65m0 0a3 3 0 1 0-4.243-4.243m4.242 4.242L9.88 9.88" />
+                    </svg>
+
+                  ) : (
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="size-6">
+                      <path strokeLinecap="round" strokeLinejoin="round" d="M2.036 12.322a1.012 1.012 0 0 1 0-.639C3.423 7.51 7.36 4.5 12 4.5c4.638 0 8.573 3.007 9.963 7.178.07.207.07.431 0 .639C20.577 16.49 16.64 19.5 12 19.5c-4.638 0-8.573-3.007-9.963-7.178Z" />
+                      <path strokeLinecap="round" strokeLinejoin="round" d="M15 12a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z" />
+                    </svg>
+
+                  )}
+                </button>
+              </div>
 
               {/* Full Name */}
               <input
@@ -219,16 +240,13 @@ const SignupPage = () => {
                 Get a Nike Member Reward every year on your Birthday.
               </p>
 
-              {/* country */}
-              <CountrySelector></CountrySelector>
+              {/* Country */}
+              <CountrySelector />
 
               <div className="mb-4">
                 {/* Gender */}
-                <RadioGroup
-                  value={genderOption}
-                  onChange={setGenderOption}
-                >
-                  <div className="grid w-full grid-cols-1  gap-y-6 sm:grid-cols-2 sm:gap-x-4">
+                <RadioGroup value={genderOption} onChange={setGenderOption}>
+                  <div className="grid w-full grid-cols-1 gap-y-6 sm:grid-cols-2 sm:gap-x-4">
                     {genderOptions.map((gender) => (
                       <RadioGroup.Option
                         key={gender.id}
@@ -238,7 +256,7 @@ const SignupPage = () => {
                             active
                               ? "border-gray-600 ring-1 ring-gray-600"
                               : "border-gray-300",
-                            "foucs:outline-none relative flex cursor-pointer rounded border bg-white px-4 py-1.5 shadow-sm",
+                            "focus:outline-none relative flex cursor-pointer rounded border bg-white px-4 py-1.5 shadow-sm",
                           )
                         }
                       >
@@ -248,10 +266,10 @@ const SignupPage = () => {
                             <CheckCircleIcon
                               className={classNames(
                                 !checked ? "invisible" : "",
-                                "h-5 w-5 text-gray-600",
+                                "h-5 w-5 text-gray-600"
                               )}
                               aria-hidden="true"
-                            ></CheckCircleIcon>
+                            />
                             <span className="flex">
                               <RadioGroup.Label
                                 as="span"
@@ -266,10 +284,10 @@ const SignupPage = () => {
                                 checked
                                   ? "border-gray-600"
                                   : "border-transparent",
-                                "pointer-events-none absolute -inset-px rounded",
+                                "pointer-events-none absolute -inset-px rounded"
                               )}
                               aria-hidden="true"
-                            ></span>
+                            />
                           </>
                         )}
                       </RadioGroup.Option>
@@ -282,14 +300,14 @@ const SignupPage = () => {
                   id="remember-me"
                   name="remember-me"
                   type="checkbox"
-                  className="rounder h-10 w-10 border-gray-200 text-indigo-600 focus:ring-indigo-600"
-                ></input>
+                  className="rounded h-10 w-10 border-gray-200 text-indigo-600 focus:ring-indigo-600"
+                />
                 <label
                   htmlFor="remember-me"
                   className="mx-2 text-xs font-light leading-6 text-gray-500"
                 >
                   Sign up for emails to get updates from Nike on products,
-                  offers and Member benefits.
+                  offers, and Member benefits.
                 </label>
               </div>
             </div>
@@ -313,11 +331,11 @@ const SignupPage = () => {
               </button>
             </div>
           </form>
-          {err && "Something went wrong!"}
+          {err && <p className="text-red-500 text-base mt-5">Something went wrong!</p>}
 
           <p className="mt-10 text-center text-sm text-gray-500">
             Already a Member?{" "}
-            <a href="/auth/login" className="undeline leading-6 text-black">
+            <a href="/auth/login" className="underline leading-6 text-black">
               Sign in.
             </a>
           </p>
