@@ -12,7 +12,7 @@ export const CreateOrder = async (orderData) => {
 };
 
 export function GetAllOrder() {
-  const { data, error, isLoading, mutate } = useSWR(`/api/product`, fetcher);
+  const { data, error, isLoading, mutate } = useSWR(`/api/order`, fetcher);
   return { orderData: data, isLoading, isError: error, mutate };
 }
 
@@ -46,6 +46,23 @@ export const UpdateOrder = async (productData) => {
     console.error(error);
   }
 };
+
+export async function UpdateOrder1(orderId, updateData) {
+  try {
+    const response = await fetch(`/api/order/${orderId}`, {
+      method: 'PATCH',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(updateData),
+    });
+    const data = await response.json();
+    return { ok: response.ok, data };
+  } catch (error) {
+    console.error("Error in UpdateUser:", error);
+    return { ok: false, error };
+  }
+}
 
 export const DeleteOrder = async (id) => {
   try {

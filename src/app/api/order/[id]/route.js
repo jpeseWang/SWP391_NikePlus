@@ -41,21 +41,20 @@ export const PATCH = async (request, { params }) => {
   const { id } = params;
   const updatedFields = await request.json();
 
+  console.log("Received updated fields:", updatedFields);
+  console.log("ID:", id);
+
   try {
-    await CommonUtil.connectDB();
-    const product = await Product.findByIdAndUpdate(
-      id,
-      { $set: updatedFields },
-      { new: true },
-    );
+      await CommonUtil.connectDB();
+      const user = await Order.findByIdAndUpdate(id, { $set: updatedFields }, { new: true });
 
-    if (!product) {
-      return new NextResponse("Product not found", { status: 404 });
-    }
-
-    return new NextResponse("Product has been updated", { status: 200 });
+      if (!user) {
+          return new NextResponse(JSON.stringify({ error: "Order not found" }), { status: 404 });
+      }
+      return new NextResponse(JSON.stringify({ message: "Order has been updated" }), { status: 200 });
   } catch (err) {
-    return new NextResponse("Database Error", { status: 500 });
+      console.error("Database error:", err);
+      return new NextResponse(JSON.stringify({ error: "Database error" }), { status: 500 });
   }
 };
 

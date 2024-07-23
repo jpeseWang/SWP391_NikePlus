@@ -53,12 +53,12 @@ const SignupPage = () => {
     }
 
     if (!validateName(name)) {
-      setNameError("Name should contain only letters and spaces.");
+      toast.error("Name should contain only letters and spaces.");
       return;
     }
 
     if (!isValidAge(dob)) {
-      setDobError("You must be at least 16 years old.");
+      toast.error("You must be at least 16 years old.");
       return;
     }
 

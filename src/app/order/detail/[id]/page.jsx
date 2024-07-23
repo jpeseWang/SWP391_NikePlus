@@ -3,6 +3,9 @@ import { Fragment, useState } from "react";
 import { GetOrderById } from "@/services/orderService";
 import LoadingComponent from "@/app/loading";
 import CommonUtil from "@/common/commonUtils";
+import { UpdateOrder1 } from "@/services/orderService";
+import toast from "react-hot-toast";
+import { mutate } from "swr";
 
 const footerNavigation = {
   account: [
@@ -38,6 +41,28 @@ function classNames(...classes) {
 
 export default function OrderOverview({ params }) {
   const { orderData, isLoading, isError } = GetOrderById(params.id);
+  const [editPhone, setEditPhone] = useState(orderData?.userInfo?.city || "");
+  const [editAddress, setEditAdress] = useState(orderData?.userInfo?.address || "");
+
+  const handleUpdate = async (field, value) => {
+    try {
+      console.log("Updating shipping:", params.id, field, value);
+
+      const response = await UpdateOrder1(params.id, { [field]: value });
+      if (response.ok) {
+        mutate();
+        toast.success("Shipping updated successfully!");
+      } else {
+        console.error("Failed to update shipping:", response.data || response.error);
+        toast.error("Failed to update shipping: " + (response.data?.message || response.error.message));
+      }
+    } catch (error) {
+      console.error("Error updating shipping:", error);
+      toast.error("Error updating shipping: " + error.message);
+    }
+  };
+
+
   return (
     <div className="bg-white">
       {isLoading ? (
@@ -112,13 +137,13 @@ export default function OrderOverview({ params }) {
                         </dt>
                         <dd className="mt-3 text-gray-500">
                           <span className="block">
-                            {orderData?.userInfo?.phoneNumber}
+                            {orderData?.userInfo?.email}
                           </span>
                           <span className="block">
                             {orderData?.userInfo?.country}
                           </span>
                           <span className="block">
-                            {orderData?.userInfo?.address}
+                            {orderData?.orderInfo?.paymentStatus}
                           </span>
                         </dd>
                       </div>
@@ -127,14 +152,44 @@ export default function OrderOverview({ params }) {
                           Shipping updates
                         </dt>
                         <dd className="mt-3 space-y-3 text-gray-500">
-                          <p>{product?.email}</p>
-                          <p>{product?.phone}</p>
-                          <button
-                            type="button"
-                            className="font-medium text-indigo-600 hover:text-indigo-500"
-                          >
-                            Edit
-                          </button>
+                          <input
+                            type="text"
+                            value={editPhone}
+                            placeholder={orderData?.userInfo?.city}
+                            onChange={(e) =>
+                              setEditPhone(e.target.value)
+                            }
+                          />
+                          <span className="ml-12 flex-shrink-0">
+                            <button
+                              type="button"
+                              onClick={() =>
+                                handleUpdate("userInfo.city", editPhone)
+                              }
+                              className="rounded-md bg-white font-medium text-purple-600 hover:text-purple-500 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:ring-offset-2"
+                            >
+                              Update
+                            </button>
+                          </span>
+                          <input
+                            type="text"
+                            value={editAddress}
+                            placeholder={orderData?.userInfo?.address}
+                            onChange={(e) =>
+                              setEditAdress(e.target.value)
+                            }
+                          />
+                          <span className="ml-12 flex-shrink-0">
+                            <button
+                              type="button"
+                              onClick={() =>
+                                handleUpdate("userInfo.address", editAddress)
+                              }
+                              className="rounded-md bg-white font-medium text-purple-600 hover:text-purple-500 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:ring-offset-2"
+                            >
+                              Update
+                            </button>
+                          </span>
                         </dd>
                       </div>
                     </dl>
