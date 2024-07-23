@@ -68,10 +68,14 @@ const handler = NextAuth({
         session.name = token.name;
         session.email = token.email;
         session.gender = token.gender;
+        session.avatarImg = token.avatarImg;
       }
       return session;
     },
   },
+  session: {
+    maxAge: 24 * 60 * 60,  // 1 day in s
+  }
 });
 
 export { handler as GET, handler as POST };

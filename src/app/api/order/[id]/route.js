@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import Product from "@/models/Product";
+import Order from "@/models/Order";
 import CommonUtil from "@/common/commonUtils";
 
 // Get Product by ID API
@@ -8,13 +8,12 @@ export const GET = async (request, { params }) => {
 
   try {
     await CommonUtil.connectDB();
-    const product = await Product.findById(id);
-    return new NextResponse(JSON.stringify(product), { status: 200 });
+    const order = await Order.findById(id);
+    return new NextResponse(JSON.stringify(order), { status: 200 });
   } catch (err) {
     return new NextResponse("Database Error!", { status: 500 });
   }
 };
-
 
 // Update Product API
 export const PUT = async (request, { params }) => {
@@ -23,7 +22,9 @@ export const PUT = async (request, { params }) => {
 
   try {
     await CommonUtil.connectDB();
-    const product = await Product.findByIdAndUpdate(id, productData, { new: true });
+    const product = await Order.findByIdAndUpdate(id, productData, {
+      new: true,
+    });
 
     if (!product) {
       return new NextResponse("Product not found", { status: 404 });
@@ -42,7 +43,11 @@ export const PATCH = async (request, { params }) => {
 
   try {
     await CommonUtil.connectDB();
-    const product = await Product.findByIdAndUpdate(id, { $set: updatedFields }, { new: true });
+    const product = await Product.findByIdAndUpdate(
+      id,
+      { $set: updatedFields },
+      { new: true },
+    );
 
     if (!product) {
       return new NextResponse("Product not found", { status: 404 });
@@ -53,7 +58,6 @@ export const PATCH = async (request, { params }) => {
     return new NextResponse("Database Error", { status: 500 });
   }
 };
-
 
 // Delete Product API
 export const DELETE = async (request, { params }) => {

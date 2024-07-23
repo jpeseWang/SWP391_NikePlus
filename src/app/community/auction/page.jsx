@@ -1,8 +1,13 @@
 import AuctionHeroSection from "./component/HeroSection";
 import AuctionList from "./component/AuctionCard";
+import CommunityTabs from "../components/CommunityTabs";
 export default function AuctionPage() {
   return (
     <div className="bg-white py-24 sm:py-32">
+      <div className="mx-auto max-w-2xl lg:max-w-4xl">
+        <CommunityTabs />
+      </div>
+
       <AuctionHeroSection />
       <div className="mx-auto max-w-7xl px-6 lg:px-8">
         <div className="mx-auto max-w-2xl text-center">

@@ -1,7 +1,7 @@
 "use client";
 import { Fragment, useState, useEffect } from "react";
 import { Dialog, Disclosure, Menu, Transition } from "@headlessui/react";
-import { XMarkIcon } from "@heroicons/react/24/outline";
+import { XMarkIcon, MagnifyingGlassIcon } from "@heroicons/react/24/outline";
 import {
   ChevronDownIcon,
   FunnelIcon,
@@ -47,7 +47,7 @@ export default function MarketplacePage() {
     ? productData
         .filter((product) =>
           selectedSubCategories.length > 0
-            ? selectedSubCategories.includes(product.subCategory)
+            ? selectedSubCategories.includes(product.category)
             : true,
         )
         .sort((a, b) => {
@@ -59,6 +59,8 @@ export default function MarketplacePage() {
           return 0;
         })
     : [];
+
+  console.log(selectedSubCategories);
 
   return (
     <div className="bg-white">
@@ -120,6 +122,7 @@ export default function MarketplacePage() {
                         {Entry.SubCategories.map((category) => (
                           <li key={category.name}>
                             <div className="block px-2 py-3">
+                              2{" "}
                               <input
                                 type="checkbox"
                                 id={`filter-mobile-${category.name}`}
@@ -215,6 +218,31 @@ export default function MarketplacePage() {
                 New Arrivals
               </h1>
 
+              {/* Search section */}
+              <div className="my-4 h-[50px] gap-x-4 self-stretch lg:gap-x-6">
+                <form className="flex w-[250px] flex-1 rounded-full bg-[#F5F5F5]">
+                  <label
+                    htmlFor="search-field"
+                    className="sr-only text-[#6D6D6D]"
+                  >
+                    Search
+                  </label>
+                  <div className="relative w-full ">
+                    <MagnifyingGlassIcon
+                      className="pointer-events-none absolute inset-y-0 left-1.5 h-full w-5 text-gray-900"
+                      aria-hidden="true"
+                    />
+                    <input
+                      id="search-field"
+                      className="block h-full w-full border-0 bg-transparent py-2 pl-8 pr-0 focus:outline-none sm:text-sm dark:text-white"
+                      placeholder="Search..."
+                      type="search"
+                      name="search"
+                    />
+                  </div>
+                </form>
+              </div>
+
               <div className="flex items-center">
                 <Menu as="div" className="relative inline-block text-left">
                   <div>
@@ -286,7 +314,7 @@ export default function MarketplacePage() {
               </h2>
 
               <div className="grid grid-cols-1 gap-x-8 gap-y-10 lg:grid-cols-5">
-                {/* Filters */}
+                {/* Desktop Filters */}
                 <form className="col-span-1 hidden lg:col-span-1 lg:block">
                   <h3 className="sr-only">Categories</h3>
                   <ul
@@ -295,7 +323,8 @@ export default function MarketplacePage() {
                   >
                     {Entry.SubCategories.map((category) => (
                       <li key={category.name}>
-                        <div className="block px-2 py-3">
+                        <div className="block  px-2 py-1">
+                          {" "}
                           <input
                             type="checkbox"
                             id={`filter-desktop-${category.name}`}
@@ -307,7 +336,7 @@ export default function MarketplacePage() {
                             onChange={() =>
                               handleSubCategoryChange(category.name)
                             }
-                            className="h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-500"
+                            className="h-4 w-4 cursor-pointer rounded border-gray-300 text-indigo-600 focus:ring-indigo-500"
                           />
                           <label
                             htmlFor={`filter-desktop-${category.name}`}
