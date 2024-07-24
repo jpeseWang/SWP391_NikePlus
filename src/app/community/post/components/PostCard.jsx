@@ -1,26 +1,26 @@
 "use client";
 import React, { useState } from "react";
 import {
-  PhotoIcon,
-  GifIcon,
-  AdjustmentsHorizontalIcon,
-  ChatBubbleLeftIcon,
   ChatBubbleOvalLeftIcon,
   PaperAirplaneIcon,
   TrashIcon,
 } from "@heroicons/react/24/outline";
 import { HeartIcon } from "@heroicons/react/24/solid";
-import Link from "next/link";
 import CommonUtil from "@/common/commonUtils";
 import { UpdatePostReact } from "@/services/postService";
 import toast from "react-hot-toast";
 import { useSession } from "next-auth/react";
 import { UpdatePost } from "@/services/postService";
 
-export default function PostCard({ postData, reload }) {
+export default function PostCard({
+  postData,
+  reload,
+  setViewModalParams,
+  setViewModalIsOpen,
+}) {
   const session = useSession();
   const userID = session?.data?.id;
-  const userEmail = session?.data?.email;
+
   const [likeCount, setLikeCount] = useState(postData.like.length);
   const [isLiked, setIsLiked] = useState(
     postData.like.some((user) => user.authorID === userID),
@@ -63,6 +63,7 @@ export default function PostCard({ postData, reload }) {
     setCommentInput("");
 
     try {
+      console.log({ ...postData, comment: updatedComments });
       await UpdatePost({
         ...postData,
         comment: updatedComments,
@@ -134,11 +135,11 @@ export default function PostCard({ postData, reload }) {
           {likeCount} likes
         </div>
 
-        <div className="max-h-[120px] overflow-y-scroll">
-          {postData.comment.map((comment, idx) => (
+        <div className="max-h-[120px] ">
+          {postData?.comment.map((comment, idx) => (
             <div key={comment._id} className="flex">
               <div className="text-sm font-semibold antialiased dark:text-white">
-                {comment.authorInfo.authorName}
+                {comment?.authorInfo?.authorName}
               </div>{" "}
               <span className="dark:ext-gray-400 ml-1 text-sm text-gray-400">
                 {comment.content}
@@ -147,21 +148,17 @@ export default function PostCard({ postData, reload }) {
           ))}
         </div>
 
-        {/* <div className=" mr-6 mt-1 text-sm font-semibold dark:text-textDark">
-          {postData.comment.length} comments
-        </div> */}
-
         <div className="text-sm font-medium text-gray-500 dark:text-gray-300">
           {postData.comment.length > 3 && (
-            <p
+            <div
               className="mt-1 cursor-pointer font-normal dark:text-white"
-              // onClick={() => {
-              //   setViewModalParams(post._id)
-              //   setViewModalIsOpen(true)
-              // }}
+              onClick={() => {
+                setViewModalParams(postData._id);
+                setViewModalIsOpen(true);
+              }}
             >
               View all {postData.comment.length} comments
-            </p>
+            </div>
           )}
 
           <hr className="mx-0 mb-2 mt-4" />

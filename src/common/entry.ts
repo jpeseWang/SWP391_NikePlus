@@ -11,9 +11,9 @@ export class Entry {
   // Marketplace
   // Sort Options
   public static readonly SortOptions = [
-    { name: "Most Popular", href: "#", current: true },
-    { name: "Best Rating", href: "#", current: false },
-    { name: "Newest", href: "#", current: false },
+    // { name: "Most Popular", href: "#", current: true },
+    // { name: "Best Rating", href: "#", current: false },
+    // { name: "Newest", href: "#", current: false },
     { name: "Price: Low to High", value: "price-asc", current: false },
     { name: "Price: High to Low", value: "price-desc", current: false },
   ];

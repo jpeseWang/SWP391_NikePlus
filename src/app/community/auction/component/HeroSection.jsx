@@ -34,11 +34,6 @@ export default function AuctionHeroSection() {
       </svg>
       <div className="mx-auto max-w-7xl px-6 pb-24 pt-10 sm:pb-32 lg:flex lg:px-8 lg:py-40">
         <div className="mx-auto max-w-2xl lg:mx-0 lg:max-w-xl lg:flex-shrink-0 lg:pt-8">
-          <img
-            className="h-11"
-            src="https://tailwindui.com/img/logos/mark.svg?color=indigo&shade=600"
-            alt="Your Company"
-          />
           <div className="mt-24 sm:mt-32 lg:mt-16">
             <a href="#" className="inline-flex space-x-6">
               <span className="rounded-full bg-indigo-600/10 px-3 py-1 text-sm font-semibold leading-6 text-indigo-600 ring-1 ring-inset ring-indigo-600/10">
@@ -54,12 +49,13 @@ export default function AuctionHeroSection() {
             </a>
           </div>
           <h1 className="mt-10 text-4xl font-bold tracking-tight text-gray-900 sm:text-6xl">
-            Deploy to the cloud with confidence
+            Welcome to the Ultimate Sneaker Auction!
           </h1>
           <p className="mt-6 text-lg leading-8 text-gray-600">
-            Anim aute id magna aliqua ad ad non deserunt sunt. Qui irure qui
-            lorem cupidatat commodo. Elit sunt amet fugiat veniam occaecat
-            fugiat aliqua.
+            Get Ready to Bid on Exclusive, High-End Sneakers. The iconic Air
+            Jordan 1 Retro High OG 'Bred' returns in its classic black and red
+            colorway. Known for its pivotal role in sneaker culture, this pair
+            is a must-have for any serious collector.
           </p>
           <div className="mt-10 flex items-center gap-x-6">
             <button
@@ -82,7 +78,7 @@ export default function AuctionHeroSection() {
           <div className="max-w-3xl flex-none sm:max-w-5xl lg:max-w-none">
             <div className="-m-2 rounded-xl bg-gray-900/5 p-2 ring-1 ring-inset ring-gray-900/10 lg:-m-4 lg:rounded-2xl lg:p-4">
               <img
-                src="https://tailwindui.com/img/component-images/project-app-screenshot.png"
+                src="https://images.unsplash.com/photo-1678266622859-ea0555a32952?q=80&w=3574&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
                 alt="App screenshot"
                 width={2432}
                 height={1442}

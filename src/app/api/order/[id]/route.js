@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import Product from "@/models/Product";
+import Order from "@/models/Order";
 import CommonUtil from "@/common/commonUtils";
 
 // Get Product by ID API
@@ -8,13 +8,12 @@ export const GET = async (request, { params }) => {
 
   try {
     await CommonUtil.connectDB();
-    const product = await Product.findById(id);
-    return new NextResponse(JSON.stringify(product), { status: 200 });
+    const order = await Order.findById(id);
+    return new NextResponse(JSON.stringify(order), { status: 200 });
   } catch (err) {
     return new NextResponse("Database Error!", { status: 500 });
   }
 };
-
 
 // Update Product API
 export const PUT = async (request, { params }) => {
@@ -23,7 +22,9 @@ export const PUT = async (request, { params }) => {
 
   try {
     await CommonUtil.connectDB();
-    const product = await Product.findByIdAndUpdate(id, productData, { new: true });
+    const product = await Order.findByIdAndUpdate(id, productData, {
+      new: true,
+    });
 
     if (!product) {
       return new NextResponse("Product not found", { status: 404 });
@@ -40,20 +41,22 @@ export const PATCH = async (request, { params }) => {
   const { id } = params;
   const updatedFields = await request.json();
 
+  console.log("Received updated fields:", updatedFields);
+  console.log("ID:", id);
+
   try {
-    await CommonUtil.connectDB();
-    const product = await Product.findByIdAndUpdate(id, { $set: updatedFields }, { new: true });
+      await CommonUtil.connectDB();
+      const user = await Order.findByIdAndUpdate(id, { $set: updatedFields }, { new: true });
 
-    if (!product) {
-      return new NextResponse("Product not found", { status: 404 });
-    }
-
-    return new NextResponse("Product has been updated", { status: 200 });
+      if (!user) {
+          return new NextResponse(JSON.stringify({ error: "Order not found" }), { status: 404 });
+      }
+      return new NextResponse(JSON.stringify({ message: "Order has been updated" }), { status: 200 });
   } catch (err) {
-    return new NextResponse("Database Error", { status: 500 });
+      console.error("Database error:", err);
+      return new NextResponse(JSON.stringify({ error: "Database error" }), { status: 500 });
   }
 };
-
 
 // Delete Product API
 export const DELETE = async (request, { params }) => {

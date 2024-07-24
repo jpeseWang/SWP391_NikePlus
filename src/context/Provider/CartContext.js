@@ -11,13 +11,13 @@ export function CartContextProvider({ children }) {
   const [userInfo, setUserInfo] = useState([]);
 
   useEffect(() => {
-    if (cartProducts?.length > 0) {
+    if (cartProducts.length > 0) {
       ls?.setItem("cart", JSON.stringify(cartProducts));
     }
   }, [cartProducts]);
 
   useEffect(() => {
-    if (userInfo?.length > 0) {
+    if (userInfo.length > 0) {
       ls?.setItem("userInfo", JSON.stringify(userInfo));
     }
   }, [userInfo]);
@@ -26,21 +26,26 @@ export function CartContextProvider({ children }) {
     if (ls && ls.getItem("cart")) {
       setCartProducts(JSON.parse(ls.getItem("cart")));
     }
+    if (ls && ls.getItem("userInfo")) {
+      setUserInfo(JSON.parse(ls.getItem("userInfo")));
+    }
   }, []);
 
-  function addProduct(productId, productPrice) {
+  function addProduct(productId, productPrice, selectedSize) {
     const updatedCart = cartProducts.map((product) =>
-      product.id === productId
-        ? { ...product, price: productPrice, quantity: product.quantity + 1 }
-        : product,
+      product.id === productId && product.size === selectedSize
+        ? { ...product, quantity: product.quantity + 1 }
+        : product
     );
+
     const productAlreadyInCart = updatedCart.some(
-      (product) => product.id === productId,
+      (product) => product.id === productId && product.size === selectedSize
     );
+
     if (!productAlreadyInCart) {
       setCartProducts((prev) => [
         ...prev,
-        { id: productId, price: productPrice, quantity: 1 },
+        { id: productId, price: productPrice, size: selectedSize, quantity: 1 },
       ]);
       toast.success("Product added successfully!");
     } else {
@@ -49,9 +54,9 @@ export function CartContextProvider({ children }) {
     }
   }
 
-  function removeProduct(productId) {
+  function removeProduct(productId, selectedSize) {
     const updatedCart = cartProducts.filter(
-      (product) => product.id !== productId,
+      (product) => !(product.id === productId && product.size === selectedSize)
     );
     setCartProducts(updatedCart);
     CommonUtil.setStorageValue("cart", updatedCart);
@@ -60,35 +65,23 @@ export function CartContextProvider({ children }) {
     });
   }
 
-  function updateProduct(productId, newQuantity) {
-    console.log("updateProduct called with:", productId, newQuantity);
+  function updateProduct(productId, selectedSize, newQuantity) {
+    console.log("updateProduct called with:", productId, selectedSize, newQuantity);
     const updatedCart = cartProducts.map((product) =>
-      product.id === productId
-        ? { ...product, quantity: newQuantity }
-        : product,
+      product.id === productId && product.size === selectedSize
+        ? { ...product,size:selectedSize, quantity: newQuantity }
+        : product
     );
     CommonUtil.setStorageValue("cart", updatedCart);
-
     setCartProducts(updatedCart);
   }
 
-  function addUserInfo(Email, name, address, phone, payment) {
-    console.log(
-      "addUserInfo called with:",
-      Email,
-      name,
-      address,
-      phone,
-      payment,
-    ); // Debugging line
+  function addUserInfo(email, name, address, phone, payment) {
+    console.log("addUserInfo called with:", email, name, address, phone, payment);
 
-    setUserInfo({
-      email: Email,
-      name: name,
-      address: address,
-      phone: phone,
-      payment: payment,
-    });
+    const newUserInfo = { email, name, address, phone, payment };
+    setUserInfo(newUserInfo);
+    ls?.setItem("userInfo", JSON.stringify(newUserInfo));
   }
 
   return (

@@ -5,6 +5,7 @@ import ApiConfiguration from "../components/ApiConfiguration";
 import DashBoard from "../components/DashBoard";
 import UserManagement from "../components/User/ListAll";
 import ProductManagement from "../components/ProductManagement";
+import Orders from "../components/Orders";
 const navigation = [
   {
     name: "Dashboard",
@@ -25,7 +26,7 @@ const navigation = [
   },
   {
     name: "Orders",
-    component: <ApiConfiguration />,
+    component: <Orders/>,
   },
   {
     name: "Settings",

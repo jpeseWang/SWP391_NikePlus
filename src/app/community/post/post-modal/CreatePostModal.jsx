@@ -12,7 +12,6 @@ import Modal from "react-modal";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
-// import bg from "@/assets/images/postCreateBg.jpeg";
 import bg from "@/assets/images/nkPlsBg.jpg";
 import toast from "react-hot-toast";
 import HorizontalLoading from "@/components/UI/HorizontalLoading/index";
